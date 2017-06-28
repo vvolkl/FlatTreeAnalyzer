@@ -1,6 +1,6 @@
 # FlatTreeAnalyzer
 
-This scripts allows to easily design an analysis based on previously produced flat trees with the [Heppy](https://github.com/cbernet/heppy) framework.
+This scripts allows to easily design an analysis based on produced flat trees with the [Heppy](https://github.com/cbernet/heppy) framework.
 
 Example:
 ```
