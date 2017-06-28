@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from __future__ import division
-import ROOT, collections, os
+import ROOT, collections, os, sys
 from ROOT import TFile, TTree, gROOT, TH1D, TH2D, kRed, TLegend, THStack, TVector2,  TGraph, TMultiGraph
 from math import sqrt
 import warnings
@@ -71,7 +71,10 @@ class Process:
             #numberOfEntries = 100
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
-                if (entry+1)%500 == 0: print '    ...', (entry+1), 'events processed ...'
+                if (entry+1)%500 == 0: 
+                    sys.stdout.write( '... %i events processed ...\r'%(entry+1))
+                    sys.stdout.flush()
+
                 rt.GetEntry(entry)
                 weight = self.w * getattr(rt,"weight")
                 for v in dv.keys():
