@@ -43,7 +43,7 @@ def main():
     param = importlib.import_module(os.path.splitext(ntpath.basename(paramFile))[0])
 
     # tree location
-    treePath = '/heppy.analyzers.examples.{}.TreeProducer.TreeProducer_1/tree.root'.format(analysisName)
+    treePath = '/heppy.FCChhAnalyses.{}.TreeProducer.TreeProducer_1/tree.root'.format(analysisName)
 
     # retrieve list of processes from heppy cfg
     processes = []
