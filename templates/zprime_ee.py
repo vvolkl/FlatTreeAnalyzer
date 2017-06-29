@@ -20,7 +20,7 @@ colors['m_{Z} = 25 TeV'] = ROOT.kRed
 colors['m_{Z} = 30 TeV'] = ROOT.kRed
 colors['m_{Z} = 35 TeV'] = ROOT.kRed
 colors['m_{Z} = 40 TeV'] = ROOT.kRed
-colors['DY'] = ROOT.kGreen+2
+colors['Drell-Yann'] = ROOT.kGreen+2
 
 signal_groups = collections.OrderedDict()
 signal_groups['m_{Z} = 5 TeV'] = ['pp_Zprime_5TeV_ll']
