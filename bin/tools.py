@@ -68,7 +68,7 @@ class Process:
 
             # loop over events
             numberOfEntries = rt.GetEntries()
-            numberOfEntries = 100
+            #numberOfEntries = 100
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
                 if (entry+1)%500 == 0: 
