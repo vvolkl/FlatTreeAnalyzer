@@ -68,7 +68,7 @@ class Process:
 
             # loop over events
             numberOfEntries = rt.GetEntries()
-            #numberOfEntries = 100
+            numberOfEntries = 100
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
                 if (entry+1)%500 == 0: 
@@ -109,7 +109,7 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, unc, name, lumi, version, run_full):
+def producePlots(selections, groups, colors, variables, unc, name, lumi, version, run_full, analysisDir):
     
     name = name.replace("{", "")
     name = name.replace("}", "")
@@ -133,8 +133,8 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     seldict = selectionDict(selections)
     selections = seldict.values()
 
-    pdir = "./plots_{}/".format(name)
-    rdir = "./root_{}/".format(name)
+    pdir = "{}/plots_{}/".format(analysisDir,name)
+    rdir = "{}/root_{}/".format(analysisDir,name)
 
     # if analysis has not been ran before
     if run_full:

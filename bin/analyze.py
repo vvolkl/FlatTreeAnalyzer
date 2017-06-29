@@ -75,7 +75,8 @@ def main():
                      sh, 
                      param.intLumi, 
                      param.delphesVersion, 
-                     param.runFull)
+                     param.runFull,
+                     analysisDir)
 
 #______________________________________________________________________________
 def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block):
