@@ -20,6 +20,8 @@ colors['m_{Z} = 25 TeV'] = ROOT.kRed
 colors['m_{Z} = 30 TeV'] = ROOT.kRed
 colors['m_{Z} = 35 TeV'] = ROOT.kRed
 colors['m_{Z} = 40 TeV'] = ROOT.kRed
+colors['m_{Z} = 45 TeV'] = ROOT.kRed
+colors['m_{Z} = 50 TeV'] = ROOT.kRed
 colors['Drell-Yann'] = ROOT.kGreen+2
 
 signal_groups = collections.OrderedDict()
@@ -31,6 +33,8 @@ signal_groups['m_{Z} = 25 TeV'] = ['pp_Zprime_25TeV_ll']
 signal_groups['m_{Z} = 30 TeV'] = ['pp_Zprime_30TeV_ll']
 signal_groups['m_{Z} = 35 TeV'] = ['pp_Zprime_35TeV_ll']
 signal_groups['m_{Z} = 40 TeV'] = ['pp_Zprime_40TeV_ll']
+signal_groups['m_{Z} = 45 TeV'] = ['pp_Zprime_45TeV_ll']
+signal_groups['m_{Z} = 50 TeV'] = ['pp_Zprime_50TeV_ll']
 
 background_groups = collections.OrderedDict()
 background_groups['Drell-Yann'] = ['pp_ll012j_5f_HT_0_200', 'pp_ll012j_5f_HT_200_700','pp_ll012j_5f_HT_700_1500','pp_ll012j_5f_HT_1500_2700',
@@ -72,3 +76,7 @@ selections['m_{Z} = 35 TeV'] = []
 selections['m_{Z} = 35 TeV'].append(selbase)
 selections['m_{Z} = 40 TeV'] = []
 selections['m_{Z} = 40 TeV'].append(selbase)
+selections['m_{Z} = 45 TeV'] = []
+selections['m_{Z} = 45 TeV'].append(selbase)
+selections['m_{Z} = 50 TeV'] = []
+selections['m_{Z} = 50 TeV'].append(selbase)
