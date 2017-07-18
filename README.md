@@ -12,3 +12,5 @@ Example:
 ```
 ./bin/analyze.py -n [analysis_name_in_heppy] -c [heppy_cfg] -t [heppy_tree_location] -o [output_dir] -p [analysis_parameters] -j [proc_dict]
 ```
+
+To run with multi-threads, simply add "-m" to the execution line

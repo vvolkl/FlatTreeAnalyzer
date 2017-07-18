@@ -8,6 +8,8 @@ warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="creat
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Deleting canvas.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Replacing existing*")
 
+
+
 #_________________________________________
 class CutSelector:
 
@@ -44,26 +46,28 @@ class Process:
               hname = '{}_{}_{}'.format(name, selstr, v)
               self.sv[s][v].SetName(hname)
 
-    def run(self, selections, dv):
+    def run(self, selections, dv, name=''):
 
         # initialize dictionary selection: list of histograms
-        name = self.name
-        nsel = 0
-        for s in selections:
-            self.sv[s] = collections.OrderedDict()
-            selstr = 'sel{}'.format(int(nsel))
-            nsel += 1
+        if name=='':
+            name = self.name
+            nsel = 0
+            for s in selections:
+                self.sv[s] = collections.OrderedDict()
+                selstr = 'sel{}'.format(int(nsel))
+                nsel += 1
             
-            for v in dv.keys() :
-                hname = '{}_{}_{}'.format(name, selstr, v)
-                self.sv[s][v] = TH1D(hname,hname+";"+dv[v]["title"]+";",dv[v]["bin"],dv[v]["xmin"],dv[v]["xmax"])
-                self.sv[s][v].Sumw2()
+                for v in dv.keys() :
+                    hname = '{}_{}_{}'.format(name, selstr, v)
+                    self.sv[s][v] = TH1D(hname,hname+";"+dv[v]["title"]+";",dv[v]["bin"],dv[v]["xmin"],dv[v]["xmax"])
+                    self.sv[s][v].Sumw2()
+
 
         rf = TFile(self.rt)
         t = rf.Get("events")
         for s in selections:
             # filter tree according to selection
-            nf = TFile("tmp.root","recreate")
+            nf = TFile("tmp%s.root"%name,"recreate")
             rt = t.CopyTree(s)
 
             # loop over events
@@ -79,7 +83,7 @@ class Process:
                 weight = self.w * getattr(rt,"weight")
                 for v in dv.keys():
                     self.sv[s][v].Fill(getattr(rt,dv[v]["name"]), weight)
-            os.system('rm tmp.root')
+            os.system('rm tmp%s.root'%name)
 
     def getYields(self):
         yld = dict()
@@ -109,7 +113,7 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, unc, name, lumi, version, run_full):
+def producePlots(selections, groups, colors, variables, unc, name, lumi, version, run_full, analysisDir, MT):
     
     name = name.replace("{", "")
     name = name.replace("}", "")
@@ -133,12 +137,13 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     seldict = selectionDict(selections)
     selections = seldict.values()
 
-    pdir = "./plots_{}/".format(name)
-    rdir = "./root_{}/".format(name)
+    pdir = "{}/plots_{}/".format(analysisDir,name)
+    rdir = "{}/root_{}/".format(analysisDir,name)
 
     # if analysis has not been ran before
     if run_full:
-        runAnalysis(proclist, selections, variables)
+        if MT: runAnalysisMT(proclist, selections, variables)
+        else: runAnalysis(proclist, selections, variables)
 
         processes = []
         for label, procs in groups.items():
@@ -175,12 +180,68 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     print '======================================================================================'
     print '======================================================================================'
 
-#_____________________________________________________________________________________________________
-def runAnalysis(listOfProcesses, selections, variables):
 
+import multiprocessing as mp
+
+#_____________________________________________________________________________________________________
+def runMT_pool(args=('','','')):
+    proc,selections,variables=args
+    print "START %s" % (proc.name)
+    proc.run(selections, variables, proc.name)
+    print "END %s" % (proc.name)
+
+
+#_____________________________________________________________________________________________________
+def runMT_join(proc,selections, variables):
+    print "START %s" % (proc.name)
+    proc.run(selections, variables, proc.name)
+    print "END %s" % (proc.name)
+
+
+#_____________________________________________________________________________________________________
+def runAnalysisMT(listOfProcesses, selections, variables):
     print ''
     print 'Start looping on process trees:'
     print ''
+    threads = []
+    for proc in listOfProcesses:
+        print '---------------------------'
+        print proc.name
+        print '---------------------------'
+        print ''
+        nsel = 0
+        for s in selections:
+            proc.sv[s] = collections.OrderedDict()
+            selstr = 'sel{}'.format(int(nsel))
+            nsel += 1
+            for v in variables.keys() :
+                hname = '{}_{}_{}'.format(proc.name, selstr, v)
+                proc.sv[s][v] = TH1D(hname,hname+";"+variables[v]["title"]+";",variables[v]["bin"],variables[v]["xmin"],variables[v]["xmax"])
+                proc.sv[s][v].Sumw2()
+
+    #SOLUTION 1
+        threads.append((proc, selections, variables))
+    pool = mp.Pool()
+    pool.map(runMT_pool,threads) 
+
+    #SOLUTION 2
+    #    thread = mp.Process(target=runMT_join,args=(proc, selections, variables,))
+    #    thread.start()
+    #    threads.append(thread)
+    #for proc in threads:
+    #    proc.join()
+
+  
+
+
+
+
+#_____________________________________________________________________________________________________
+def runAnalysis(listOfProcesses, selections, variables):
+    print ''
+    print 'Start looping on process trees:'
+    print ''
+        
     for proc in listOfProcesses:
         print '---------------------------'
         print proc.name

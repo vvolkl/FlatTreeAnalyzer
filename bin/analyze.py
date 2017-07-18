@@ -13,6 +13,8 @@ def options():
     parser.add_option('-t', '--heppy_tree_dir', dest='heppy_tree_dir', type=str, default='')
     parser.add_option('-o', '--analysis_output', dest='analysis_output', type=str, default='')
     parser.add_option('-p', '--param_file', dest='param_file', type=str, default='')
+    parser.add_option('-m', '--multi_threading', dest='MT', default=False, action='store_true')
+
     return parser.parse_args()
 
 #______________________________________________________________________________
@@ -45,6 +47,9 @@ def main():
     # tree location
     treePath = '/heppy.FCChhAnalyses.{}.TreeProducer.TreeProducer_1/tree.root'.format(analysisName)
 
+    #multi-threading
+    MT = ops.MT
+
     # retrieve list of processes from heppy cfg
     processes = []
     with open(heppyCfg) as f:
@@ -75,7 +80,9 @@ def main():
                      sh, 
                      param.intLumi, 
                      param.delphesVersion, 
-                     param.runFull)
+                     param.runFull,
+                     analysisDir,
+                     MT)
 
 #______________________________________________________________________________
 def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block):
