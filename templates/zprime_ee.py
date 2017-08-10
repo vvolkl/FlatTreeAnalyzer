@@ -4,9 +4,9 @@ import collections
 ### variable list
 variables = {
     "ptzp":{"name":"zprime_ele_pt","title":"p_{T}^{Zprime} [GeV]","bin":200,"xmin":0,"xmax":20000},
-    "mzp":{"name":"zprime_ele_m","title":"m_{Zprime} [GeV]","bin":500,"xmin":0,"xmax":50000},
-    "ptmu_1":{"name":"lep1_pt","title":"p_{T}^{#mu, max} [GeV]","bin":200,"xmin":0,"xmax":20000},
-    "ptmu_2":{"name":"lep2_pt","title":"p_{T}^{#mu, min} [GeV]","bin":200,"xmin":0,"xmax":20000},
+    "mzp":{"name":"zprime_ele_m","title":"m_{Zprime} [GeV]","bin":600,"xmin":0,"xmax":60000},
+    "ptmu_1":{"name":"lep1_pt","title":"p_{T}^{#mu, max} [GeV]","bin":250,"xmin":0,"xmax":25000},
+    "ptmu_2":{"name":"lep2_pt","title":"p_{T}^{#mu, min} [GeV]","bin":250,"xmin":0,"xmax":25000},
     "met":{"name":"met_pt","title":"E_{T}^{miss}","bin":50,"xmin":0,"xmax":100},
 }
 
