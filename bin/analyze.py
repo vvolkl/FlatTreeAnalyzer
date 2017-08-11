@@ -64,25 +64,81 @@ def main():
     # prepare analysis dir
     os.system('mkdir -p {}'.format(analysisDir))
 
+
+    
     ### produce process dictionnaries
+    if not MT:
+        for sh in param.selections.keys():
+
+            block = collections.OrderedDict()
+
+            formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block)
+            
+        ### run analysis
+            producePlots(param.selections[sh], 
+                         block, 
+                         param.colors, 
+                         param.variables, 
+                         param.uncertainties, 
+                         sh, 
+                         param.intLumi, 
+                         param.delphesVersion, 
+                         param.runFull,
+                         analysisDir,
+                         MT)
+    else:
+        runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT)
+
+
+import multiprocessing as mp
+#_____________________________________________________________________________________________________
+def runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT):
+    threads = []
     for sh in param.selections.keys():
 
         block = collections.OrderedDict()
-
         formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block)
-            
-        ### run analysis
-        producePlots(param.selections[sh], 
-                     block, 
-                     param.colors, 
-                     param.variables, 
-                     param.uncertainties, 
-                     sh, 
-                     param.intLumi, 
-                     param.delphesVersion, 
-                     param.runFull,
-                     analysisDir,
-                     MT)
+        thread = mp.Process(target=runMT_join,args=(block, param, sh,analysisDir, MT ))
+        thread.start()
+        threads.append(thread)
+    for proc in threads:
+        proc.join()
+
+ 
+
+#_____________________________________________________________________________________________________
+def runMT_join(block, param, sh,analysisDir, MT):
+    print "START %s" % (sh)
+    producePlots(param.selections[sh], 
+                 block, 
+                 param.colors, 
+                 param.variables, 
+                 param.uncertainties, 
+                 sh, 
+                 param.intLumi, 
+                 param.delphesVersion, 
+                 param.runFull,
+                 analysisDir,
+                 MT)
+    print "END %s" % (sh)
+
+
+#_____________________________________________________________________________________________________
+def runMT_pool(args=('','','')):
+    print "START %s" % (sh)
+    block, param, sh,analysisDir, MT=args
+    producePlots(param.selections[sh], 
+                 block, 
+                 param.colors, 
+                 param.variables, 
+                 param.uncertainties, 
+                 sh, 
+                 param.intLumi, 
+                 param.delphesVersion, 
+                 param.runFull,
+                 analysisDir,
+                 MT)
+    print "END %s" % (sh)
 
 #______________________________________________________________________________
 def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block):

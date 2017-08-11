@@ -51,7 +51,7 @@ class Process:
               self.sv[s][v].SetName(hname)
 
     #_____________________________________________________________________________________________________
-    def run(self, selections, dv, name=''):
+    def run(self, selections, dv, ch='', name=''):
 
         # initialize dictionary selection: list of histograms
         if name=='':
@@ -72,7 +72,7 @@ class Process:
         t = rf.Get("events")
         for s in selections:
             # filter tree according to selection
-            nf = TFile("tmp%s.root"%name,"recreate")
+            nf = TFile("tmp%s%s.root"%(ch,name),"recreate")
             rt = t.CopyTree(s)
 
             # loop over events
@@ -88,7 +88,7 @@ class Process:
                 weight = self.w * getattr(rt,"weight")
                 for v in dv.keys():
                     self.sv[s][v].Fill(getattr(rt,dv[v]["name"]), weight)
-            os.system('rm tmp%s.root'%name)
+            os.system('rm tmp%s%s.root'%(ch,name))
 
     #_____________________________________________________________________________________________________
     def getYields(self):
@@ -110,7 +110,6 @@ class Process:
         for s in self.sv.keys():
             for v in self.sv[s].keys():
                self.sv[s][v].Add(other.sv[s][v])
-               print 'add s ', s, '  v  ',v,' names ',self.name, '  ', other.name, '  entries  ',self.sv[s][v].GetEntries()
 
 #_____________________________________________________________________________________________________
 def selectionDict(selections):
@@ -151,7 +150,7 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     # if analysis has not been ran before
     if run_full:
 
-        if MT:  runAnalysisMT(proclist, selections, variables, groups)
+        if MT:  runAnalysisMT(proclist, selections, variables, groups, name)
         else:   runAnalysis(proclist, selections, variables)
 
        ### prepare outputs
@@ -193,11 +192,10 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
 import multiprocessing as mp
 
 #_____________________________________________________________________________________________________
-def runMT_pool(args=('','','')):
-
-    proc,selections,variables=args
+def runMT_pool(args=('','','','')):
+    proc,selections,variables, sh=args
     print "START %s" % (proc.name)
-    proc.run(selections, variables, proc.name)
+    proc.run(selections, variables, proc.name, sh)
     return proc
     print "END %s" % (proc.name)
 
@@ -210,7 +208,8 @@ def runMT_join(proc,selections, variables):
 
 
 #_____________________________________________________________________________________________________
-def runAnalysisMT(listOfProcesses, selections, variables, groups):
+def runAnalysisMT(listOfProcesses, selections, variables, groups, name):
+    print 'NUMBER OF CORES    ',mp.cpu_count()
     print ''
     print 'Start looping on process trees:'
     print ''
@@ -231,8 +230,9 @@ def runAnalysisMT(listOfProcesses, selections, variables, groups):
                 proc.sv[s][v] = TH1D(hname,hname+";"+variables[v]["title"]+";",variables[v]["bin"],variables[v]["xmin"],variables[v]["xmax"])
                 proc.sv[s][v].Sumw2()
 
+
     #SOLUTION 1
-        threads.append((proc, selections, variables))
+        threads.append((proc, selections, variables, name))
     pool = mp.Pool()
     histos_list = pool.map(runMT_pool,threads) 
 
