@@ -13,10 +13,12 @@ warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Repla
 #_________________________________________
 class CutSelector:
 
+    #_____________________________________________________________________________________________________
     def __init__(self, tree, cuts):
         self.cuts = cuts
         self.formula = ROOT.TTreeFormula("Cut_formula", cuts, tree)
 
+    #_____________________________________________________________________________________________________
     def evaluate(self, tree, event):
         # Important otherwise the vector is not loaded correctly
         self.formula.GetNdata()
@@ -25,6 +27,7 @@ class CutSelector:
 #_____________________________________________
 class Process:
 
+    #_____________________________________________________________________________________________________
     def __init__(self, name, tree="", nevents=-1, xsec=-1., effmatch=1., kfactor=1.):
 
         self.name = name
@@ -36,6 +39,7 @@ class Process:
         self.w = kfactor*xsec*effmatch/nevents #weight events /pb
         self.sv = collections.OrderedDict()
 
+    #_____________________________________________________________________________________________________
     def setName(self, name):
         self.name = name
         nsel = 0
@@ -46,6 +50,7 @@ class Process:
               hname = '{}_{}_{}'.format(name, selstr, v)
               self.sv[s][v].SetName(hname)
 
+    #_____________________________________________________________________________________________________
     def run(self, selections, dv, name=''):
 
         # initialize dictionary selection: list of histograms
@@ -72,7 +77,7 @@ class Process:
 
             # loop over events
             numberOfEntries = rt.GetEntries()
-            #numberOfEntries = 100
+            #numberOfEntries = 10000
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
                 if (entry+1)%500 == 0: 
@@ -85,6 +90,7 @@ class Process:
                     self.sv[s][v].Fill(getattr(rt,dv[v]["name"]), weight)
             os.system('rm tmp%s.root'%name)
 
+    #_____________________________________________________________________________________________________
     def getYields(self):
         yld = dict()
         for s in self.sv.keys():
@@ -98,11 +104,13 @@ class Process:
                 yld[s] = [hist.IntegralAndError(0, hist.GetNbinsX()+1, err), err]
         return yld
 
+    #_____________________________________________________________________________________________________
     # necessary for adding processes 
     def add(self, other):
         for s in self.sv.keys():
             for v in self.sv[s].keys():
                self.sv[s][v].Add(other.sv[s][v])
+               print 'add s ', s, '  v  ',v,' names ',self.name, '  ', other.name, '  entries  ',self.sv[s][v].GetEntries()
 
 #_____________________________________________________________________________________________________
 def selectionDict(selections):
@@ -142,8 +150,13 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
 
     # if analysis has not been ran before
     if run_full:
-        if MT: runAnalysisMT(proclist, selections, variables)
-        else: runAnalysis(proclist, selections, variables)
+
+        if MT:  runAnalysisMT(proclist, selections, variables, groups)
+        else:   runAnalysis(proclist, selections, variables)
+
+       ### prepare outputs
+        os.system("mkdir -p {}".format(pdir))
+        os.system("mkdir -p {}".format(rdir))
 
         processes = []
         for label, procs in groups.items():
@@ -153,10 +166,6 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
                 for i in range(1,len(procs)):
                     mainproc.add(procs[i])
                 processes.append(mainproc)
-
-        ### prepare outputs
-        os.system("mkdir -p {}".format(pdir))
-        os.system("mkdir -p {}".format(rdir))
 
         hfile = ROOT.TFile("{}/histos.root".format(rdir),"RECREATE")
         saveHistos(processes, selections, variables, hfile)
@@ -185,9 +194,11 @@ import multiprocessing as mp
 
 #_____________________________________________________________________________________________________
 def runMT_pool(args=('','','')):
+
     proc,selections,variables=args
     print "START %s" % (proc.name)
     proc.run(selections, variables, proc.name)
+    return proc
     print "END %s" % (proc.name)
 
 
@@ -199,7 +210,7 @@ def runMT_join(proc,selections, variables):
 
 
 #_____________________________________________________________________________________________________
-def runAnalysisMT(listOfProcesses, selections, variables):
+def runAnalysisMT(listOfProcesses, selections, variables, groups):
     print ''
     print 'Start looping on process trees:'
     print ''
@@ -209,6 +220,7 @@ def runAnalysisMT(listOfProcesses, selections, variables):
         print proc.name
         print '---------------------------'
         print ''
+
         nsel = 0
         for s in selections:
             proc.sv[s] = collections.OrderedDict()
@@ -222,19 +234,23 @@ def runAnalysisMT(listOfProcesses, selections, variables):
     #SOLUTION 1
         threads.append((proc, selections, variables))
     pool = mp.Pool()
-    pool.map(runMT_pool,threads) 
+    histos_list = pool.map(runMT_pool,threads) 
 
+
+    for label in groups:
+        toadd=[]
+        for p in groups[label]:
+            for h in histos_list:
+                if p.name==h.name:
+                    toadd.append(h)
+        groups[label]=toadd
+                    
     #SOLUTION 2
     #    thread = mp.Process(target=runMT_join,args=(proc, selections, variables,))
     #    thread.start()
     #    threads.append(thread)
     #for proc in threads:
     #    proc.join()
-
-  
-
-
-
 
 #_____________________________________________________________________________________________________
 def runAnalysis(listOfProcesses, selections, variables):
@@ -299,7 +315,7 @@ def printYields(listOfSignals, listOfBackgrounds, selections, uncertainties, int
             err = proc.getYields()[sel][1]*intLumi
             s += yld
             es += err**2
-            print '{:>20} {:>20} {:>20}'.format(proc.name, round(yld,1), round(err,1))
+            print '{:>20} {:>20} {:>20} {:>20}'.format(proc.name, round(yld,1), round(err,1))
         print '    ------------------------------------------------------------'
         print '{:>20} {:>20} {:>20}'.format('signal', round(s,3), round(sqrt(es),3))
         print ''    
@@ -344,8 +360,8 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
         print '===================================================================================='
 
         print ''    
-        print '{:>20} {:>12} ({:>4} {:>3}) {:>20}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error')
-        print '    ------------------------------------------------------------'
+        print '{:>20} {:>12} ({:>4} {:>3}) {:>20} {:>12}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error', 'raw')
+        print '    -------------------------------------------------------------------------------------'
 
         v = variables.keys()[0]
         selstr = 'sel{}'.format(int(nsel))
@@ -359,6 +375,7 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
             h = hfile.Get(hname)
             err = ROOT.Double()
             yld = h.IntegralAndError(0, h.GetNbinsX()+1, err)
+            raw = h.GetEntries()
 
             yld *= intLumi
             err *= intLumi
@@ -370,9 +387,9 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
                 b += yld
                 eb += (err**2)
                 
-            print '{:>20} {:>20} {:>20}'.format(p, round(yld,1), round(err,1))
+            print '{:>20} {:>20} {:>20} {:>20}'.format(p, round(yld,1), round(err,1),raw)
             nproc += 1
-        print '    ------------------------------------------------------------'
+        print '    -------------------------------------------------------------------------------------'
         print '{:>20} {:>20} {:>20}'.format('signal', round(s,3), round(sqrt(es),3))
         print '{:>20} {:>20} {:>20}'.format('background', round(b,3), round(sqrt(eb),3))
 
