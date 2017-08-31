@@ -28,7 +28,7 @@ class CutSelector:
 class Process:
 
     #_____________________________________________________________________________________________________
-    def __init__(self, name, tree="", nevents=-1, xsec=-1., effmatch=1., kfactor=1.):
+    def __init__(self, name, tree="", nevents=-1, sumw=-1,xsec=-1., effmatch=1., kfactor=1.):
 
         self.name = name
         self.rt = tree
@@ -36,7 +36,10 @@ class Process:
         self.x = xsec # in pb
         self.e = effmatch
         self.k = kfactor
+        self.s = sumw
         self.w = kfactor*xsec*effmatch/nevents #weight events /pb
+        if sumw<nevents:
+            self.w = kfactor*xsec*effmatch/sumw
         self.sv = collections.OrderedDict()
 
     #_____________________________________________________________________________________________________
