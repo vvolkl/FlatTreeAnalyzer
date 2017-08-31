@@ -157,11 +157,12 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
                  print pname
                  xsec = procdict[pname]['crossSection']
                  nev = procdict[pname]['numberOfEvents']
+                 sumw = procdict[pname]['sumOfWeights']
                  eff = procdict[pname]['matchingEfficiency']
                  kf = procdict[pname]['kfactor']
                  matched_xsec = xsec*eff
                  tree = '{}/{}/{}'.format(os.path.abspath(treedir), pname, treepath)
-                 blocklist.append(Process(pname,tree,nev,xsec,eff,kf))
+                 blocklist.append(Process(pname,tree,nev,sumw,xsec,eff,kf))
      return blocklist
 
 #______________________________________________________________________________
