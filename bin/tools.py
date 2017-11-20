@@ -77,10 +77,11 @@ class Process:
             # filter tree according to selection
             nf = TFile("tmp%s%s.root"%(ch,name),"recreate")
             rt = t.CopyTree(s)
+            #rt = t
 
             # loop over events
             numberOfEntries = rt.GetEntries()
-            #numberOfEntries = 10000
+            #numberOfEntries = 100
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
                 if (entry+1)%500 == 0: 
@@ -141,7 +142,7 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     
     proclist = []
     for label, listproc in groups.iteritems():
-        for proc in listproc:
+	for proc in listproc:
             proclist.append(proc)
     
     seldict = selectionDict(selections)

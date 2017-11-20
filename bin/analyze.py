@@ -41,9 +41,14 @@ def main():
 
     # param file
     paramFile = ops.param_file
-    sys.path.append(os.path.dirname(os.path.expanduser(paramFile)))
-    param = importlib.import_module(os.path.splitext(ntpath.basename(paramFile))[0])
 
+    module_path = os.path.abspath(paramFile)
+    module_dir = os.path.dirname(module_path)
+    base_name = os.path.splitext(ntpath.basename(paramFile))[0]
+   
+    sys.path.insert(0, module_dir)
+    param = importlib.import_module(base_name)
+    
     # tree location
     treePath = '/heppy.FCChhAnalyses.{}.TreeProducer.TreeProducer_1/tree.root'.format(analysisName)
 
@@ -65,7 +70,9 @@ def main():
     os.system('mkdir -p {}'.format(analysisDir))
 
 
+    #print param.selections
     
+
     ### produce process dictionnaries
     if not MT:
         for sh in param.selections.keys():
@@ -142,6 +149,7 @@ def runMT_pool(args=('','','')):
 
 #______________________________________________________________________________
 def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block):
+    
     for label, procs in sb.iteritems():
        if label == shyp:
            block[shyp] = fillBlock(procs, processes, procdict, treedir, treepath)
@@ -154,7 +162,6 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
      for procstr in procs:
          for pname in processes:
              if procstr in pname:
-                 print pname
                  xsec = procdict[pname]['crossSection']
                  nev = procdict[pname]['numberOfEvents']
                  sumw = procdict[pname]['sumOfWeights']
