@@ -24,7 +24,6 @@ variables = {
 }
 
 colors = {}
-colors['m_{RSG} = 2 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 5 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 10 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 15 TeV'] = ROOT.kBlue
@@ -38,7 +37,6 @@ colors['tt'] = ROOT.kOrange
 colors['VV'] = ROOT.kRed
 
 signal_groups = collections.OrderedDict()
-signal_groups['m_{RSG} = 2 TeV']  = ['pp_RSGraviton_2TeV_ww']
 signal_groups['m_{RSG} = 5 TeV']  = ['pp_RSGraviton_5TeV_ww']
 signal_groups['m_{RSG} = 10 TeV'] = ['pp_RSGraviton_10TeV_ww']
 signal_groups['m_{RSG} = 15 TeV'] = ['pp_RSGraviton_15TeV_ww']
@@ -89,7 +87,7 @@ selbase = 'Jet1_pt > 2000. && abs(Jet1_eta) < 2.4 && abs(Jet2_eta) < 2.4 && Jet1
 
 selections = collections.OrderedDict()
 
-selections['m_{RSG} = 2 TeV'] = []
-selections['m_{RSG} = 2 TeV'].append(selbase + ' && nelectrons == 0 && nmuons == 0 && Jet2_pt > 2000. && Jet2_tau21 < 0.6 && softDroppedJet2_m > 50 && softDroppedJet2_m < 100 && Jet1_Flow15 > 0.8 && Jet2_Flow15 > 0.8 && Jet1_Flow25 < 0.1 && Jet2_Flow25 < 0.1') #allHad
-selections['m_{RSG} = 2 TeV'].append(selbase + ' && (nelectrons > 0 || nmuons > 0) && Jet1_Flow15 > 0.6') #semiLep
+selections['m_{RSG} = 10 TeV'] = []
+selections['m_{RSG} = 10 TeV'].append(selbase + ' && nelectrons == 0 && nmuons == 0 && Jet2_pt > 2000. && Jet2_tau21 < 0.6 && softDroppedJet2_m > 50 && softDroppedJet2_m < 100 && Jet1_Flow15 > 0.8 && Jet2_Flow15 > 0.8 && Jet1_Flow25 < 0.1 && Jet2_Flow25 < 0.1') #allHad
+selections['m_{RSG} = 10 TeV'].append(selbase + ' && (nelectrons > 0 || nmuons > 0) && Jet1_Flow15 > 0.6') #semiLep
 
