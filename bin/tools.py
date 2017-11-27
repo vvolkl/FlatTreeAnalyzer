@@ -237,7 +237,7 @@ def runAnalysisMT(listOfProcesses, selections, variables, groups, name):
 
     #SOLUTION 1
         threads.append((proc, selections, variables, name))
-    pool = mp.Pool()
+    pool = mp.Pool(16)
     histos_list = pool.map(runMT_pool,threads) 
 
 
