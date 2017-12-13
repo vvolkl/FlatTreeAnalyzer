@@ -14,6 +14,7 @@ def options():
     parser.add_option('-o', '--analysis_output', dest='analysis_output', type=str, default='')
     parser.add_option('-p', '--param_file', dest='param_file', type=str, default='')
     parser.add_option('-m', '--multi_threading', dest='MT', default=False, action='store_true')
+    parser.add_option('-l', '--latex_table', dest='latex_table', default=False, action='store_true')
 
     return parser.parse_args()
 
@@ -92,7 +93,8 @@ def main():
                          param.delphesVersion, 
                          param.runFull,
                          analysisDir,
-                         MT)
+                         MT,
+                         latex_table=ops.latex_table)
     else:
         runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT)
 

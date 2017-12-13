@@ -124,7 +124,7 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, unc, name, lumi, version, run_full, analysisDir, MT):
+def producePlots(selections, groups, colors, variables, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False):
     
     name = name.replace("{", "")
     name = name.replace("}", "")
@@ -178,6 +178,8 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     hfile = ROOT.TFile("{}/histos.root".format(rdir))
     
     printYieldsFromHistos(processes, selections, variables, unc, lumi, hfile)
+    if latex_table:
+      printYieldsFromHistosAsLatexTable(processes, selections, variables, unc, lumi, hfile)
 
     produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
     produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, False, hfile)
@@ -351,6 +353,7 @@ def printYields(listOfSignals, listOfBackgrounds, selections, uncertainties, int
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
             print '{:>11} {:>7} {:>21} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(sign,2), round(rel_unc,2))
 
+
 #_____________________________________________________________________________________________________
 def printYieldsFromHistos(processes, selections, variables, uncertainties, intLumi, hfile):
 
@@ -391,7 +394,7 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
                 b += yld
                 eb += (err**2)
                 
-            print '{:>20} {:>20} {:>20} {:>20}'.format(p, round(yld,1), round(err,1),raw)
+            print '{:>20} {:>20} {:>20} {:>20}'.format(p, round(yld,1), round(err,1),int(raw))
             nproc += 1
         print '    -------------------------------------------------------------------------------------'
         print '{:>20} {:>20} {:>20}'.format('signal', round(s,3), round(sqrt(es),3))
@@ -408,6 +411,62 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
             print '{:>11} {:>7} {:>21} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(sign,2), round(rel_unc,2))
 
+#_____________________________________________________________________________________________________
+def printYieldsFromHistosAsLatexTable(processes, selections, variables, uncertainties, intLumi, hfile):
+
+    print ''    
+    nsel = 0
+    for sel in selections:
+        intLumiab = intLumi/1e+06 
+        print ''    
+        print '===================================================================================='
+        print '         selection:', sel
+        print '===================================================================================='
+
+        print r'\begin{tabular} {cccc}'    
+        print r'{:>20} & {:>12} ({:>4} {:>3}) & {:>20} & {:>12} \\'.format('process', 'yield', intLumiab, 'ab$^-1$', 'stat. error', 'raw')
+        print '\hline'
+
+        v = variables.keys()[0]
+        selstr = 'sel{}'.format(int(nsel))
+        nsel += 1
+        
+        nproc = 0
+        b = 0
+        eb = 0
+        for p in processes:
+            hname = '{}_{}_{}'.format(p, selstr, v)
+            h = hfile.Get(hname)
+            err = ROOT.Double()
+            yld = h.IntegralAndError(0, h.GetNbinsX()+1, err)
+            raw = h.GetEntries()
+
+            yld *= intLumi
+            err *= intLumi
+
+            if nproc == 0:
+                s = yld
+                es = err
+            else: 
+                b += yld
+                eb += (err**2)
+                
+            print r'{:>20} & {:>20} & {:>20} & {:>20} \\'.format(p.replace("_", r"\_"), round(yld,1), round(err,1),int(raw))
+            nproc += 1
+        print r'\hline'
+        print r'{:>20} & {:>20} & {:>20}& \\'.format('signal', round(s,3), round(sqrt(es),3))
+        print r'{:>20} & {:>20} & {:>20}& \\'.format('background', round(b,3), round(sqrt(eb),3))
+
+        print r'\end{tabular}'    
+        print ''    
+
+        # calculate significance and delta_mu/mu (uncertainty on the signal strength)
+        print '{:>24} {:>20} {:>20}'.format('(sig_s, sig_b) (%)', 'significance', 'dmu/mu (%)')
+        print '    ------------------------------------------------------------'
+        for unc in uncertainties:
+            sign = significance(s, unc[0], b, unc[1])
+            rel_unc = dMuOverMu(s, unc[0], b, unc[1])
+            print '{:>11} {:>7} {:>21} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(sign,2), round(rel_unc,2))
 #_____________________________________________________________________________________________________
 def produceYieldPlots(processes, seldict, variables, uncertainties, intLumi, pdir, delphesVersion, hfile):
 
