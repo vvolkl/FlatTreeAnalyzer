@@ -4,11 +4,11 @@ import ROOT, collections, os, sys
 from ROOT import TFile, TTree, gROOT, TH1D, TH2D, kRed, TLegend, THStack, TVector2,  TGraph, TMultiGraph
 from math import sqrt
 import warnings
+from array import array
+
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="creating converter.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Deleting canvas.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Replacing existing*")
-
-
 
 #_________________________________________
 class CutSelector:
@@ -41,6 +41,7 @@ class Process:
         if sumw<nevents:
             self.w = kfactor*xsec*effmatch/sumw
         self.sv = collections.OrderedDict()
+        self.sv2d = collections.OrderedDict()
 
     #_____________________________________________________________________________________________________
     def setName(self, name):
@@ -52,9 +53,17 @@ class Process:
             for v in self.sv[s].keys():
               hname = '{}_{}_{}'.format(name, selstr, v)
               self.sv[s][v].SetName(hname)
+        nsel = 0
+        for s in self.sv2d.keys():
+            selstr = 'sel{}'.format(int(nsel))
+            nsel += 1
+            for v in self.sv2d[s].keys():
+              hname = '{}_{}_{}'.format(name, selstr, v)
+              self.sv2d[s][v].SetName(hname)
+        
 
     #_____________________________________________________________________________________________________
-    def run(self, selections, dv, ch='', name=''):
+    def run(self, selections, dv, dv2d, ch='', name=''):
 
         # initialize dictionary selection: list of histograms
         if name=='':
@@ -62,14 +71,22 @@ class Process:
             nsel = 0
             for s in selections:
                 self.sv[s] = collections.OrderedDict()
+                self.sv2d[s] = collections.OrderedDict()
                 selstr = 'sel{}'.format(int(nsel))
                 nsel += 1
-            
+
                 for v in dv.keys() :
                     hname = '{}_{}_{}'.format(name, selstr, v)
                     self.sv[s][v] = TH1D(hname,hname+";"+dv[v]["title"]+";",dv[v]["bin"],dv[v]["xmin"],dv[v]["xmax"])
                     self.sv[s][v].Sumw2()
 
+                for v in dv2d.keys() :
+                    hname = '{}_{}_{}'.format(name, selstr, v)
+                    self.sv2d[s][v] = TH2D(hname,hname+";"+dv2d[v]["titlex"]+";"+dv2d[v]["titley"]+";",
+                                     dv2d[v]["binx"],dv2d[v]["xmin"],dv2d[v]["xmax"], 
+                                     dv2d[v]["biny"],dv2d[v]["ymin"],dv2d[v]["ymax"], 
+                                     ) 
+                    self.sv2d[s][v].Sumw2()
 
         rf = TFile(self.rt)
         t = rf.Get("events")
@@ -81,7 +98,7 @@ class Process:
 
             # loop over events
             numberOfEntries = rt.GetEntries()
-            #numberOfEntries = 100
+            #numberOfEntries = 1000
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
                 if (entry+1)%500 == 0: 
@@ -92,6 +109,8 @@ class Process:
                 weight = self.w * getattr(rt,"weight")
                 for v in dv.keys():
                     self.sv[s][v].Fill(getattr(rt,dv[v]["name"]), weight)
+                for v in dv2d.keys():
+                    self.sv2d[s][v].Fill(getattr(rt,dv2d[v]["namex"]), getattr(rt,dv2d[v]["namey"]), weight)
             os.system('rm tmp%s%s.root'%(ch,name))
 
     #_____________________________________________________________________________________________________
@@ -124,13 +143,10 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False):
+def producePlots(selections, groups, colors, variables, variables2D, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False):
     
-    name = name.replace("{", "")
-    name = name.replace("}", "")
-    name = name.replace(" ", "")
-    name = name.replace("_", "")
-    name = name.replace("=", "_")
+    analysisDir = formatted(analysisDir)
+    name = formatted(name)
     
     print '======================================================================================'
     print '======================================================================================'
@@ -142,11 +158,12 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     
     proclist = []
     for label, listproc in groups.iteritems():
-	for proc in listproc:
+        for proc in listproc:
             proclist.append(proc)
     
     seldict = selectionDict(selections)
     selections = seldict.values()
+
 
     pdir = "{}/plots_{}/".format(analysisDir,name)
     rdir = "{}/root_{}/".format(analysisDir,name)
@@ -154,8 +171,8 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     # if analysis has not been ran before
     if run_full:
 
-        if MT:  runAnalysisMT(proclist, selections, variables, groups, name)
-        else:   runAnalysis(proclist, selections, variables)
+        if MT:  runAnalysisMT(proclist, selections, variables, variables2D, groups, name)
+        else:   runAnalysis(proclist, selections, variables, variables2D)
 
        ### prepare outputs
         os.system("mkdir -p {}".format(pdir))
@@ -171,7 +188,7 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
                 processes.append(mainproc)
 
         hfile = ROOT.TFile("{}/histos.root".format(rdir),"RECREATE")
-        saveHistos(processes, selections, variables, hfile)
+        saveHistos(processes, selections, variables, variables2D, hfile)
         hfile.Close()
 
     processes = groups.keys()
@@ -186,6 +203,9 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
     produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, True, hfile)
     produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)
 
+    produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
+    produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)
+
     print '======================================================================================'
     print '======================================================================================'
     print ''
@@ -198,23 +218,23 @@ def producePlots(selections, groups, colors, variables, unc, name, lumi, version
 import multiprocessing as mp
 
 #_____________________________________________________________________________________________________
-def runMT_pool(args=('','','','')):
-    proc,selections,variables, sh=args
+def runMT_pool(args=('','','','','')):
+    proc,selections,variables,variables2D,sh=args
     print "START %s" % (proc.name)
-    proc.run(selections, variables, proc.name, sh)
+    proc.run(selections, variables, variables2D, proc.name, sh)
     return proc
     print "END %s" % (proc.name)
 
 
 #_____________________________________________________________________________________________________
-def runMT_join(proc,selections, variables):
+def runMT_join(proc,selections, variables, variables2D):
     print "START %s" % (proc.name)
-    proc.run(selections, variables, proc.name)
+    proc.run(selections, variables, variables2D, proc.name)
     print "END %s" % (proc.name)
 
 
 #_____________________________________________________________________________________________________
-def runAnalysisMT(listOfProcesses, selections, variables, groups, name):
+def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, name):
     print 'NUMBER OF CORES    ',mp.cpu_count()
     print ''
     print 'Start looping on process trees:'
@@ -229,16 +249,24 @@ def runAnalysisMT(listOfProcesses, selections, variables, groups, name):
         nsel = 0
         for s in selections:
             proc.sv[s] = collections.OrderedDict()
+            proc.sv2d[s] = collections.OrderedDict()
             selstr = 'sel{}'.format(int(nsel))
             nsel += 1
             for v in variables.keys() :
                 hname = '{}_{}_{}'.format(proc.name, selstr, v)
                 proc.sv[s][v] = TH1D(hname,hname+";"+variables[v]["title"]+";",variables[v]["bin"],variables[v]["xmin"],variables[v]["xmax"])
                 proc.sv[s][v].Sumw2()
+                
+            for v in variables2D.keys() :
+                hname = '{}_{}_{}'.format(proc.name, selstr, v)
+                proc.sv2d[s][v] = TH2D(hname,hname+";"+variables2D[v]["titlex"]+";"+variables2D[v]["titley"]+";",
+                                     variables2D[v]["binx"],variables2D[v]["xmin"],variables2D[v]["xmax"], 
+                                     variables2D[v]["biny"],variables2D[v]["ymin"],variables2D[v]["ymax"])
+                proc.sv2d[s][v].Sumw2()
 
 
     #SOLUTION 1
-        threads.append((proc, selections, variables, name))
+        threads.append((proc, selections, variables, variables2D, name))
     pool = mp.Pool(16)
     histos_list = pool.map(runMT_pool,threads) 
 
@@ -259,7 +287,7 @@ def runAnalysisMT(listOfProcesses, selections, variables, groups, name):
     #    proc.join()
 
 #_____________________________________________________________________________________________________
-def runAnalysis(listOfProcesses, selections, variables):
+def runAnalysis(listOfProcesses, selections, variables, variables2D):
     print ''
     print 'Start looping on process trees:'
     print ''
@@ -269,10 +297,10 @@ def runAnalysis(listOfProcesses, selections, variables):
         print proc.name
         print '---------------------------'
         print ''
-        proc.run(selections, variables)
+        proc.run(selections, variables, variables2D)
 
 #____________________________________________________________________________________________________
-def saveHistos(processes, selections, variables, output):
+def saveHistos(processes, selections, variables, variables2D, output):
 
     print ''
     print 'Saving histograms in', output.GetName(), 'file ...'
@@ -281,6 +309,10 @@ def saveHistos(processes, selections, variables, output):
             for var in variables:
                 output.cd()
                 proc.sv[sel][var].Write()
+            for var in variables2D:
+                output.cd()
+                proc.sv2d[sel][var].Write()
+
     print 'DONE'
     output.Close()
 
@@ -645,7 +677,72 @@ def drawMultiGraph(mg, name, lt, rt, pdir, ymin, ymax, log, bl = True):
     Tleft.Draw() 
     Tright.Draw() 
     canvas.Print('{}/{}.png'.format(pdir, name), 'png')
-    
+
+
+#___________________________________________________________________________
+def formatted(string):
+    string = string.replace("{", "")
+    string = string.replace("}", "")
+    string = string.replace(" ", "")
+    string = string.replace("=", "_")
+    string = string.replace("+", "_")
+    string = string.replace(")", "_")
+    string = string.replace("(", "_")
+    string = string.replace("#", "_")
+
+    string = string.replace("__", "_")
+    string = string.replace("___", "_")
+    string = string.replace("____", "_")
+    string = string.replace("_____", "_")
+    while string.startswith("_"):
+       string = string[1:]
+    while string.endswith("_"):
+       string = string[:-1]
+
+    finalstr = string
+    return finalstr
+
+#___________________________________________________________________________
+def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, delphesVersion, logZ, hfile):
+
+    print ''
+    print 'Preparing 2D plots ...'
+
+    myStyle()
+    gROOT.SetBatch(True)
+
+    intLumiab = intLumi/1e+06 
+
+    rt = "RECO: Delphes-{}".format(delphesVersion)
+    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
+
+    ff = "png"
+
+    logstr = ''
+    if logZ:
+       logstr = 'log'
+    else:
+       logstr = 'lin'
+
+    nsel = 0
+    for s in selections:
+        selstr = 'sel{}'.format(int(nsel))
+        nsel += 1
+        for v in variables2D.keys() :
+             i = 0
+
+             for p in processes:
+                 filename = '{}_{}_{}_{}'.format(p, v, selstr, logstr)
+                 filename = formatted(filename)
+                 hname = '{}_{}_{}'.format(p, selstr, v)
+                 h = hfile.Get(hname)
+                 hh = TH2D.Clone(h)
+                 hh.Scale(intLumi)
+                 draw2D(filename, lt, rt, ff, pdir, logZ, hh)
+                 
+    print 'DONE.'
+
+
 #___________________________________________________________________________
 def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, delphesVersion, log, stacksig, hfile):
     
@@ -687,7 +784,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
              filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
 
-             leg = TLegend(0.70,0.65,0.95,0.88)
+             leg = TLegend(0.60,0.65,0.90,0.88)
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
@@ -707,6 +804,41 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  i+=1
              drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
     print 'DONE.'
+
+#_____________________________________________________________________________________________________________
+def draw2D(name, leftText, rightText, format, directory, logZ, histo):
+
+    canvas = ROOT.TCanvas(name, name, 800, 800) 
+
+    canvas.SetRightMargin(0.18)
+    canvas.SetLeftMargin(0.22)
+    canvas.SetBottomMargin(0.18)
+    canvas.SetTopMargin(0.12)
+
+    
+    if logZ: 
+       canvas.SetLogz(1)
+
+    histo.SetContour(999)
+
+    histo.Draw('COLZ')
+
+
+    Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
+    Tleft.SetNDC(ROOT.kTRUE) 
+    Tleft.SetTextAlign(11);
+    Tleft.SetTextSize(0.035) 
+    Tleft.SetTextFont(132) 
+    
+    Tright = ROOT.TText(0.90, 0.92, rightText) ;
+    Tright.SetTextAlign(31);
+    Tright.SetNDC(ROOT.kTRUE) 
+    Tright.SetTextSize(0.035) 
+    Tright.SetTextFont(132) 
+
+    Tleft.Draw('same') 
+    Tright.Draw('same') 
+    printCanvas(canvas, name, format, directory) 
 
 #_____________________________________________________________________________________________________________
 def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY, stacksig, histos, colors):
@@ -799,10 +931,10 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     #hStack.SetMaximum(1.5*maxh) 
     
     if logY:
-        hStack.SetMaximum(100*maxh)
-        hStack.SetMinimum(0.00000001*maxh)
+        hStack.SetMaximum(100000*maxh)
+        hStack.SetMinimum(0.000001*maxh)
     else:
-        hStack.SetMaximum(1.7*maxh)
+        hStack.SetMaximum(2.0*maxh)
         hStack.SetMinimum(0.)
 
     if not stacksig:
@@ -825,44 +957,87 @@ def printCanvas(canvas, name, format, directory):
 
 #____________________________________________________
 def myStyle():
+    import ROOT
+
+    font = 132
     ROOT.gStyle.SetFrameBorderMode(0)
     ROOT.gStyle.SetCanvasBorderMode(0)
     ROOT.gStyle.SetPadBorderMode(0)
 
     ROOT.gStyle.SetFrameFillColor(0)
+    ROOT.gStyle.SetFrameFillStyle(0)
+
     ROOT.gStyle.SetPadColor(0)
     ROOT.gStyle.SetCanvasColor(0)
     ROOT.gStyle.SetTitleColor(1)
     ROOT.gStyle.SetStatColor(0)
 
-    # set the paper & margin sizes
-    ROOT.gStyle.SetPaperSize(20,26)
-    ROOT.gStyle.SetPadTopMargin(0.10)
-    ROOT.gStyle.SetPadRightMargin(0.03)
-    ROOT.gStyle.SetPadBottomMargin(0.13)
-    ROOT.gStyle.SetPadLeftMargin(0.125)
-    ROOT.gStyle.SetPadTickX(1)
-    ROOT.gStyle.SetPadTickY(1)
+    ROOT.gStyle.SetLegendBorderSize(0)
+    ROOT.gStyle.SetLegendFillColor(0)
+    ROOT.gStyle.SetLegendFont(font)
     
-    ROOT.gStyle.SetTextFont(42) #132
-    ROOT.gStyle.SetTextSize(0.09)
-    ROOT.gStyle.SetLabelFont(42,"xyz")
-    ROOT.gStyle.SetTitleFont(42,"xyz")
-    ROOT.gStyle.SetLabelSize(0.045,"xyz") #0.035
-    ROOT.gStyle.SetTitleSize(0.045,"xyz")
-    ROOT.gStyle.SetTitleOffset(1.15,"y")
+    # set the paper & margin sizes
+    '''ROOT.gPad.SetLeftMargin(0.22)
+    ROOT.gPad.SetRightMargin(0.10)
+    ROOT.gPad.SetBottomMargin(0.18)'''
+    #ROOT.gPad.SetLogy()
+    #ROOT.gPad.SetGridy()
+    ROOT.gStyle.SetOptStat(0000000)
+    ROOT.gStyle.SetTextFont(font)
+
+    ROOT.gStyle.SetTextFont(font)
+    ROOT.gStyle.SetTextSize(0.05)
+    ROOT.gStyle.SetLabelFont(font,"XYZ")
+    ROOT.gStyle.SetTitleFont(font,"XYZ")
+    ROOT.gStyle.SetLabelSize(0.05,"XYZ") #0.035
+    ROOT.gStyle.SetTitleSize(0.05,"XYZ")
+    
+    ROOT.gStyle.SetTitleOffset(1.25,"X")
+    ROOT.gStyle.SetTitleOffset(1.95,"Y")
+    ROOT.gStyle.SetLabelOffset(0.02,"XY")
     
     # use bold lines and markers
     ROOT.gStyle.SetMarkerStyle(8)
-    ROOT.gStyle.SetHistLineWidth(2)
+    ROOT.gStyle.SetHistLineWidth(3)
     ROOT.gStyle.SetLineWidth(1)
-    #ROOT.gStyle.SetLineStyleString(2,"[12 12]") // postscript dashes
+
+    ROOT.gStyle.SetNdivisions(505,"xy")
 
     # do not display any of the standard histogram decorations
-    ROOT.gStyle.SetOptTitle(1)
+    ROOT.gStyle.SetOptTitle(0)
     ROOT.gStyle.SetOptStat(0) #("m")
     ROOT.gStyle.SetOptFit(0)
     
     #ROOT.gStyle.SetPalette(1,0)
     ROOT.gStyle.cd()
     ROOT.gROOT.ForceStyle()
+
+#________________________________________________________________________________
+def set_palette(name='palette', ncontours=999):
+    """Set a color palette from a given RGB list
+    stops, red, green and blue should all be lists of the same length
+    see set_decent_colors for an example"""
+
+    if name == "gray" or name == "grayscale":
+        stops = [0.00, 0.34, 0.61, 0.84, 1.00]
+        red   = [1.00, 0.84, 0.61, 0.34, 0.00]
+        green = [1.00, 0.84, 0.61, 0.34, 0.00]
+        blue  = [1.00, 0.84, 0.61, 0.34, 0.00]
+    # elif name == "whatever":
+        # (define more palettes)
+    else:
+        # default palette, looks cool
+        stops = [0.00, 0.34, 0.61, 0.84, 1.00]
+        red   = [0.00, 0.00, 0.87, 1.00, 0.51]
+        green = [0.00, 0.81, 1.00, 0.20, 0.00]
+        blue  = [0.51, 1.00, 0.12, 0.00, 0.00]
+
+    s = array('d', stops)
+    r = array('d', red)
+    g = array('d', green)
+    b = array('d', blue)
+
+    npoints = len(s)
+    ROOT.TColor.CreateGradientColorTable(npoints, s, r, g, b, ncontours)
+    ROOT.gStyle.SetNumberContours(ncontours)
+
