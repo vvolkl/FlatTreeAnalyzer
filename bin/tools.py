@@ -98,7 +98,7 @@ class Process:
 
             # loop over events
             numberOfEntries = rt.GetEntries()
-            #numberOfEntries = 1000
+            #numberOfEntries = 100
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
                 if (entry+1)%500 == 0: 
@@ -143,7 +143,7 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, variables2D, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False):
+def producePlots(selections, groups, colors, variables, variables2D, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False, no_plots=False):
     
     analysisDir = formatted(analysisDir)
     name = formatted(name)
@@ -196,15 +196,16 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
     
     printYieldsFromHistos(processes, selections, variables, unc, lumi, hfile)
     if latex_table:
-      printYieldsFromHistosAsLatexTable(processes, selections, variables, unc, lumi, hfile)
+        printYieldsFromHistosAsLatexTable(processes, selections, variables, unc, lumi, hfile)
 
-    produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
-    produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, False, hfile)
-    produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, True, hfile)
-    produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)
+    if not no_plots:
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, True, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)
 
-    produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
-    produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)
 
     print '======================================================================================'
     print '======================================================================================'

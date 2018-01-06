@@ -4,6 +4,8 @@ from tools import producePlots, Process
 from pprint import pprint
 import ntpath
 import importlib
+import yaml
+
 #_____________________________________________________________________________
 def options():
     parser = optparse.OptionParser(description="analysis parser")
@@ -15,6 +17,7 @@ def options():
     parser.add_option('-p', '--param_file', dest='param_file', type=str, default='')
     parser.add_option('-m', '--multi_threading', dest='MT', default=False, action='store_true')
     parser.add_option('-l', '--latex_table', dest='latex_table', default=False, action='store_true')
+    parser.add_option('--no_plots', dest='no_plots', default=False, action='store_true')
 
     return parser.parse_args()
 
@@ -56,6 +59,9 @@ def main():
     #multi-threading
     MT = ops.MT
 
+
+    print treeDir
+
     # retrieve list of processes from heppy cfg
     processes = []
     with open(heppyCfg) as f:
@@ -70,10 +76,6 @@ def main():
     # prepare analysis dir
     os.system('mkdir -p {}'.format(analysisDir))
 
-
-    #print param.selections
-    
-
     ### produce process dictionnaries
     if not MT:
         for sh in param.selections.keys():
@@ -81,7 +83,7 @@ def main():
             block = collections.OrderedDict()
 
             formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block)
-            
+
         ### run analysis
             producePlots(param.selections[sh], 
                          block, 
@@ -95,20 +97,22 @@ def main():
                          param.runFull,
                          analysisDir,
                          MT,
-                         latex_table=ops.latex_table)
+                         latex_table=ops.latex_table,
+                         no_plots=ops.no_plots
+                         )
     else:
-        runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT)
+        runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT, ops)
 
 
 import multiprocessing as mp
 #_____________________________________________________________________________________________________
-def runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT):
+def runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT, ops):
     threads = []
     for sh in param.selections.keys():
 
         block = collections.OrderedDict()
         formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block)
-        thread = mp.Process(target=runMT_join,args=(block, param, sh,analysisDir, MT ))
+        thread = mp.Process(target=runMT_join,args=(block, param, sh,analysisDir, MT, ops ))
         thread.start()
         threads.append(thread)
     for proc in threads:
@@ -117,7 +121,7 @@ def runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT):
  
 
 #_____________________________________________________________________________________________________
-def runMT_join(block, param, sh,analysisDir, MT):
+def runMT_join(block, param, sh, analysisDir, MT, ops):
     print "START %s" % (sh)
     producePlots(param.selections[sh], 
                  block, 
@@ -130,14 +134,17 @@ def runMT_join(block, param, sh,analysisDir, MT):
                  param.delphesVersion, 
                  param.runFull,
                  analysisDir,
-                 MT)
+                 MT,
+                 latex_table=ops.latex_table,
+                 no_plots=ops.no_plots)
+
     print "END %s" % (sh)
 
 
 #_____________________________________________________________________________________________________
 def runMT_pool(args=('','','')):
     print "START %s" % (sh)
-    block, param, sh,analysisDir, MT=args
+    block, param, sh,analysisDir, MT, ops=args
     producePlots(param.selections[sh], 
                  block, 
                  param.colors, 
@@ -149,7 +156,9 @@ def runMT_pool(args=('','','')):
                  param.delphesVersion, 
                  param.runFull,
                  analysisDir,
-                 MT)
+                 MT,
+                 latex_table=ops.latex_table,
+                 no_plots=ops.no_plots)
     print "END %s" % (sh)
 
 #______________________________________________________________________________
@@ -174,6 +183,18 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
                  kf = procdict[pname]['kfactor']
                  matched_xsec = xsec*eff
                  tree = '{}/{}/{}'.format(os.path.abspath(treedir), pname, treepath)
+                 
+                 #read from heppy yaml file job efficiency       
+                 filestr = os.path.abspath(treedir) + '/' + pname + '/processing.yaml'
+                 corrFac = 1.
+                 with open(filestr, 'r') as stream:
+                     try:
+                        dico = yaml.load(stream)
+                        corrFac *= float(dico['processing']['nfiles'])/dico['processing']['ngoodfiles']                  
+                     except yaml.YAMLError as exc:
+                        print(exc)                 
+                 sumw *= corrFac
+                 nev *= corrFac    
                  blocklist.append(Process(pname,tree,nev,sumw,xsec,eff,kf))
      return blocklist
 
