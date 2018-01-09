@@ -92,7 +92,10 @@ class Process:
         t = rf.Get("events")
         for s in selections:
             # filter tree according to selection
-            nf = TFile("tmp%s%s.root"%(ch,name),"recreate")
+            
+            tmp_path = os.path.expandvars('/tmp/$USER')
+            tmp_file = "%s/tmp%s%s.root"%(tmp_path,ch,name)
+            nf = TFile(tmp_file,"recreate")
             rt = t.CopyTree(s)
             #rt = t
 
@@ -111,7 +114,7 @@ class Process:
                     self.sv[s][v].Fill(getattr(rt,dv[v]["name"]), weight)
                 for v in dv2d.keys():
                     self.sv2d[s][v].Fill(getattr(rt,dv2d[v]["namex"]), getattr(rt,dv2d[v]["namey"]), weight)
-            os.system('rm tmp%s%s.root'%(ch,name))
+            os.system('rm %s'%(tmp_file))
 
     #_____________________________________________________________________________________________________
     def getYields(self):
