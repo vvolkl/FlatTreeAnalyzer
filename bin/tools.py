@@ -7,7 +7,7 @@ import warnings
 from array import array
 
 debug = False
-debug = True
+#debug = True
 
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="creating converter.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Deleting canvas.*")
