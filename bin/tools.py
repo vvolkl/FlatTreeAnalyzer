@@ -6,6 +6,9 @@ from math import sqrt
 import warnings
 from array import array
 
+debug = False
+debug = True
+
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="creating converter.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Deleting canvas.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Replacing existing*")
@@ -96,12 +99,15 @@ class Process:
             tmp_path = os.path.expandvars('/tmp/$USER')
             tmp_file = "%s/tmp%s%s.root"%(tmp_path,ch,name)
             nf = TFile(tmp_file,"recreate")
-            rt = t.CopyTree(s)
-            #rt = t
+            
+            if not debug:    
+                rt = t.CopyTree(s)
+                numberOfEntries = rt.GetEntries()
+            else:
+                rt = t
+                numberOfEntries = 100
 
             # loop over events
-            numberOfEntries = rt.GetEntries()
-            #numberOfEntries = 100
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
                 if (entry+1)%500 == 0: 
