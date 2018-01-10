@@ -24,9 +24,7 @@ variables = {
 }
 
 colors = {}
-
-'''colors['m_{RSG} = 2 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 5 TeV'] = ROOT.kBlue'''
+colors['m_{RSG} = 5 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 10 TeV'] = ROOT.kBlue
 '''colors['m_{RSG} = 15 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 20 TeV'] = ROOT.kBlue
@@ -39,8 +37,7 @@ colors['tt'] = ROOT.kOrange
 colors['VV'] = ROOT.kRed
 
 signal_groups = collections.OrderedDict()
-'''signal_groups['m_{RSG} = 2 TeV']  = ['pp_RSGraviton_2TeV_ww']
-signal_groups['m_{RSG} = 5 TeV']  = ['pp_RSGraviton_5TeV_ww']'''
+signal_groups['m_{RSG} = 5 TeV']  = ['pp_RSGraviton_5TeV_ww']
 signal_groups['m_{RSG} = 10 TeV'] = ['pp_RSGraviton_10TeV_ww']
 '''signal_groups['m_{RSG} = 15 TeV'] = ['pp_RSGraviton_15TeV_ww']
 signal_groups['m_{RSG} = 20 TeV'] = ['pp_RSGraviton_20TeV_ww']
