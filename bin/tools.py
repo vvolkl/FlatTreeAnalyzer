@@ -99,7 +99,9 @@ class Process:
             
             if debug: 
                 numberOfEntries = 1000
-            
+     
+            formula = TTreeFormula("",s,t)
+       
             # loop over events
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
@@ -111,7 +113,6 @@ class Process:
                 weight = self.w * getattr(t,"weight")
                 
                 # apply selection
-                formula = TTreeFormula("",s,t)
                 result  = formula.EvalInstance() 
                 
                 # fill histos on selected events
