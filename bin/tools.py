@@ -93,6 +93,8 @@ class Process:
 
         rf = TFile(self.rt)
         t = rf.Get("events")
+        numberOfEntries = t.GetEntries()
+      
         for s in selections:
             
             if debug: 
