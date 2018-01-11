@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import division
 import ROOT, collections, os, sys
-from ROOT import TFile, TTree, gROOT, TH1D, TH2D, kRed, TLegend, THStack, TVector2,  TGraph, TMultiGraph
+from ROOT import TFile, TTree, TTreeFormula, gROOT, TH1D, TH2D, kRed, TLegend, THStack, TVector2,  TGraph, TMultiGraph
 from math import sqrt
 import warnings
 from array import array
@@ -94,19 +94,10 @@ class Process:
         rf = TFile(self.rt)
         t = rf.Get("events")
         for s in selections:
-            # filter tree according to selection
             
-            tmp_path = os.path.expandvars('/tmp/$USER')
-            tmp_file = "%s/tmp%s%s.root"%(tmp_path,ch,name)
-            nf = TFile(tmp_file,"recreate")
+            if debug: 
+                numberOfEntries = 1000
             
-            if not debug:    
-                rt = t.CopyTree(s)
-                numberOfEntries = rt.GetEntries()
-            else:
-                rt = t
-                numberOfEntries = 100
-
             # loop over events
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
@@ -114,13 +105,19 @@ class Process:
                     sys.stdout.write( '... %i events processed ...\r'%(entry+1))
                     sys.stdout.flush()
 
-                rt.GetEntry(entry)
-                weight = self.w * getattr(rt,"weight")
-                for v in dv.keys():
-                    self.sv[s][v].Fill(getattr(rt,dv[v]["name"]), weight)
-                for v in dv2d.keys():
-                    self.sv2d[s][v].Fill(getattr(rt,dv2d[v]["namex"]), getattr(rt,dv2d[v]["namey"]), weight)
-            os.system('rm %s'%(tmp_file))
+                t.GetEntry(entry)
+                weight = self.w * getattr(t,"weight")
+                
+                # apply selection
+                formula = TTreeFormula("",s,t)
+                result  = formula.EvalInstance() 
+                
+                # fill histos on selected events
+                if result > 0.:
+                    for v in dv.keys():
+                        self.sv[s][v].Fill(getattr(t,dv[v]["name"]), weight)
+                    for v in dv2d.keys():
+                        self.sv2d[s][v].Fill(getattr(t,dv2d[v]["namex"]), getattr(t,dv2d[v]["namey"]), weight)
 
     #_____________________________________________________________________________________________________
     def getYields(self):
@@ -277,7 +274,7 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
 
     #SOLUTION 1
         threads.append((proc, selections, variables, variables2D, name))
-    pool = mp.Pool(16)
+    pool = mp.Pool(8)
     histos_list = pool.map(runMT_pool,threads) 
 
 
