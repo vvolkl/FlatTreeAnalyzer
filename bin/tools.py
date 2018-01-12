@@ -99,7 +99,7 @@ class Process:
         for s in selections:
             
             if debug: 
-                numberOfEntries = 1000
+                numberOfEntries = 10000
      
             formula = TTreeFormula("",s,t)
        
@@ -210,13 +210,16 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
         printYieldsFromHistosAsLatexTable(processes, selections, variables, unc, lumi, hfile)
 
     if not no_plots:
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
+        '''produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, True, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)'''
 
-        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
-        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)
+        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, False, hfile)
+        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, True, hfile)
+
+        '''produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)'''
 
     print '======================================================================================'
     print '======================================================================================'
@@ -759,7 +762,7 @@ def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, de
 def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, delphesVersion, log, stacksig, hfile):
     
     print ''
-    print 'Preparing distribution plots ...'
+    print 'Preparing stacked plots ...'
 
     myStyle()
     gROOT.SetBatch(True)
@@ -816,6 +819,62 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  i+=1
              drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
     print 'DONE.'
+#___________________________________________________________________________
+def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pdir, delphesVersion, log, hfile):
+    
+    print ''
+    print 'Preparing normalized plots ...'
+
+    myStyle()
+    gROOT.SetBatch(True)
+
+    intLumiab = intLumi/1e+06 
+
+    yl = "Normalized Event Rate"
+    rt = "RECO: Delphes-{}".format(delphesVersion)
+    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
+
+    ff = "png"
+
+    logstr = ''
+    if log:
+       logstr = 'log'
+    else:
+       logstr = 'lin'
+    
+    stackstr = ''
+
+    hfile.cd()
+
+    nsel = 0
+    for s in selections:
+        selstr = 'sel{}'.format(int(nsel))
+        nsel += 1
+        for v in variables.keys() :
+             histos = []
+             i = 0
+
+             filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
+
+             leg = TLegend(0.60,0.65,0.90,0.88)
+             leg.SetFillColor(0)
+             leg.SetFillStyle(0)
+             leg.SetLineColor(0)
+
+             cols = []
+             for p in processes:
+                 hname = '{}_{}_{}'.format(p, selstr, v)
+                 h = hfile.Get(hname)
+                 hh = TH1D.Clone(h)
+                 if hh.Integral(0, hh.GetNbinsX()+1) > 0:
+                     hh.Scale(1./hh.Integral(0, hh.GetNbinsX()+1))
+                 histos.append(hh)
+                 cols.append(colors[p])
+                 leg.AddEntry(hh,p,"l")
+                 i+=1
+             drawNormalized(filename, yl, leg, lt, rt, ff, pdir, log, histos, cols)
+
+    print 'DONE.'
 
 #_____________________________________________________________________________________________________________
 def draw2D(name, leftText, rightText, format, directory, logZ, histo):
@@ -851,6 +910,94 @@ def draw2D(name, leftText, rightText, format, directory, logZ, histo):
     Tleft.Draw('same') 
     Tright.Draw('same') 
     printCanvas(canvas, name, format, directory) 
+
+#_____________________________________________________________________________________________________________
+def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory, logY, histos, colors):
+
+    canvas = ROOT.TCanvas(name, name, 800, 600) 
+    
+    font = 132
+    
+    ROOT.gPad.SetLeftMargin(0.20) ; 
+    ROOT.gPad.SetRightMargin(0.10) ; 
+    ROOT.gPad.SetBottomMargin(0.20) ; 
+    ROOT.gStyle.SetOptStat(0000000);
+    ROOT.gStyle.SetTextFont(font);
+    
+    Tleft = ROOT.TLatex(0.23, 0.82, leftText) 
+    Tleft.SetNDC(ROOT.kTRUE) 
+    Tleft.SetTextSize(0.044) 
+    Tleft.SetTextFont(font) 
+    
+    Tright = ROOT.TText(0.90, 0.92, rightText) ;
+    Tright.SetTextAlign(31);
+    Tright.SetNDC(ROOT.kTRUE) 
+    Tright.SetTextSize(0.044) 
+    Tright.SetTextFont(font) 
+    
+    maxh = -999.
+    i = 0
+    imax = -999
+    for h in histos:
+        if h.GetMaximum() > maxh:
+            maxh = h.GetMaximum()
+            imax = i
+        i += 1
+
+    if logY:
+       canvas.SetLogy(1)
+
+    
+    if maxh > 0:
+        h = histos[imax]
+
+        h.SetLineWidth(4)
+        h.SetLineColor(colors[imax])
+
+        h.GetXaxis().SetTitleFont(font)
+        h.GetXaxis().SetLabelFont(font)
+        h.GetXaxis().SetTitle(histos[imax].GetXaxis().GetTitle())
+        h.GetYaxis().SetTitle(ylabel)
+        h.GetYaxis().SetTitleFont(font)
+        h.GetYaxis().SetLabelFont(font)
+        h.GetXaxis().SetTitleOffset(1.5)
+        h.GetYaxis().SetTitleOffset(1.6)
+        h.GetXaxis().SetLabelOffset(0.02)
+        h.GetYaxis().SetLabelOffset(0.02)
+        h.GetXaxis().SetTitleSize(0.06)
+        h.GetYaxis().SetTitleSize(0.06)
+        h.GetXaxis().SetLabelSize(0.06)
+        h.GetYaxis().SetLabelSize(0.06)
+        h.GetXaxis().SetNdivisions(505)
+        h.GetYaxis().SetNdivisions(505)
+        h.SetTitle("") 
+        h.Draw("hist") 
+
+        if logY:
+            h.SetMaximum(100*maxh)
+            #h.SetMinimum(0.1*maxh)
+        else:
+            h.SetMaximum(2*maxh)
+            h.SetMinimum(0.)
+
+        i = 0
+        for h in histos:
+           
+           if i == imax: 
+               i += 1
+               continue
+               
+           h.SetLineWidth(4)
+           h.SetLineColor(colors[i])
+           h.Draw('same hist')
+           i += 1
+
+        legend.SetTextFont(font) 
+        legend.Draw() 
+        #Tleft.Draw() 
+        Tright.Draw() 
+        name = name + '_norm'
+        printCanvas(canvas, name, format, directory) 
 
 #_____________________________________________________________________________________________________________
 def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY, stacksig, histos, colors):
