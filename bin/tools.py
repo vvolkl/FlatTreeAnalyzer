@@ -210,16 +210,16 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
         printYieldsFromHistosAsLatexTable(processes, selections, variables, unc, lumi, hfile)
 
     if not no_plots:
-        '''produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, True, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)'''
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)
 
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, False, hfile)
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, True, hfile)
 
-        '''produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
-        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)'''
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)
 
     print '======================================================================================'
     print '======================================================================================'
