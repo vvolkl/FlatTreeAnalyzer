@@ -24,6 +24,7 @@ def options():
     parser.add_option('-m', '--multi_threading', dest='MT', default=False, action='store_true')
     parser.add_option('-l', '--latex_table', dest='latex_table', default=False, action='store_true')
     parser.add_option('--no_plots', dest='no_plots', default=False, action='store_true')
+    parser.add_option('--nev', dest='nevents', type=int, default='-1')
 
     return parser.parse_args()
 
@@ -64,9 +65,6 @@ def main():
 
     #multi-threading
     MT = ops.MT
-
-
-    print treeDir
     
     # retrieve list of processes from heppy cfg
     processes = []
@@ -104,7 +102,8 @@ def main():
                          analysisDir,
                          MT,
                          latex_table=ops.latex_table,
-                         no_plots=ops.no_plots
+                         no_plots=ops.no_plots,
+                         nevents=ops.nevents
                          )
     else:
         runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT, ops)
@@ -124,8 +123,6 @@ def runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT, ops):
     for proc in threads:
         proc.join()
 
- 
-
 #_____________________________________________________________________________________________________
 def runMT_join(block, param, sh, analysisDir, MT, ops):
     print "START %s" % (sh)
@@ -142,13 +139,15 @@ def runMT_join(block, param, sh, analysisDir, MT, ops):
                  analysisDir,
                  MT,
                  latex_table=ops.latex_table,
-                 no_plots=ops.no_plots)
-
+                 no_plots=ops.no_plots,
+                 nevents=ops.nevents
+                 )
+    
     print "END %s" % (sh)
 
 
 #_____________________________________________________________________________________________________
-def runMT_pool(args=('','','')):
+def runMT_pool(args=('','','','','','')):
     print "START %s" % (sh)
     block, param, sh,analysisDir, MT, ops=args
     producePlots(param.selections[sh], 
@@ -164,7 +163,9 @@ def runMT_pool(args=('','','')):
                  analysisDir,
                  MT,
                  latex_table=ops.latex_table,
-                 no_plots=ops.no_plots)
+                 no_plots=ops.no_plots,
+                 nevents=ops.nevents
+)
     print "END %s" % (sh)
 
 #______________________________________________________________________________

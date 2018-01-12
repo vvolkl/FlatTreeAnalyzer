@@ -6,9 +6,6 @@ from math import sqrt
 import warnings
 from array import array
 
-debug = False
-#debug = True
-
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="creating converter.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Deleting canvas.*")
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="Replacing existing*")
@@ -43,7 +40,6 @@ class Process:
         self.w = kfactor*xsec*effmatch/nevents #weight events /pb
         if sumw<nevents:
             self.w = kfactor*xsec*effmatch/sumw
-            print 'sample NLO!!!  ',name
         self.sv = collections.OrderedDict()
         self.sv2d = collections.OrderedDict()
 
@@ -67,7 +63,7 @@ class Process:
         
 
     #_____________________________________________________________________________________________________
-    def run(self, selections, dv, dv2d, ch='', name=''):
+    def run(self, selections, dv, dv2d, ch='', name='', nevents = -1):
 
         # initialize dictionary selection: list of histograms
         if name=='':
@@ -94,15 +90,16 @@ class Process:
 
         rf = TFile(self.rt)
         t = rf.Get("events")
-        numberOfEntries = t.GetEntries()
-      
+	
+	if nevents == -1:
+	    numberOfEntries = t.GetEntries()
+	else:
+	    numberOfEntries = nevents
+
         for s in selections:
             
-            if debug: 
-                numberOfEntries = 10000
-     
             formula = TTreeFormula("",s,t)
-       
+
             # loop over events
             print 'number of events:', numberOfEntries
             for entry in xrange(numberOfEntries) :
@@ -153,7 +150,7 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, variables2D, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False, no_plots=False):
+def producePlots(selections, groups, colors, variables, variables2D, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False, no_plots=False, nevents=-1):
     
     analysisDir = formatted(analysisDir)
     name = formatted(name)
@@ -181,8 +178,8 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
     # if analysis has not been ran before
     if run_full:
 
-        if MT:  runAnalysisMT(proclist, selections, variables, variables2D, groups, name)
-        else:   runAnalysis(proclist, selections, variables, variables2D)
+        if MT:  runAnalysisMT(proclist, selections, variables, variables2D, groups, name, nevents)
+        else:   runAnalysis(proclist, selections, variables, variables2D, nevents)
 
        ### prepare outputs
         os.system("mkdir -p {}".format(pdir))
@@ -190,7 +187,6 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
 
         processes = []
         for label, procs in groups.items():
-            print label, procs
             mainproc = procs[0]
             mainproc.setName(label)
             if len(procs) > 0:
@@ -233,23 +229,22 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
 import multiprocessing as mp
 
 #_____________________________________________________________________________________________________
-def runMT_pool(args=('','','','','')):
-    proc,selections,variables,variables2D,sh=args
+def runMT_pool(args=('','','','','','')):
+    proc,selections,variables,variables2D,sh,nev=args
     print "START %s" % (proc.name)
-    proc.run(selections, variables, variables2D, proc.name, sh)
+    proc.run(selections, variables, variables2D, proc.name, sh, nev)
     return proc
     print "END %s" % (proc.name)
 
-
 #_____________________________________________________________________________________________________
-def runMT_join(proc,selections, variables, variables2D):
-    print "START %s" % (proc.name)
-    proc.run(selections, variables, variables2D, proc.name)
+def runMT_join(proc,selections, variables, variables2D, nevents):
+    print "START %s" % (proc.name), nevents
+    proc.run(selections, variables, variables2D, proc.name, nevents)
     print "END %s" % (proc.name)
 
 
 #_____________________________________________________________________________________________________
-def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, name):
+def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, name, nev):
     print 'NUMBER OF CORES    ',mp.cpu_count()
     print ''
     print 'Start looping on process trees:'
@@ -281,7 +276,8 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
 
 
     #SOLUTION 1
-        threads.append((proc, selections, variables, variables2D, name))
+        
+	threads.append((proc, selections, variables, variables2D, name, nev))
     pool = mp.Pool(8)
     histos_list = pool.map(runMT_pool,threads) 
 
@@ -302,7 +298,7 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
     #    proc.join()
 
 #_____________________________________________________________________________________________________
-def runAnalysis(listOfProcesses, selections, variables, variables2D):
+def runAnalysis(listOfProcesses, selections, variables, variables2D, nevents):
     print ''
     print 'Start looping on process trees:'
     print ''
@@ -312,7 +308,7 @@ def runAnalysis(listOfProcesses, selections, variables, variables2D):
         print proc.name
         print '---------------------------'
         print ''
-        proc.run(selections, variables, variables2D)
+        proc.run(selections, variables, variables2D, nevents)
 
 #____________________________________________________________________________________________________
 def saveHistos(processes, selections, variables, variables2D, output):
