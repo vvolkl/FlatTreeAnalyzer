@@ -43,6 +43,7 @@ class Process:
         self.w = kfactor*xsec*effmatch/nevents #weight events /pb
         if sumw<nevents:
             self.w = kfactor*xsec*effmatch/sumw
+            print 'sample NLO!!!  ',name
         self.sv = collections.OrderedDict()
         self.sv2d = collections.OrderedDict()
 
@@ -189,6 +190,7 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
 
         processes = []
         for label, procs in groups.items():
+            print label, procs
             mainproc = procs[0]
             mainproc.setName(label)
             if len(procs) > 0:

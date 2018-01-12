@@ -26,12 +26,12 @@ variables = {
 colors = {}
 colors['m_{RSG} = 5 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 10 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 15 TeV'] = ROOT.kBlue
+'''colors['m_{RSG} = 15 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 20 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 25 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 30 TeV'] = ROOT.kBlue
 colors['m_{RSG} = 35 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 40 TeV'] = ROOT.kBlue
+colors['m_{RSG} = 40 TeV'] = ROOT.kBlue'''
 colors['QCD'] = ROOT.kYellow
 colors['tt'] = ROOT.kOrange
 colors['VV'] = ROOT.kRed
@@ -39,12 +39,12 @@ colors['VV'] = ROOT.kRed
 signal_groups = collections.OrderedDict()
 signal_groups['m_{RSG} = 5 TeV']  = ['pp_RSGraviton_5TeV_ww']
 signal_groups['m_{RSG} = 10 TeV'] = ['pp_RSGraviton_10TeV_ww']
-signal_groups['m_{RSG} = 15 TeV'] = ['pp_RSGraviton_15TeV_ww']
+'''signal_groups['m_{RSG} = 15 TeV'] = ['pp_RSGraviton_15TeV_ww']
 signal_groups['m_{RSG} = 20 TeV'] = ['pp_RSGraviton_20TeV_ww']
 signal_groups['m_{RSG} = 25 TeV'] = ['pp_RSGraviton_25TeV_ww']
 signal_groups['m_{RSG} = 30 TeV'] = ['pp_RSGraviton_30TeV_ww']
 signal_groups['m_{RSG} = 35 TeV'] = ['pp_RSGraviton_35TeV_ww']
-signal_groups['m_{RSG} = 40 TeV'] = ['pp_RSGraviton_40TeV_ww']
+signal_groups['m_{RSG} = 40 TeV'] = ['pp_RSGraviton_40TeV_ww']'''
 
 background_groups = collections.OrderedDict()
 background_groups['VV']  = [

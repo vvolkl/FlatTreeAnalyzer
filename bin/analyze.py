@@ -6,6 +6,12 @@ import ntpath
 import importlib
 import yaml
 
+#__________________________________________________________
+def file_exist(myfile):
+    import os.path
+    if os.path.isfile(myfile): return True
+    else: return False
+
 #_____________________________________________________________________________
 def options():
     parser = optparse.OptionParser(description="analysis parser")
@@ -61,7 +67,7 @@ def main():
 
 
     print treeDir
-
+    
     # retrieve list of processes from heppy cfg
     processes = []
     with open(heppyCfg) as f:
@@ -187,10 +193,19 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
                  #read from heppy yaml file job efficiency       
                  filestr = os.path.abspath(treedir) + '/' + pname + '/processing.yaml'
                  corrFac = 1.
+
+                 if not file_exist(filestr):
+                     blocklist.append(Process(pname,tree,nev,sumw,xsec,eff,kf))
+                     continue
+
                  with open(filestr, 'r') as stream:
                      try:
                         dico = yaml.load(stream)
-                        corrFac *= float(dico['processing']['nfiles'])/dico['processing']['ngoodfiles']                  
+                        try:
+                            dico['processing']
+                            corrFac *= float(dico['processing']['nfiles'])/dico['processing']['ngoodfiles']
+                        except TypeError, e:
+                            print 'I got a  TypeError - reason "%s"' % str(e)
                      except yaml.YAMLError as exc:
                         print(exc)                 
                  sumw *= corrFac
