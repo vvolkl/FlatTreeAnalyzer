@@ -236,12 +236,6 @@ def runMT_pool(args=('','','','','','')):
     return proc
     print "END %s" % (proc.name)
 
-#_____________________________________________________________________________________________________
-def runMT_join(proc,selections, variables, variables2D, nevents):
-    print "START %s" % (proc.name), nevents
-    proc.run(selections, variables, variables2D, name=proc.name, nevents=nevents)
-    print "END %s" % (proc.name)
-
 
 #_____________________________________________________________________________________________________
 def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, name, nev):
@@ -289,13 +283,6 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
                 if p.name==h.name:
                     toadd.append(h)
         groups[label]=toadd
-                    
-    #SOLUTION 2
-    #    thread = mp.Process(target=runMT_join,args=(proc, selections, variables,))
-    #    thread.start()
-    #    threads.append(thread)
-    #for proc in threads:
-    #    proc.join()
 
 #_____________________________________________________________________________________________________
 def runAnalysis(listOfProcesses, selections, variables, variables2D, nevents):
@@ -1025,6 +1012,12 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     iterh = iter(histos)
     next(iterh)
     
+    if sumhistos.GetNbinsX()*sumhistos.GetBinWidth(1)>1000:
+        bwidth=int(sumhistos.GetBinWidth(1))
+        ylabel+='/%i[GeV]'%bwidth
+
+
+
     for h in iterh:
       sumhistos.Add(h)
 
