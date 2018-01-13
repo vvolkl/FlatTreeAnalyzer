@@ -63,8 +63,7 @@ class Process:
         
 
     #_____________________________________________________________________________________________________
-    def run(self, selections, dv, dv2d, ch='', name='', nevents = -1):
-
+    def run(self, selections, dv, dv2d, ch='', name='', nevents=-1):
         # initialize dictionary selection: list of histograms
         if name=='':
             name = self.name
@@ -90,11 +89,12 @@ class Process:
 
         rf = TFile(self.rt)
         t = rf.Get("events")
-	
 	if nevents == -1:
 	    numberOfEntries = t.GetEntries()
+            print 'running over the full entries  %i'%numberOfEntries
 	else:
 	    numberOfEntries = nevents
+            print 'running over a subset of entries  %i'%numberOfEntries
 
         for s in selections:
             
@@ -236,12 +236,6 @@ def runMT_pool(args=('','','','','','')):
     return proc
     print "END %s" % (proc.name)
 
-#_____________________________________________________________________________________________________
-def runMT_join(proc,selections, variables, variables2D, nevents):
-    print "START %s" % (proc.name), nevents
-    proc.run(selections, variables, variables2D, proc.name, nevents)
-    print "END %s" % (proc.name)
-
 
 #_____________________________________________________________________________________________________
 def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, name, nev):
@@ -289,13 +283,6 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
                 if p.name==h.name:
                     toadd.append(h)
         groups[label]=toadd
-                    
-    #SOLUTION 2
-    #    thread = mp.Process(target=runMT_join,args=(proc, selections, variables,))
-    #    thread.start()
-    #    threads.append(thread)
-    #for proc in threads:
-    #    proc.join()
 
 #_____________________________________________________________________________________________________
 def runAnalysis(listOfProcesses, selections, variables, variables2D, nevents):
@@ -308,7 +295,8 @@ def runAnalysis(listOfProcesses, selections, variables, variables2D, nevents):
         print proc.name
         print '---------------------------'
         print ''
-        proc.run(selections, variables, variables2D, nevents)
+        proc.run(selections, variables, variables2D, nevents=nevents)
+
 
 #____________________________________________________________________________________________________
 def saveHistos(processes, selections, variables, variables2D, output):
@@ -850,8 +838,8 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
              histos = []
              i = 0
 
-             filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
-
+             filename = '{}_{}_{}'.format(v, selstr, logstr)
+             
              leg = TLegend(0.60,0.65,0.90,0.88)
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
@@ -1024,6 +1012,12 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     iterh = iter(histos)
     next(iterh)
     
+    if sumhistos.GetNbinsX()*sumhistos.GetBinWidth(1)>1000:
+        bwidth=int(sumhistos.GetBinWidth(1))
+        ylabel+='/%i[GeV]'%bwidth
+
+
+
     for h in iterh:
       sumhistos.Add(h)
 
