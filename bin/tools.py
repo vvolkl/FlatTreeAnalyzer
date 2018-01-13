@@ -851,8 +851,8 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
              histos = []
              i = 0
 
-             filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
-
+             filename = '{}_{}_{}'.format(v, selstr, logstr)
+             
              leg = TLegend(0.60,0.65,0.90,0.88)
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
