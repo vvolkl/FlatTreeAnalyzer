@@ -63,8 +63,7 @@ class Process:
         
 
     #_____________________________________________________________________________________________________
-    def run(self, selections, dv, dv2d, ch='', name='', nevents = -1):
-
+    def run(self, selections, dv, dv2d, ch='', name='', nevents=-1):
         # initialize dictionary selection: list of histograms
         if name=='':
             name = self.name
@@ -90,11 +89,12 @@ class Process:
 
         rf = TFile(self.rt)
         t = rf.Get("events")
-	
 	if nevents == -1:
 	    numberOfEntries = t.GetEntries()
+            print 'running over the full entries  %i'%numberOfEntries
 	else:
 	    numberOfEntries = nevents
+            print 'running over a subset of entries  %i'%numberOfEntries
 
         for s in selections:
             
@@ -239,7 +239,7 @@ def runMT_pool(args=('','','','','','')):
 #_____________________________________________________________________________________________________
 def runMT_join(proc,selections, variables, variables2D, nevents):
     print "START %s" % (proc.name), nevents
-    proc.run(selections, variables, variables2D, proc.name, nevents)
+    proc.run(selections, variables, variables2D, name=proc.name, nevents=nevents)
     print "END %s" % (proc.name)
 
 
@@ -308,7 +308,8 @@ def runAnalysis(listOfProcesses, selections, variables, variables2D, nevents):
         print proc.name
         print '---------------------------'
         print ''
-        proc.run(selections, variables, variables2D, nevents)
+        proc.run(selections, variables, variables2D, nevents=nevents)
+
 
 #____________________________________________________________________________________________________
 def saveHistos(processes, selections, variables, variables2D, output):
