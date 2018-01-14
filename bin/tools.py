@@ -116,7 +116,12 @@ class Process:
                 # fill histos on selected events
                 if result > 0.:
                     for v in dv.keys():
-                        self.sv[s][v].Fill(getattr(t,dv[v]["name"]), weight)
+                        divide=1
+                        try:
+                            divide=dv[v]["divide"]
+                        except KeyError, e:
+                            divide=1
+                        self.sv[s][v].Fill(getattr(t,dv[v]["name"])/divide, weight)
                     for v in dv2d.keys():
                         self.sv2d[s][v].Fill(getattr(t,dv2d[v]["namex"]), getattr(t,dv2d[v]["namey"]), weight)
 
@@ -1012,11 +1017,16 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     iterh = iter(histos)
     next(iterh)
     
-    if sumhistos.GetNbinsX()*sumhistos.GetBinWidth(1)>1000:
+    if 'GeV' in str(histos[1].GetXaxis().GetTitle()):
         bwidth=int(sumhistos.GetBinWidth(1))
         ylabel+='/%i[GeV]'%bwidth
 
+    elif 'TeV' in str(histos[1].GetXaxis().GetTitle()):
+        bwidth=sumhistos.GetBinWidth(1)
+        ylabel+='/%.1f[TeV]'%bwidth
 
+  #  if sumhistos.GetNbinsX()*sumhistos.GetBinWidth(1)>10000:
+        
 
     for h in iterh:
       sumhistos.Add(h)
