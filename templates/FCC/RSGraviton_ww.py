@@ -22,35 +22,36 @@ variables = {
         'rapiditySeparation':{'name':'rapiditySeparation_trk02','title':'Rapidity Separation','bin':50,'xmin':0.0,'xmax':10.0},
         'transverseMomentumAsymmetry':{'name':'transverseMomentumAsymmetry_trk02','title':'Transverse Momentum Asymmetry','bin':50,'xmin':0.0,'xmax':1.0},
 
-        'Mj1j2_trk02' :{'name':'Mj1j2_trk02','title':'m_{Z\'} [TeV] (trk02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
-        'Mj1j2_trk02_Corr' :{'name':'Mj1j2_trk02_Corr','title':'m_{Z\'} [TeV] (trk02 cor)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_trk02' :{'name':'Mj1j2_trk02','title':'m_{Z\'} [TeV] (trk02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_trk02_Corr' :{'name':'Mj1j2_trk02_Corr','title':'m_{Z\'} [TeV] (trk02 cor)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
 
-        'Mj1j2_pf02' :{'name':'Mj1j2_pf02','title':'m_{Z\'} [TeV] (pf02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_pf02' :{'name':'Mj1j2_pf02','title':'m_{Z\'} [TeV] (pf02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
 
-        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Z\'} [TeV] (pf04)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Z\'} [TeV] (pf04)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
 
-        'Mj1j2_pf08' :{'name':'Mj1j2_pf08','title':'m_{Z\'} [TeV] (pf08)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+        'Mj1j2_pf08' :{'name':'Mj1j2_pf08','title':'m_{Z\'} [TeV] (pf08)','bin':225,'xmin':5.0,'xmax':50.0, 'divide':1000},
 
-        'Jet1_Flow15':{'name':'Jet1_Flow15','title':'Flow_{1,5} Jet_1','bin':50,'xmin':0.0,'xmax':1.0},
-        'Jet2_Flow15':{'name':'Jet2_Flow15','title':'Flow_{1,5} Jet_2','bin':50,'xmin':0.0,'xmax':1.0},
-        'Jet1_Flow25':{'name':'Jet1_Flow25','title':'Flow_{2,5} Jet_1','bin':50,'xmin':0.0,'xmax':1.0},
-        'Jet2_Flow25':{'name':'Jet2_Flow25','title':'Flow_{2,5} Jet_2','bin':50,'xmin':0.0,'xmax':1.0},
+        'Jet1_Flow15':{'name':'Jet1_Flow15','title':'Flow_{1,5} Jet_1','bin':200,'xmin':0.0,'xmax':1.0},
+        'Jet2_Flow15':{'name':'Jet2_Flow15','title':'Flow_{1,5} Jet_2','bin':200,'xmin':0.0,'xmax':1.0},
+        'Jet1_Flow25':{'name':'Jet1_Flow25','title':'Flow_{2,5} Jet_1','bin':200,'xmin':0.0,'xmax':1.0},
+        'Jet2_Flow25':{'name':'Jet2_Flow25','title':'Flow_{2,5} Jet_2','bin':200,'xmin':0.0,'xmax':1.0},
+        'BDTvariable_qcd' :{'name':'BDTvariable_qcd','title':'QCD BDT score','bin':100,'xmin':-0.5,'xmax':0.5},
 }
 
 variables2D = {}
 
 
 colors = {}
-colors['m_{RSG} = 10 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 15 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 20 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 25 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 30 TeV'] = ROOT.kBlue
-colors['m_{RSG} = 35 TeV'] = ROOT.kBlue
-colors['QCD'] = ROOT.kGreen
-colors['tt'] = ROOT.kRed
-colors['vv'] = ROOT.kOrange
-colors['vj'] = ROOT.kBlack
+colors['m_{RSG} = 10 TeV'] = ROOT.kRed
+colors['m_{RSG} = 15 TeV'] = ROOT.kRed
+colors['m_{RSG} = 20 TeV'] = ROOT.kRed
+colors['m_{RSG} = 25 TeV'] = ROOT.kRed
+colors['m_{RSG} = 30 TeV'] = ROOT.kRed
+colors['m_{RSG} = 35 TeV'] = ROOT.kRed
+colors['QCD'] = ROOT.kBlue+1
+colors['tt'] = ROOT.kOrange-2
+colors['vv'] = ROOT.kGreen+2
+colors['vj'] = ROOT.kMagenta+2
 
 signal_groups = collections.OrderedDict()
 signal_groups['m_{RSG} = 10 TeV'] = ['pp_RSGraviton_10TeV_ww']
@@ -84,36 +85,50 @@ uncertainties.append([0.02, 0.10])
 # the first time needs to be set to True
 runFull = True
 
+#####################
+# base pre-selections
+#####################
+selbase = 'Jet1_trk02_SD_Corr_pt > 3000. && Jet2_trk02_SD_Corr_pt > 3000. && abs(Jet1_trk02_SD_Corr_eta) < 3.&& abs(Jet1_trk02_SD_Corr_eta) < 3.'
 
-selbase = 'Jet1_pt > 2000. && abs(Jet1_eta) < 2.4 && abs(Jet2_eta) < 2.4 && Jet1_tau21 < 0.6 && softDroppedJet1_m > 50 && softDroppedJet1_m < 100 && Jet1_tau21 > 0 && Jet1_tau32 > 0 && Jet2_tau21 > 0 && Jet2_tau32 > 0'
-sel1=selbase + ' && nelectrons == 0 && nmuons == 0 && Jet2_pt > 2000. && Jet2_tau21 < 0.6 && softDroppedJet2_m > 50 && softDroppedJet2_m < 100 && Jet1_Flow15 > 0.8 && Jet2_Flow15 > 0.8 && Jet1_Flow25 < 0.1 && Jet2_Flow25 < 0.1'
-sel2=selbase=' && (nelectrons > 0 || nmuons > 0) && Jet1_Flow15 > 0.6'
-
-
-
-# base pre-#selections
-#selbase = 'Jet1_pt > 2800. && Jet2_pt > 2800. && abs(Jet1_eta) < 3. && abs(Jet2_eta) < 3. && BDTvariable_qcd > 0.2'
-selbase = 'Jet1_trk02_SD_Corr_pt > 3000. && Jet2_trk02_SD_Corr_pt > 3000. && abs(Jet1_trk02_SD_Corr_eta) < 3.&& abs(Jet1_trk02_SD_Corr_eta) < 3.&&Jet1_trk02_tau32>0.&& Jet2_trk02_tau32>0. && Jet1_trk02_tau21>0.&& Jet2_trk02_tau21>0.'
+#####################
+# CUT base selection
+#####################
 sel1 = selbase + '&& Jet1_trk02_SD_Corr_m > 50.&& Jet1_trk02_SD_Corr_m < 100. && Jet2_trk02_SD_Corr_m > 50.&& Jet2_trk02_SD_Corr_m < 100. && Jet1_trk02_tau21 <0.6 && Jet2_trk02_tau21 <0.6'
 sel2 = sel1 +    '&& Jet1_Flow15 > 0.85 && Jet2_Flow15 > 0.85 && Jet1_Flow25 < 0.05 && Jet2_Flow25 < 0.05'
 
-# add mass-dependent list of event #selections here if needed...
+#####################
+# MVA selection
+#####################
+#sel1 = selbase + ' && BDTvariable_qcd > 0.25'
 
 selections = collections.OrderedDict()
 selections['m_{RSG} = 10 TeV'] = []
-#selections['m_{RSG} = 10 TeV'].append(selbase)
-#selections['m_{RSG} = 10 TeV'].append(sel1)
+selections['m_{RSG} = 10 TeV'].append(selbase)
+selections['m_{RSG} = 10 TeV'].append(sel1)
 selections['m_{RSG} = 10 TeV'].append(sel2)
 
-selections['m_{RSG} = 15 TeV'] = []
-selections['m_{RSG} = 15 TeV'].append(sel2)
-
-selections['m_{RSG} = 20 TeV'] = []
-selections['m_{RSG} = 20 TeV'].append(sel2)
-
-selections['m_{RSG} = 25 TeV'] = []
-selections['m_{RSG} = 25 TeV'].append(sel2)
-
-selections['m_{RSG} = 30 TeV'] = []
-selections['m_{RSG} = 30 TeV'].append(sel2)
+#selections['m_{RSG} = 15 TeV'] = []
+#selections['m_{RSG} = 15 TeV'].append(selbase)
+#selections['m_{RSG} = 15 TeV'].append(sel1)
+##selections['m_{RSG} = 15 TeV'].append(sel2)
+#
+#selections['m_{RSG} = 20 TeV'] = []
+#selections['m_{RSG} = 20 TeV'].append(selbase)
+#selections['m_{RSG} = 20 TeV'].append(sel1)
+##selections['m_{RSG} = 20 TeV'].append(sel2)
+#
+#selections['m_{RSG} = 25 TeV'] = []
+#selections['m_{RSG} = 25 TeV'].append(selbase)
+#selections['m_{RSG} = 25 TeV'].append(sel1)
+##selections['m_{RSG} = 25 TeV'].append(sel2)
+#
+#selections['m_{RSG} = 30 TeV'] = []
+#selections['m_{RSG} = 30 TeV'].append(selbase)
+#selections['m_{RSG} = 30 TeV'].append(sel1)
+##selections['m_{RSG} = 30 TeV'].append(sel2)
+#
+#selections['m_{RSG} = 35 TeV'] = []
+#selections['m_{RSG} = 35 TeV'].append(selbase)
+#selections['m_{RSG} = 35 TeV'].append(sel1)
+##selections['m_{RSG} = 35 TeV'].append(sel2)
 
