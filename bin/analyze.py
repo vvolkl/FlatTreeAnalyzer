@@ -146,28 +146,6 @@ def runMT_join(block, param, sh, analysisDir, MT, ops):
     print "END %s" % (sh)
 
 
-#_____________________________________________________________________________________________________
-def runMT_pool(args=('','','','','','')):
-    print "START %s" % (sh)
-    block, param, sh,analysisDir, MT, ops=args
-    producePlots(param.selections[sh], 
-                 block, 
-                 param.colors, 
-                 param.variables, 
-                 param.variables2D, 
-                 param.uncertainties, 
-                 sh, 
-                 param.intLumi, 
-                 param.delphesVersion, 
-                 param.runFull,
-                 analysisDir,
-                 MT,
-                 latex_table=ops.latex_table,
-                 no_plots=ops.no_plots,
-                 nevents=ops.nevents
-)
-    print "END %s" % (sh)
-
 #______________________________________________________________________________
 def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block):
     
