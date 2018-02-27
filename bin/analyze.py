@@ -182,6 +182,10 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
      blocklist = []
      for procstr in procs:
          for pname in processes:
+             # fix new call name format in FCChhAnalyses/.../analysis.py
+             if pname.find("sample.")>=0 : pname=pname.replace("sample.","")
+             # fix commented names in lists
+             if pname.find("#")>=0 : continue
              if procstr in pname:
                  xsec = procdict[pname]['crossSection']
                  nev = procdict[pname]['numberOfEvents']
