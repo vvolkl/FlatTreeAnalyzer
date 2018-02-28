@@ -779,6 +779,9 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
     hfile.cd()
 
     nsel = 0
+    
+    legsize = 0.06*float(len(processes))
+    
     for s in selections:
         selstr = 'sel{}'.format(int(nsel))
         nsel += 1
@@ -788,7 +791,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
              filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
 
-             leg = TLegend(0.60,0.65,0.90,0.88)
+             leg = TLegend(0.60,0.88 - legsize,0.90,0.88)
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
