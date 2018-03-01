@@ -341,9 +341,9 @@ def printYields(listOfSignals, listOfBackgrounds, selections, uncertainties, int
     for sel in selections:
         intLumiab = intLumi/1e+06 
         print ''    
-        print '===================================================================================='
+        print '======================================================================================================================='
         print '         selection:', sel
-        print '===================================================================================='
+        print '======================================================================================================================='
 
         print ''    
         print '{:>20} {:>12} ({:>4} {:>3}) {:>20}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error')
@@ -382,12 +382,13 @@ def printYields(listOfSignals, listOfBackgrounds, selections, uncertainties, int
         print ''    
 
         # calculate significance and delta_mu/mu (uncertainty on the signal strength)
-        print '{:>24} {:>20} {:>20}'.format('(sig_s, sig_b) (%)', 'significance', 'dmu/mu (%)')
-        print '    ------------------------------------------------------------'
+        print '{:>24} {:>15} {:>23} {:>22}'.format('(sig_s, sig_b) (%)', 'S/B', 'significance', 'dmu/mu (%)')
+        print '    --------------------------------------------------------------------------------------------------'
         for unc in uncertainties:
             sign = significance(s, unc[0], b, unc[1])
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-            print '{:>11} {:>7} {:>21} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(sign,2), round(rel_unc,2))
+	    s_over_b = s/b
+            print '{:>11} {:>7} {:>21} {:>20} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(s_over_b,2), round(sign,2), round(rel_unc,2))
 
 
 #_____________________________________________________________________________________________________
@@ -398,9 +399,9 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
     for sel in selections:
         intLumiab = intLumi/1e+06 
         print ''    
-        print '===================================================================================='
+        print '========================================================================================================================'
         print '         selection:', sel
-        print '===================================================================================='
+        print '========================================================================================================================'
 
         print ''    
         print '{:>20} {:>12} ({:>4} {:>3}) {:>20} {:>12}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error', 'raw')
@@ -440,12 +441,13 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
         print ''    
 
         # calculate significance and delta_mu/mu (uncertainty on the signal strength)
-        print '{:>24} {:>20} {:>20}'.format('(sig_s, sig_b) (%)', 'significance', 'dmu/mu (%)')
-        print '    ------------------------------------------------------------'
+        print '{:>24} {:>15} {:>23} {:>22}'.format('(sig_s, sig_b) (%)', 'S/B', 'significance', 'dmu/mu (%)')
+        print '    --------------------------------------------------------------------------------------------------'
         for unc in uncertainties:
             sign = significance(s, unc[0], b, unc[1])
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-            print '{:>11} {:>7} {:>21} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(sign,2), round(rel_unc,2))
+	    s_over_b = s/b
+            print '{:>11} {:>7} {:>21} {:>20} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(s_over_b,2), round(sign,2), round(rel_unc,2))
 
 #_____________________________________________________________________________________________________
 def printYieldsFromHistosAsLatexTable(processes, selections, variables, uncertainties, intLumi, hfile):
