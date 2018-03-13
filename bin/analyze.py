@@ -164,7 +164,7 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
              if pname.find("sample.")>=0 : pname=pname.replace("sample.","")
              # fix commented names in lists
              if pname.find("#")>=0 : continue
-             if procstr in pname:
+             if procstr == pname:
                  xsec = procdict[pname]['crossSection']
                  nev = procdict[pname]['numberOfEvents']
                  sumw = procdict[pname]['sumOfWeights']
