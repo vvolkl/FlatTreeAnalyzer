@@ -26,14 +26,14 @@ variables = {
         'rapiditySeparation':{'name':'rapiditySeparation_trk02','title':'Rapidity Separation','bin':50,'xmin':0.0,'xmax':10.0},
         'transverseMomentumAsymmetry':{'name':'transverseMomentumAsymmetry_trk02','title':'Transverse Momentum Asymmetry','bin':50,'xmin':0.0,'xmax':1.0},
 
-#        'Mj1j2_trk02' :{'name':'Mj1j2_trk02','title':'m_{Z\'} [TeV] (trk02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
-#        'Mj1j2_trk02_Corr' :{'name':'Mj1j2_trk02_Corr','title':'m_{Z\'} [TeV] (trk02 cor)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_trk02' :{'name':'Mj1j2_trk02','title':'m_{RSG\'} [TeV] (trk02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_trk02_Corr' :{'name':'Mj1j2_trk02_Corr','title':'m_{RSG\'} [TeV] (trk02 cor)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
 
-#        'Mj1j2_pf02' :{'name':'Mj1j2_pf02','title':'m_{Z\'} [TeV] (pf02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_pf02' :{'name':'Mj1j2_pf02','title':'m_{RSG\'} [TeV] (pf02)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
 
-#        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Z\'} [TeV] (pf04)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
+#        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{RSG\'} [TeV] (pf04)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
 
-        'Mj1j2_pf08' :{'name':'Mj1j2_pf08','title':'m_{Z\'} [TeV] (pf08)','bin':225,'xmin':5.0,'xmax':50.0, 'divide':1000},
+        'Mj1j2_pf08' :{'name':'Mj1j2_pf08','title':'m_{RSG} [TeV] (pf08)','bin':225,'xmin':5.0,'xmax':50.0, 'divide':1000},
 
         'Jet1_Flow15':{'name':'Jet1_Flow15','title':'Flow_{1,5} Jet_1','bin':200,'xmin':0.0,'xmax':1.0},
         'Jet2_Flow15':{'name':'Jet2_Flow15','title':'Flow_{1,5} Jet_2','bin':200,'xmin':0.0,'xmax':1.0},
@@ -103,12 +103,14 @@ runFull = True
 selbase = 'Jet1_trk02_SD_Corr_pt > 3000. && Jet2_trk02_SD_Corr_pt > 3000. && abs(Jet1_trk02_SD_Corr_eta) < 3.&& abs(Jet1_trk02_SD_Corr_eta) < 3.'
 # clean cuts
 selbase += ' && Jet1_trk02_tau21>0 && Jet1_trk02_tau31>0 && Jet1_trk02_tau32>0 && Jet2_trk02_tau21>0 && Jet2_trk02_tau31>0 && Jet2_trk02_tau32>0'
+# add extra free clean cut
+selbase += ' && rapiditySeparation_trk02<2.4'
 
 #####################
 # CUT base selection
 #####################
-#sel1 = selbase + '&& Jet1_trk02_SD_Corr_m > 50.&& Jet1_trk02_SD_Corr_m < 100. && Jet2_trk02_SD_Corr_m > 50.&& Jet2_trk02_SD_Corr_m < 100. && Jet1_trk02_tau21 <0.6 && Jet2_trk02_tau21 <0.6'
-#sel2 = sel1 +    '&& Jet1_Flow15 > 0.85 && Jet2_Flow15 > 0.85 && Jet1_Flow25 < 0.05 && Jet2_Flow25 < 0.05'
+sel1 = selbase + ' && Jet1_trk02_SD_Corr_m > 50.&& Jet1_trk02_SD_Corr_m < 100. && Jet2_trk02_SD_Corr_m > 50.&& Jet2_trk02_SD_Corr_m < 100. && Jet1_trk02_tau21 <0.6 && Jet2_trk02_tau21 <0.6'
+sel2 = sel1 +    ' && Jet1_Flow45 < 0.07 && Jet2_Flow45 < 0.07 && Jet1_Flow55 < 0.07 && Jet2_Flow55 < 0.07'
 
 #####################
 # MVA selection
@@ -118,9 +120,9 @@ selbase += ' && Jet1_trk02_tau21>0 && Jet1_trk02_tau31>0 && Jet1_trk02_tau32>0 &
 #####################
 # anti-QCD jet tagger selection
 #####################
-sel1 = selbase + ' && Jet1_Whad_vs_QCD_tagger>0.15 && Jet2_Whad_vs_QCD_tagger>0.15'
-## + extra cuts
-sel2 = sel1    + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
+#sel1 = selbase + ' && Jet1_Whad_vs_QCD_tagger>0.15 && Jet2_Whad_vs_QCD_tagger>0.15'
+### + extra cuts
+#sel2 = sel1    + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
 
 selections = collections.OrderedDict()
 selections['m_{RSG} = 10 TeV'] = []
@@ -130,26 +132,26 @@ selections['m_{RSG} = 10 TeV'].append(sel2)
 
 selections['m_{RSG} = 15 TeV'] = []
 selections['m_{RSG} = 15 TeV'].append(selbase)
-#selections['m_{RSG} = 15 TeV'].append(sel1)
+selections['m_{RSG} = 15 TeV'].append(sel1)
 selections['m_{RSG} = 15 TeV'].append(sel2)
 
 selections['m_{RSG} = 20 TeV'] = []
 selections['m_{RSG} = 20 TeV'].append(selbase)
-#selections['m_{RSG} = 20 TeV'].append(sel1)
+selections['m_{RSG} = 20 TeV'].append(sel1)
 selections['m_{RSG} = 20 TeV'].append(sel2)
 
 selections['m_{RSG} = 25 TeV'] = []
 selections['m_{RSG} = 25 TeV'].append(selbase)
-#selections['m_{RSG} = 25 TeV'].append(sel1)
+selections['m_{RSG} = 25 TeV'].append(sel1)
 selections['m_{RSG} = 25 TeV'].append(sel2)
 
 selections['m_{RSG} = 30 TeV'] = []
 selections['m_{RSG} = 30 TeV'].append(selbase)
-#selections['m_{RSG} = 30 TeV'].append(sel1)
+selections['m_{RSG} = 30 TeV'].append(sel1)
 selections['m_{RSG} = 30 TeV'].append(sel2)
 
 selections['m_{RSG} = 35 TeV'] = []
 selections['m_{RSG} = 35 TeV'].append(selbase)
-#selections['m_{RSG} = 35 TeV'].append(sel1)
+selections['m_{RSG} = 35 TeV'].append(sel1)
 selections['m_{RSG} = 35 TeV'].append(sel2)
 

@@ -74,6 +74,8 @@ def main():
             if 'splitFactor' in l:
                 processes.append(l.rsplit('.', 1)[0])
 
+    #processes = [c.name for c in heppyCfg.selectedComponents]
+
     with open(processDict) as f:
         procDict = json.load(f)
     
@@ -146,28 +148,6 @@ def runMT_join(block, param, sh, analysisDir, MT, ops):
     print "END %s" % (sh)
 
 
-#_____________________________________________________________________________________________________
-def runMT_pool(args=('','','','','','')):
-    print "START %s" % (sh)
-    block, param, sh,analysisDir, MT, ops=args
-    producePlots(param.selections[sh], 
-                 block, 
-                 param.colors, 
-                 param.variables, 
-                 param.variables2D, 
-                 param.uncertainties, 
-                 sh, 
-                 param.intLumi, 
-                 param.delphesVersion, 
-                 param.runFull,
-                 analysisDir,
-                 MT,
-                 latex_table=ops.latex_table,
-                 no_plots=ops.no_plots,
-                 nevents=ops.nevents
-)
-    print "END %s" % (sh)
-
 #______________________________________________________________________________
 def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block):
     
@@ -186,7 +166,7 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
              if pname.find("sample.")>=0 : pname=pname.replace("sample.","")
              # fix commented names in lists
              if pname.find("#")>=0 : continue
-             if procstr in pname:
+             if procstr == pname:
                  xsec = procdict[pname]['crossSection']
                  nev = procdict[pname]['numberOfEvents']
                  sumw = procdict[pname]['sumOfWeights']
