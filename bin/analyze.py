@@ -4,6 +4,7 @@ from tools import producePlots, Process
 from pprint import pprint
 import ntpath
 import importlib
+import imp
 import yaml
 
 #__________________________________________________________
@@ -39,7 +40,7 @@ def main():
     analysisName = ops.analysis_name
 
     # heppy analysis configuration
-    heppyCfg = ops.heppy_cfg
+    heppyCfgPath = ops.heppy_cfg
 
     # process dictionary
     processDict = ops.proc_file_json
@@ -67,12 +68,8 @@ def main():
     MT = ops.MT
     
     # retrieve list of processes from heppy cfg
-    processes = []
-    with open(heppyCfg) as f:
-        lines = f.readlines()
-        for l in lines:
-            if 'splitFactor' in l:
-                processes.append(l.rsplit('.', 1)[0])
+    heppyCfg = imp.load_source('heppyCfg', heppyCfgPath)
+    processes = [c.name for c in heppyCfg.selectedComponents]
 
     with open(processDict) as f:
         procDict = json.load(f)
