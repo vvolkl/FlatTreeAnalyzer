@@ -24,17 +24,17 @@ colors['m_{Z} = 50 TeV'] = ROOT.kRed
 colors['Drell-Yann'] = ROOT.kGreen+2
 
 signal_groups = collections.OrderedDict()
-signal_groups['m_{Z} = 15 TeV'] = ['pp_Zprime_15TeV_ll']
-signal_groups['m_{Z} = 20 TeV'] = ['pp_Zprime_20TeV_ll']
-signal_groups['m_{Z} = 25 TeV'] = ['pp_Zprime_25TeV_ll']
-signal_groups['m_{Z} = 30 TeV'] = ['pp_Zprime_30TeV_ll']
-signal_groups['m_{Z} = 35 TeV'] = ['pp_Zprime_35TeV_ll']
-signal_groups['m_{Z} = 40 TeV'] = ['pp_Zprime_40TeV_ll']
-signal_groups['m_{Z} = 45 TeV'] = ['pp_Zprime_45TeV_ll']
-signal_groups['m_{Z} = 50 TeV'] = ['pp_Zprime_50TeV_ll']
+signal_groups['m_{Z} = 15 TeV'] = ['p8_pp_Zprime_15TeV_ll']
+signal_groups['m_{Z} = 20 TeV'] = ['p8_pp_Zprime_20TeV_ll']
+signal_groups['m_{Z} = 25 TeV'] = ['p8_pp_Zprime_25TeV_ll']
+signal_groups['m_{Z} = 30 TeV'] = ['p8_pp_Zprime_30TeV_ll']
+signal_groups['m_{Z} = 35 TeV'] = ['p8_pp_Zprime_35TeV_ll']
+signal_groups['m_{Z} = 40 TeV'] = ['p8_pp_Zprime_40TeV_ll']
+signal_groups['m_{Z} = 45 TeV'] = ['p8_pp_Zprime_45TeV_ll']
+signal_groups['m_{Z} = 50 TeV'] = ['p8_pp_Zprime_50TeV_ll']
 
 background_groups = collections.OrderedDict()
-background_groups['Drell-Yann'] = ['pp_mumu_lo']
+background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo']
 
 # global parameters
 intLumi = 3.0e+07
@@ -71,3 +71,4 @@ selections['m_{Z} = 45 TeV'] = []
 selections['m_{Z} = 45 TeV'].append(selbase)
 selections['m_{Z} = 50 TeV'] = []
 selections['m_{Z} = 50 TeV'].append(selbase)
+
