@@ -82,7 +82,7 @@ signal_groups['m_{Z} = 20 TeV'] = ['pp_Zprime_20TeV_ttbar']
 signal_groups['m_{Z} = 25 TeV'] = ['pp_Zprime_25TeV_ttbar']
 signal_groups['m_{Z} = 30 TeV'] = ['pp_Zprime_30TeV_ttbar']
 signal_groups['m_{Z} = 35 TeV'] = ['pp_Zprime_35TeV_ttbar']
-signal_groups['m_{Z} = 40 TeV'] = ['pp_Zprime_40TeV_ttbar']
+#signal_groups['m_{Z} = 40 TeV'] = ['pp_Zprime_40TeV_ttbar']
 
 background_groups = collections.OrderedDict()
 
@@ -112,12 +112,14 @@ runFull = True
 selbase = 'Jet1_trk02_SD_Corr_pt > 3000. && Jet2_trk02_SD_Corr_pt > 3000. && abs(Jet1_trk02_SD_Corr_eta) < 3. && abs(Jet1_trk02_SD_Corr_eta) < 3.'
 # clean cuts
 selbase += ' && Jet1_trk02_tau21>0 && Jet1_trk02_tau31>0 && Jet1_trk02_tau32>0 && Jet2_trk02_tau21>0 && Jet2_trk02_tau31>0 && Jet2_trk02_tau32>0'
+# add extra free clean cut
+selbase += ' && rapiditySeparation_trk02<2.4'
 
 #####################
 # CUT base selection
 #####################
-#sel1 = selbase + '&& Jet1_trk02_tau32 < 0.7  && Jet1_trk02_SD_Corr_m > 100. && Jet1_trk02_tau21 < 0.7 &&  Jet1_trk02_tau21 > 0.3'
-#sel2 = sel1 +    '&& Jet2_trk02_tau32 < 0.75 && Jet2_trk02_SD_Corr_m > 100. && Jet2_trk02_tau21 < 0.7 &&  Jet2_trk02_tau21 > 0.3'
+sel1 = selbase + '&& Jet1_trk02_tau32 < 0.7  && Jet1_trk02_SD_Corr_m > 100. && Jet1_trk02_tau21 < 0.7 &&  Jet1_trk02_tau21 > 0.3'
+sel2 = sel1 +    '&& Jet2_trk02_tau32 < 0.75 && Jet2_trk02_SD_Corr_m > 100. && Jet2_trk02_tau21 < 0.7 &&  Jet2_trk02_tau21 > 0.3'
 
 #####################
 # MVA selection
@@ -127,8 +129,8 @@ selbase += ' && Jet1_trk02_tau21>0 && Jet1_trk02_tau31>0 && Jet1_trk02_tau32>0 &
 #####################
 # anti-QCD jet tagger selection
 #####################
-sel1 = selbase + ' &&  Jet1_thad_vs_QCD_tagger>0.15 &&  Jet2_thad_vs_QCD_tagger>0.15'
-sel2 = sel1    + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
+#sel1 = selbase + ' &&  Jet1_thad_vs_QCD_tagger>0.15 &&  Jet2_thad_vs_QCD_tagger>0.15'
+#sel2 = sel1    + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
 
 #####################
 # bTag selection
@@ -150,25 +152,21 @@ selections['m_{Z} = 10 TeV'].append(sel4)
 selections['m_{Z} = 15 TeV'] = []
 #selections['m_{Z} = 15 TeV'].append(selbase)
 selections['m_{Z} = 15 TeV'].append(sel2)
-#selections['m_{Z} = 15 TeV'].append(sel3)
 selections['m_{Z} = 15 TeV'].append(sel4)
 
 selections['m_{Z} = 20 TeV'] = []
 #selections['m_{Z} = 20 TeV'].append(selbase)
 selections['m_{Z} = 20 TeV'].append(sel2)
-#selections['m_{Z} = 20 TeV'].append(sel3)
 selections['m_{Z} = 20 TeV'].append(sel4)
 
 selections['m_{Z} = 25 TeV'] = []
 #selections['m_{Z} = 25 TeV'].append(selbase)
 selections['m_{Z} = 25 TeV'].append(sel2)
-#selections['m_{Z} = 25 TeV'].append(sel3)
 selections['m_{Z} = 25 TeV'].append(sel4)
 
 selections['m_{Z} = 30 TeV'] = []
 #selections['m_{Z} = 30 TeV'].append(selbase)
 selections['m_{Z} = 30 TeV'].append(sel2)
-#selections['m_{Z} = 30 TeV'].append(sel3)
 selections['m_{Z} = 30 TeV'].append(sel4)
 
 selections['m_{Z} = 35 TeV'] = []
