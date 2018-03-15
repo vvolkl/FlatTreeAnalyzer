@@ -74,6 +74,8 @@ def main():
             if 'splitFactor' in l:
                 processes.append(l.rsplit('.', 1)[0])
 
+    #processes = [c.name for c in heppyCfg.selectedComponents]
+
     with open(processDict) as f:
         procDict = json.load(f)
     
@@ -86,7 +88,7 @@ def main():
 
             block = collections.OrderedDict()
 
-            formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block)
+            formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block, ops.nevents)
 
         ### run analysis
             producePlots(param.selections[sh], 
@@ -116,7 +118,7 @@ def runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT, ops):
     for sh in param.selections.keys():
 
         block = collections.OrderedDict()
-        formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block)
+        formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block, ops.nevents)
         thread = mp.Process(target=runMT_join,args=(block, param, sh,analysisDir, MT, ops ))
         thread.start()
         threads.append(thread)
@@ -146,39 +148,17 @@ def runMT_join(block, param, sh, analysisDir, MT, ops):
     print "END %s" % (sh)
 
 
-#_____________________________________________________________________________________________________
-def runMT_pool(args=('','','','','','')):
-    print "START %s" % (sh)
-    block, param, sh,analysisDir, MT, ops=args
-    producePlots(param.selections[sh], 
-                 block, 
-                 param.colors, 
-                 param.variables, 
-                 param.variables2D, 
-                 param.uncertainties, 
-                 sh, 
-                 param.intLumi, 
-                 param.delphesVersion, 
-                 param.runFull,
-                 analysisDir,
-                 MT,
-                 latex_table=ops.latex_table,
-                 no_plots=ops.no_plots,
-                 nevents=ops.nevents
-)
-    print "END %s" % (sh)
-
 #______________________________________________________________________________
-def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block):
+def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block, nevents):
     
     for label, procs in sb.iteritems():
        if label == shyp:
-           block[shyp] = fillBlock(procs, processes, procdict, treedir, treepath)
+           block[shyp] = fillBlock(procs, processes, procdict, treedir, treepath, nevents)
     for label, procs in bb.iteritems():
-       block[label] = fillBlock(procs, processes, procdict, treedir, treepath)
+       block[label] = fillBlock(procs, processes, procdict, treedir, treepath, nevents)
 
 #______________________________________________________________________________
-def fillBlock(procs, processes, procdict, treedir, treepath):
+def fillBlock(procs, processes, procdict, treedir, treepath, nevents):
      blocklist = []
      for procstr in procs:
          for pname in processes:
@@ -186,9 +166,10 @@ def fillBlock(procs, processes, procdict, treedir, treepath):
              if pname.find("sample.")>=0 : pname=pname.replace("sample.","")
              # fix commented names in lists
              if pname.find("#")>=0 : continue
-             if procstr in pname:
+             if procstr == pname:
                  xsec = procdict[pname]['crossSection']
                  nev = procdict[pname]['numberOfEvents']
+                 if nevents>0: nev=nevents
                  sumw = procdict[pname]['sumOfWeights']
                  eff = procdict[pname]['matchingEfficiency']
                  kf = procdict[pname]['kfactor']
