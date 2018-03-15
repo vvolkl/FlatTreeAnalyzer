@@ -94,6 +94,8 @@ class Process:
             print 'running over the full entries  %i'%numberOfEntries
 	else:
 	    numberOfEntries = nevents
+            if t.GetEntries()<nevents:
+                numberOfEntries = t.GetEntries()
             print 'running over a subset of entries  %i'%numberOfEntries
 
         for s in selections:
