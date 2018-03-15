@@ -103,6 +103,8 @@ class Process:
                 s_split=s.split('**')
                 sformula=s_split[1]
                 weighttrf_name=s_split[0]
+                weighttrf_name=weighttrf_name.strip()
+
             formula = TTreeFormula("",sformula,t)
 
             # loop over events
