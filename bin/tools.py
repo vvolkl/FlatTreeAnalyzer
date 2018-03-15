@@ -94,11 +94,20 @@ class Process:
             print 'running over the full entries  %i'%numberOfEntries
 	else:
 	    numberOfEntries = nevents
+            if t.GetEntries()<nevents:
+                numberOfEntries = t.GetEntries()
             print 'running over a subset of entries  %i'%numberOfEntries
 
         for s in selections:
-            
-            formula = TTreeFormula("",s,t)
+            weighttrf_name=''
+            sformula=s
+            if '**' in s:
+                s_split=s.split('**')
+                sformula=s_split[1]
+                weighttrf_name=s_split[0]
+                weighttrf_name=weighttrf_name.strip()
+
+            formula = TTreeFormula("",sformula,t)
 
             # loop over events
             print 'number of events:', numberOfEntries
@@ -109,7 +118,9 @@ class Process:
 
                 t.GetEntry(entry)
                 weight = self.w * getattr(t,"weight")
-                
+                weighttrf=1.
+                if weighttrf_name!='': weighttrf = getattr(t,weighttrf_name)
+                weight=weight*weighttrf
                 # apply selection
                 result  = formula.EvalInstance() 
                 
