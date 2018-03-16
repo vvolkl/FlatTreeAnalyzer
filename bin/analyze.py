@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import subprocess, glob, optparse, json, ast, os, sys, collections
+import subprocess, glob, optparse, json, ast, os, sys, collections, warnings, ROOT
 from tools import producePlots, Process, formatted
 from pprint import pprint
 import ntpath
@@ -213,7 +213,8 @@ def runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops):
         outseldir = 'sel_'+selname
         name_batch_dir = 'BatchOutput/{}/{}'.format(ops.analysis_output, outseldir)
         rootfile = name_batch_dir + '/root_'+selname+'/histos.root'
-        if not os.path.isfile(rootfile):
+        
+	if not os.path.isfile(rootfile) or not isValidROOTfile(rootfile) or not getsize(rootfile):
             selection_list_4sub.append(sh)
             nbad += 1
     
@@ -249,7 +250,6 @@ def runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops):
             """
 
             outseldir = 'sel_'+selname
-            print ops.analysis_output
 
             # replace relevant parts in script and dump into file
             dummyscript = dummyscript.replace('DUMMYHOMEDIR', os.getcwd())
@@ -283,8 +283,6 @@ def runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops):
 
             cmd = 'bsub -o '+name_batch_dir+'/std/STDOUT -e '+name_batch_dir+'/std/STDERR -q '+ops.queue
             cmd +=' -J '+outseldir+' "'+os.path.abspath(script)+'" '
-
-            print cmd
 
             # submitting jobs
             output = processCmd(cmd)
@@ -407,6 +405,25 @@ def processCmd(cmd, quite = 0):
         print 'Output:\n   ['+output+'] \n'
     return output
 
+#_____________________________________________________________
+def isValidROOTfile(infile):
+    valid = True
+    with warnings.catch_warnings(record=True) as was:
+        f=ROOT.TFile.Open(infile)
+        ctrlstr = 'probably not closed'
+        for w in was:
+            if ctrlstr in str(w.message):
+                valid = False
+    return valid
+
+
+#__________________________________________________________
+def getsize(f):
+    exist=os.path.isfile(f)
+    if exist:
+        size = os.path.getsize(f)
+        return size
+    return -1
 
 #______________________________________________________________________________
 if __name__ == '__main__': 
