@@ -166,7 +166,23 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, variables2D, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False, no_plots=False, nevents=-1):
+def producePlots(param, block, sel, ops):
+
+    selections = param.selections[sel]
+    groups = block
+    colors = param.colors
+    variables = param.variables
+    variables2D = param.variables2D
+    unc = param.uncertainties 
+    name = sel 
+    lumi = param.intLumi
+    version = param.delphesVersion 
+    run_full = param.runFull
+    analysisDir = ops.analysis_output
+    MT = ops.MT
+    latex_table=ops.latex_table
+    no_plots=ops.no_plots
+    nevents=ops.nevents
     
     analysisDir = formatted(analysisDir)
     name = formatted(name)
@@ -457,7 +473,10 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
         for unc in uncertainties:
             sign = significance(s, unc[0], b, unc[1])
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-	    s_over_b = s/b
+	    if b > 0:
+	        s_over_b = s/b
+	    else:
+	        s_over_b = 999
             print '{:>11} {:>7} {:>21} {:>20} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(s_over_b,2), round(sign,2), round(rel_unc,2))
 
 #_____________________________________________________________________________________________________
