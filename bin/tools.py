@@ -362,63 +362,6 @@ def dMuOverMu(s, es, b, eb):
         return 100*sqrt(s + (s*es)**2 + b + (b*eb)**2)/s
 
 #_____________________________________________________________________________________________________
-def printYields(listOfSignals, listOfBackgrounds, selections, uncertainties, intLumi):
-
-    print ''    
-    for sel in selections:
-        intLumiab = intLumi/1e+06 
-        print ''    
-        print '======================================================================================================================='
-        print '         selection:', sel
-        print '======================================================================================================================='
-
-        print ''    
-        print '{:>20} {:>12} ({:>4} {:>3}) {:>20}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error')
-        print '    ------------------------------------------------------------'
-
-        # print signal yields
-        s = 0
-        es = 0
-        for proc in listOfSignals:
-            yld = proc.getYields()[sel][0]*intLumi
-            err = proc.getYields()[sel][1]*intLumi
-            s += yld
-            es += err**2
-            print '{:>20} {:>20} {:>20} {:>20}'.format(proc.name, round(yld,1), round(err,1))
-        print '    ------------------------------------------------------------'
-        print '{:>20} {:>20} {:>20}'.format('signal', round(s,3), round(sqrt(es),3))
-        print ''    
-        print ''    
-
-        print ''    
-        print '{:>20} {:>12} ({:>4} {:>3}) {:>20}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error')
-        print '    ------------------------------------------------------------'
-
-        # print background yields
-        b = 0
-        eb = 0
-        for proc in listOfBackgrounds:
-            yld = proc.getYields()[sel][0]*intLumi
-            err = proc.getYields()[sel][1]*intLumi
-            b += yld
-            eb += err**2
-            print '{:>20} {:>20} {:>20}'.format(proc.name, round(yld,1), round(err,1))
-        print '    ------------------------------------------------------------'
-        print '{:>20} {:>20} {:>20}'.format('background', round(b,3), round(sqrt(eb),3))
-        print ''    
-        print ''    
-
-        # calculate significance and delta_mu/mu (uncertainty on the signal strength)
-        print '{:>24} {:>15} {:>23} {:>22}'.format('(sig_s, sig_b) (%)', 'S/B', 'significance', 'dmu/mu (%)')
-        print '    --------------------------------------------------------------------------------------------------'
-        for unc in uncertainties:
-            sign = significance(s, unc[0], b, unc[1])
-            rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-	    s_over_b = s/b
-            print '{:>11} {:>7} {:>21} {:>20} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(s_over_b,2), round(sign,2), round(rel_unc,2))
-
-
-#_____________________________________________________________________________________________________
 def printYieldsFromHistos(processes, selections, variables, uncertainties, intLumi, hfile):
 
     print ''    
@@ -535,68 +478,6 @@ def printYieldsFromHistosAsLatexTable(processes, selections, variables, uncertai
             sign = significance(s, unc[0], b, unc[1])
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
             print '{:>11} {:>7} {:>21} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(sign,2), round(rel_unc,2))
-
-#_____________________________________________________________________________________________________
-def drawMultiGraph(mg, name, lt, rt, pdir, ymin, ymax, log, bl = True):
-
-    myStyle()
-    gROOT.SetBatch(True)
-    ROOT.gStyle.SetOptStat(0000000)
-    ROOT.gStyle.SetTextFont(132)
-
-    canvas = ROOT.TCanvas('', '', 800,600) 
-
-    ROOT.gPad.SetLeftMargin(0.20) ; 
-    ROOT.gPad.SetRightMargin(0.05) ; 
-    ROOT.gPad.SetBottomMargin(0.20) ; 
-    ROOT.gStyle.SetOptStat(0000000);
-    ROOT.gStyle.SetTextFont(132);
-   
-    Tleft = ROOT.TLatex(0.23, 0.92, lt) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextSize(0.044) 
-    Tleft.SetTextFont(132) 
-    
-    Tright = ROOT.TText(0.95, 0.92, rt) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.044) 
-    Tright.SetTextFont(132) 
-
-    canvas.cd(0)
-    
-    mg.Draw("AL")
-    mg.GetYaxis().SetLabelFont(132)
-    mg.GetYaxis().SetTitleFont(132)
-    mg.GetYaxis().SetLabelOffset(0.02)
-    mg.GetYaxis().CenterTitle()
-    mg.GetYaxis().SetNdivisions(505)
-    mg.GetYaxis().SetTitleOffset(1.8)
-
-    mg.GetXaxis().SetTitleFont(132)
-    mg.GetXaxis().SetLabelFont(132)
-    mg.GetXaxis().SetLabelOffset(0.02)
-    mg.GetXaxis().SetTitleOffset(1.5)
-    mg.GetXaxis().SetTitleSize(0.06)
-    mg.GetYaxis().SetTitleSize(0.048)
-    mg.GetXaxis().SetLabelSize(0.06)
-    mg.GetYaxis().SetLabelSize(0.06)
-    mg.SetMinimum(ymin)
-    mg.SetMaximum(ymax)
-    
-    if log: ROOT.gPad.SetLogy()
-
-    if bl:
-        leg = canvas.BuildLegend(0.65,0.70,0.90,0.88)
-        leg.SetTextFont(132) 
-        leg.SetFillColor(0)
-        leg.SetFillStyle(0)
-        leg.SetLineColor(0)
-        leg.Draw() 
-    
-    Tleft.Draw() 
-    Tright.Draw() 
-    canvas.Print('{}/{}.png'.format(pdir, name), 'png')
 
 
 #___________________________________________________________________________
