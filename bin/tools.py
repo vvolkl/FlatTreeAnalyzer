@@ -96,16 +96,22 @@ class Process:
 	    numberOfEntries = nevents
             if t.GetEntries()<nevents:
                 numberOfEntries = t.GetEntries()
-            print 'running over a subset of entries  %i'%numberOfEntries
+                print 'running over the full entries  %i'%numberOfEntries
+            else:
+                print 'running over a subset of entries  %i'%numberOfEntries
 
         for s in selections:
             weighttrf_name=''
+            weighttrfin_name=''
+
             sformula=s
             if '**' in s:
                 s_split=s.split('**')
                 sformula=s_split[1]
                 weighttrf_name=s_split[0]
                 weighttrf_name=weighttrf_name.strip()
+                if 'tagin' in weighttrf_name:
+                    weighttrf_name='weight_%itagex'%(int(filter(str.isdigit, weighttrf_name))-1)
 
             formula = TTreeFormula("",sformula,t)
 
