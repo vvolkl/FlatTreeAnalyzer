@@ -65,7 +65,7 @@ selections['H(125)'].append(selbase_nomasscut)
 selections['H(125)'].append(selbase_masscut)
 
 selections_pt = []
-for i in range(20):
+for i in range(40):
    pt = 0. + i*25.
    ptstr = ' && higgs_pt > {}'.format(pt)
    selections['H(125)'].append(selbase_nomasscut + ptstr)
