@@ -3,7 +3,7 @@ from __future__ import division
 import ROOT, collections, os, sys
 from ROOT import TFile, TTree, TTreeFormula, gROOT, TH1D, TH2D, kRed, TLegend, THStack, TVector2,  TGraph, TMultiGraph
 from math import sqrt
-import warnings
+import warnings, re
 from array import array
 
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="creating converter.*")
@@ -89,11 +89,11 @@ class Process:
 
         rf = TFile(self.rt)
         t = rf.Get("events")
-	if nevents == -1:
-	    numberOfEntries = t.GetEntries()
+        if nevents == -1:
+            numberOfEntries = t.GetEntries()
             print 'running over the full entries  %i'%numberOfEntries
-	else:
-	    numberOfEntries = nevents
+        else:
+            numberOfEntries = nevents
             if t.GetEntries()<nevents:
                 numberOfEntries = t.GetEntries()
             print 'running over a subset of entries  %i'%numberOfEntries
@@ -238,16 +238,26 @@ def producePlots(param, block, sel, ops):
         printYieldsFromHistosAsLatexTable(processes, selections, variables, unc, lumi, hfile)
 
     if not no_plots:
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, True, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)
 
-        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, False, hfile)
-        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, True, hfile)
+        intLumiab = lumi/1e+06 
 
-        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
-        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)
+        lt = "FCC-hh Simulation (Delphes)"
+        rt = "#sqrt{{s}} = 100 TeV, L = {:.0f} ab^{{-1}}".format(intLumiab)
+
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
+
+        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
+        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, hfile)
+
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, True, hfile)
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, False, hfile)
+
+
+
+
 
     print '======================================================================================'
     print '======================================================================================'
@@ -303,7 +313,7 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
 
     #SOLUTION 1
         
-	threads.append((proc, selections, variables, variables2D, name, nev))
+        threads.append((proc, selections, variables, variables2D, name, nev))
     pool = mp.Pool(mp.cpu_count())
     histos_list = pool.map(runMT_pool,threads) 
 
@@ -416,10 +426,10 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
         for unc in uncertainties:
             sign = significance(s, unc[0], b, unc[1])
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-	    if b > 0:
-	        s_over_b = s/b
-	    else:
-	        s_over_b = 999
+            if b > 0:
+                s_over_b = s/b
+            else:
+                s_over_b = 999
             print '{:>11} {:>7} {:>21} {:>20} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(s_over_b,2), round(sign,2), round(rel_unc,2))
 
 #_____________________________________________________________________________________________________
@@ -504,18 +514,14 @@ def formatted(string):
     return finalstr
 
 #___________________________________________________________________________
-def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, delphesVersion, logZ, hfile):
+def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, lt, rt, logZ, hfile):
 
     print ''
     print 'Preparing 2D plots ...'
 
-    myStyle()
     gROOT.SetBatch(True)
 
     intLumiab = intLumi/1e+06 
-
-    rt = "RECO: Delphes-{}".format(delphesVersion)
-    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
 
     ff = "png"
 
@@ -545,19 +551,16 @@ def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, de
 
 
 #___________________________________________________________________________
-def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, delphesVersion, log, stacksig, hfile):
+def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, lt, rt, log, stacksig, hfile):
     
     print ''
     print 'Preparing stacked plots ...'
 
-    myStyle()
     gROOT.SetBatch(True)
 
     intLumiab = intLumi/1e+06 
 
     yl = "Events"
-    rt = "RECO: Delphes-{}".format(delphesVersion)
-    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
 
     ff = "png"
 
@@ -577,7 +580,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     nsel = 0
     
-    legsize = 0.06*float(len(processes))
+    legsize = 0.05*float(len(processes))
     
     for s in selections:
         selstr = 'sel{}'.format(int(nsel))
@@ -592,6 +595,10 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
+             leg.SetShadowColor(10)
+             leg.SetTextSize(0.040)
+             leg.SetTextFont(42)
+
 
              cols = []
              for p in processes:
@@ -609,19 +616,16 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
              drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
     print 'DONE.'
 #___________________________________________________________________________
-def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pdir, delphesVersion, log, hfile):
+def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pdir, lt, rt, log, hfile):
     
     print ''
     print 'Preparing normalized plots ...'
 
-    myStyle()
     gROOT.SetBatch(True)
 
     intLumiab = intLumi/1e+06 
 
     yl = "Normalized Event Rate"
-    rt = "RECO: Delphes-{}".format(delphesVersion)
-    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
 
     ff = "png"
 
@@ -649,6 +653,10 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
+             leg.SetShadowColor(10)
+             leg.SetTextSize(0.040)
+             leg.SetTextFont(42)
+
 
              cols = []
              for p in processes:
@@ -666,151 +674,13 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
     print 'DONE.'
 
 #_____________________________________________________________________________________________________________
-def draw2D(name, leftText, rightText, format, directory, logZ, histo):
-
-    canvas = ROOT.TCanvas(name, name, 800, 800) 
-
-    canvas.SetRightMargin(0.18)
-    canvas.SetLeftMargin(0.22)
-    canvas.SetBottomMargin(0.18)
-    canvas.SetTopMargin(0.12)
-
-    
-    if logZ: 
-       canvas.SetLogz(1)
-
-    histo.SetContour(999)
-
-    histo.Draw('COLZ')
-
-
-    Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextAlign(11);
-    Tleft.SetTextSize(0.035) 
-    Tleft.SetTextFont(132) 
-    
-    Tright = ROOT.TText(0.90, 0.92, rightText) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.035) 
-    Tright.SetTextFont(132) 
-
-    Tleft.Draw('same') 
-    Tright.Draw('same') 
-    printCanvas(canvas, name, format, directory) 
-
-#_____________________________________________________________________________________________________________
-def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory, logY, histos, colors):
-
-    canvas = ROOT.TCanvas(name, name, 800, 600) 
-    
-    font = 132
-    
-    ROOT.gPad.SetLeftMargin(0.20) ; 
-    ROOT.gPad.SetRightMargin(0.10) ; 
-    ROOT.gPad.SetBottomMargin(0.20) ; 
-    ROOT.gStyle.SetOptStat(0000000);
-    ROOT.gStyle.SetTextFont(font);
-    
-    Tleft = ROOT.TLatex(0.23, 0.82, leftText) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextSize(0.044) 
-    Tleft.SetTextFont(font) 
-    
-    Tright = ROOT.TText(0.90, 0.92, rightText) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.044) 
-    Tright.SetTextFont(font) 
-    
-    maxh = -999.
-    i = 0
-    imax = -999
-    for h in histos:
-        if h.GetMaximum() > maxh:
-            maxh = h.GetMaximum()
-            imax = i
-        i += 1
-
-    if logY:
-       canvas.SetLogy(1)
-
-    
-    if maxh > 0:
-        h = histos[imax]
-
-        h.SetLineWidth(4)
-        h.SetLineColor(colors[imax])
-
-        h.GetXaxis().SetTitleFont(font)
-        h.GetXaxis().SetLabelFont(font)
-        h.GetXaxis().SetTitle(histos[imax].GetXaxis().GetTitle())
-        h.GetYaxis().SetTitle(ylabel)
-        h.GetYaxis().SetTitleFont(font)
-        h.GetYaxis().SetLabelFont(font)
-        h.GetXaxis().SetTitleOffset(1.5)
-        h.GetYaxis().SetTitleOffset(1.6)
-        h.GetXaxis().SetLabelOffset(0.02)
-        h.GetYaxis().SetLabelOffset(0.02)
-        h.GetXaxis().SetTitleSize(0.06)
-        h.GetYaxis().SetTitleSize(0.06)
-        h.GetXaxis().SetLabelSize(0.06)
-        h.GetYaxis().SetLabelSize(0.06)
-        h.GetXaxis().SetNdivisions(505)
-        h.GetYaxis().SetNdivisions(505)
-        h.SetTitle("") 
-        h.Draw("hist") 
-
-        if logY:
-            h.SetMaximum(100*maxh)
-            #h.SetMinimum(0.1*maxh)
-        else:
-            h.SetMaximum(2*maxh)
-            h.SetMinimum(0.)
-
-        i = 0
-        for h in histos:
-           
-           if i == imax: 
-               i += 1
-               continue
-               
-           h.SetLineWidth(4)
-           h.SetLineColor(colors[i])
-           h.Draw('same hist')
-           i += 1
-
-        legend.SetTextFont(font) 
-        legend.Draw() 
-        #Tleft.Draw() 
-        Tright.Draw() 
-        name = name + '_norm'
-        printCanvas(canvas, name, format, directory) 
-
-#_____________________________________________________________________________________________________________
 def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY, stacksig, histos, colors):
 
-    canvas = ROOT.TCanvas(name, name, 800, 600) 
-    
-    font = 132
-    
-    ROOT.gPad.SetLeftMargin(0.20) ; 
-    ROOT.gPad.SetRightMargin(0.10) ; 
-    ROOT.gPad.SetBottomMargin(0.20) ; 
-    ROOT.gStyle.SetOptStat(0000000);
-    ROOT.gStyle.SetTextFont(font);
-    
-    Tleft = ROOT.TLatex(0.23, 0.82, leftText) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextSize(0.044) 
-    Tleft.SetTextFont(font) 
-    
-    Tright = ROOT.TText(0.90, 0.92, rightText) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.044) 
-    Tright.SetTextFont(font) 
+    canvas = ROOT.TCanvas(name, name, 600, 600) 
+    canvas.SetLogy(logY)
+    canvas.SetTicks(1,1)
+    canvas.SetLeftMargin(0.14)
+    canvas.SetRightMargin(0.08)
     
     # first retrieve maximum 
     sumhistos = histos[0].Clone()
@@ -870,13 +740,13 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
 
     hStack.Draw("hist")
 
-    hStack.GetXaxis().SetTitleFont(font)
-    hStack.GetXaxis().SetLabelFont(font)
+    #hStack.GetXaxis().SetTitleFont(font)
+    #hStack.GetXaxis().SetLabelFont(font)
     hStack.GetXaxis().SetTitle(histos[1].GetXaxis().GetTitle())
     hStack.GetYaxis().SetTitle(ylabel)
-    hStack.GetYaxis().SetTitleFont(font)
-    hStack.GetYaxis().SetLabelFont(font)
-    hStack.GetXaxis().SetTitleOffset(1.5)
+    #hStack.GetYaxis().SetTitleFont(font)
+    #hStack.GetYaxis().SetLabelFont(font)
+    '''hStack.GetXaxis().SetTitleOffset(1.5)
     hStack.GetYaxis().SetTitleOffset(1.6)
     hStack.GetXaxis().SetLabelOffset(0.02)
     hStack.GetYaxis().SetLabelOffset(0.02)
@@ -886,7 +756,11 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     hStack.GetYaxis().SetLabelSize(0.06)
     hStack.GetXaxis().SetNdivisions(505);
     hStack.GetYaxis().SetNdivisions(505);
-    hStack.SetTitle("") 
+    hStack.SetTitle("") '''
+
+    hStack.GetYaxis().SetTitleOffset(1.75)
+    hStack.GetXaxis().SetTitleOffset(1.40)
+    
     #hStack.SetMaximum(1.5*maxh) 
     
     if logY:
@@ -899,11 +773,161 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     if not stacksig:
         histos[0].Draw("same hist")
    
-    legend.SetTextFont(font) 
+    #legend.SetTextFont(font) 
     legend.Draw() 
-    Tleft.Draw() 
-    Tright.Draw() 
+    
+    Text = ROOT.TLatex()
+    
+    Text.SetNDC() 
+    Text.SetTextAlign(31);
+    Text.SetTextSize(0.04) 
+
+    text = '#it{' + leftText +'}'
+    
+    Text.DrawLatex(0.90, 0.92, text) 
+
+    rightText = re.split(",", rightText)
+    text = '#bf{#it{' + rightText[0] +'}}'
+    
+    Text.SetTextAlign(12);
+    Text.SetNDC(ROOT.kTRUE) 
+    Text.SetTextSize(0.04) 
+    Text.DrawLatex(0.18, 0.83, text)
+    
+    text = '#bf{#it{' + rightText[1] +'}}'
+    Text.DrawLatex(0.18, 0.78, text)
+    #Text.DrawLatex(0.18, 0.78, rightText[1])
+
+    canvas.RedrawAxis()
+    #canvas.Update()
+    canvas.GetFrame().SetBorderSize( 12 )
+    canvas.Modified()
+    canvas.Update()
+
     printCanvas(canvas, name, format, directory) 
+
+#_____________________________________________________________________________________________________________
+def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory, logY, histos, colors):
+
+    canvas = ROOT.TCanvas(name, name, 600, 600) 
+    canvas.SetLogy(logY)
+    canvas.SetTicks(1,1)
+    canvas.SetLeftMargin(0.14)
+    canvas.SetRightMargin(0.08)
+    ROOT.gStyle.SetOptStat(0000000)    
+    
+    maxh = -999.
+    i = 0
+    imax = -999
+    for h in histos:
+        if h.GetMaximum() > maxh:
+            maxh = h.GetMaximum()
+            imax = i
+        i += 1
+
+    if logY:
+       canvas.SetLogy(1)
+
+    if maxh > 0:
+        h = histos[imax]
+
+        h.SetLineWidth(4)
+        h.SetLineColor(colors[imax])
+
+        h.GetYaxis().SetTitleOffset(1.75)
+        h.GetXaxis().SetTitleOffset(1.40)
+        h.GetXaxis().SetTitle(histos[imax].GetXaxis().GetTitle())
+        h.GetYaxis().SetTitle(ylabel)
+
+        '''h.GetXaxis().SetTitleFont(font)
+        h.GetXaxis().SetLabelFont(font)
+        h.GetYaxis().SetTitleFont(font)
+        h.GetYaxis().SetLabelFont(font)
+        h.GetXaxis().SetTitleOffset(1.5)
+        h.GetYaxis().SetTitleOffset(1.6)
+        h.GetXaxis().SetLabelOffset(0.02)
+        h.GetYaxis().SetLabelOffset(0.02)
+        h.GetXaxis().SetTitleSize(0.06)
+        h.GetYaxis().SetTitleSize(0.06)
+        h.GetXaxis().SetLabelSize(0.06)
+        h.GetYaxis().SetLabelSize(0.06)
+        h.GetXaxis().SetNdivisions(505)
+        h.GetYaxis().SetNdivisions(505)'''
+        h.SetTitle("") 
+        h.Draw("hist") 
+
+        if logY:
+            h.SetMaximum(100*maxh)
+            #h.SetMinimum(0.1*maxh)
+        else:
+            h.SetMaximum(2*maxh)
+            h.SetMinimum(0.)
+
+        i = 0
+        for h in histos:
+           
+           if i == imax: 
+               i += 1
+               continue
+               
+           h.SetLineWidth(4)
+           h.SetLineColor(colors[i])
+           h.Draw('same hist')
+           i += 1
+
+        #legend.SetTextFont(font) 
+        legend.Draw() 
+
+        Text = ROOT.TLatex()
+
+        Text.SetNDC() 
+        Text.SetTextAlign(31)
+        Text.SetTextSize(0.04)
+
+        text = '#it{' + leftText +'}'
+
+        Text.DrawLatex(0.90, 0.92, text) 
+
+        name = name + '_norm'
+        printCanvas(canvas, name, format, directory) 
+
+
+#_____________________________________________________________________________________________________________
+def draw2D(name, leftText, rightText, format, directory, logZ, histo):
+
+    canvas = ROOT.TCanvas(name, name, 800, 800) 
+
+    canvas.SetRightMargin(0.18)
+    canvas.SetLeftMargin(0.22)
+    canvas.SetBottomMargin(0.18)
+    canvas.SetTopMargin(0.12)
+
+    
+    if logZ: 
+       canvas.SetLogz(1)
+
+    histo.SetContour(999)
+
+    histo.Draw('COLZ')
+
+
+    Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
+    Tleft.SetNDC(ROOT.kTRUE) 
+    Tleft.SetTextAlign(11);
+    Tleft.SetTextSize(0.035) 
+    Tleft.SetTextFont(132) 
+    
+    Tright = ROOT.TText(0.90, 0.92, rightText) ;
+    Tright.SetTextAlign(31);
+    Tright.SetNDC(ROOT.kTRUE) 
+    Tright.SetTextSize(0.035) 
+    Tright.SetTextFont(132) 
+
+    Tleft.Draw('same') 
+    Tright.Draw('same') 
+    printCanvas(canvas, name, format, directory) 
+
+
 
 #____________________________________________________
 def printCanvas(canvas, name, format, directory):
@@ -913,60 +937,3 @@ def printCanvas(canvas, name, format, directory):
                 os.system("mkdir "+directory)
         outFile = os.path.join(directory, name) + "." + format
         canvas.Print(outFile)
-
-#____________________________________________________
-def myStyle():
-    import ROOT
-
-    font = 132
-    ROOT.gStyle.SetFrameBorderMode(0)
-    ROOT.gStyle.SetCanvasBorderMode(0)
-    ROOT.gStyle.SetPadBorderMode(0)
-
-    ROOT.gStyle.SetFrameFillColor(0)
-    ROOT.gStyle.SetFrameFillStyle(0)
-
-    ROOT.gStyle.SetPadColor(0)
-    ROOT.gStyle.SetCanvasColor(0)
-    ROOT.gStyle.SetTitleColor(1)
-    ROOT.gStyle.SetStatColor(0)
-
-    ROOT.gStyle.SetLegendBorderSize(0)
-    ROOT.gStyle.SetLegendFillColor(0)
-    ROOT.gStyle.SetLegendFont(font)
-    
-    # set the paper & margin sizes
-    '''ROOT.gPad.SetLeftMargin(0.22)
-    ROOT.gPad.SetRightMargin(0.10)
-    ROOT.gPad.SetBottomMargin(0.18)'''
-    #ROOT.gPad.SetLogy()
-    #ROOT.gPad.SetGridy()
-    ROOT.gStyle.SetOptStat(0000000)
-    ROOT.gStyle.SetTextFont(font)
-
-    ROOT.gStyle.SetTextFont(font)
-    ROOT.gStyle.SetTextSize(0.05)
-    ROOT.gStyle.SetLabelFont(font,"XYZ")
-    ROOT.gStyle.SetTitleFont(font,"XYZ")
-    ROOT.gStyle.SetLabelSize(0.05,"XYZ") #0.035
-    ROOT.gStyle.SetTitleSize(0.05,"XYZ")
-    
-    ROOT.gStyle.SetTitleOffset(1.25,"X")
-    ROOT.gStyle.SetTitleOffset(1.95,"Y")
-    ROOT.gStyle.SetLabelOffset(0.02,"XY")
-    
-    # use bold lines and markers
-    ROOT.gStyle.SetMarkerStyle(8)
-    ROOT.gStyle.SetHistLineWidth(3)
-    ROOT.gStyle.SetLineWidth(1)
-
-    ROOT.gStyle.SetNdivisions(505,"xy")
-
-    # do not display any of the standard histogram decorations
-    ROOT.gStyle.SetOptTitle(0)
-    ROOT.gStyle.SetOptStat(0) #("m")
-    ROOT.gStyle.SetOptFit(0)
-    
-    #ROOT.gStyle.SetPalette(1,0)
-    ROOT.gStyle.cd()
-    ROOT.gROOT.ForceStyle()
