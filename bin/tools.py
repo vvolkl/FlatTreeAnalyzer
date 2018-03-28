@@ -102,12 +102,16 @@ class Process:
 
         for s in selections:
             weighttrf_name=''
+            weighttrfin_name=''
+
             sformula=s
             if '**' in s:
                 s_split=s.split('**')
                 sformula=s_split[1]
                 weighttrf_name=s_split[0]
                 weighttrf_name=weighttrf_name.strip()
+                if 'tagin' in weighttrf_name:
+                    weighttrf_name='weight_%itagex'%(int(filter(str.isdigit, weighttrf_name))-1)
 
             formula = TTreeFormula("",sformula,t)
 
