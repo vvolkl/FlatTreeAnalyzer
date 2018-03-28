@@ -111,7 +111,7 @@ class Process:
                 weighttrf_name=s_split[0]
                 weighttrf_name=weighttrf_name.strip()
                 if 'tagin' in weighttrf_name:
-                    weighttrf_name='weight_%itagex'%(int(filter(str.isdigit, weighttrf_name))-1)
+                    weighttrfin_name='weight_%itagex'%(int(filter(str.isdigit, weighttrf_name))-1)
 
             formula = TTreeFormula("",sformula,t)
 
@@ -125,7 +125,11 @@ class Process:
                 t.GetEntry(entry)
                 weight = self.w * getattr(t,"weight")
                 weighttrf=1.
-                if weighttrf_name!='': weighttrf = getattr(t,weighttrf_name)
+                if weighttrf_name!='' and weighttrfin_name=='':
+                    weighttrf = getattr(t,weighttrf_name)
+                elif weighttrf_name!='' and weighttrfin_name!='':
+                    weighttrf = 1-getattr(t,weighttrfin_name)
+                                        
                 weight=weight*weighttrf
                 # apply selection
                 result  = formula.EvalInstance() 
