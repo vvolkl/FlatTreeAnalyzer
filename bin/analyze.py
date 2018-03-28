@@ -29,7 +29,6 @@ def options():
     parser.add_option('--nev', dest='nevents', type=int, default='-1')
     parser.add_option('--force', dest='force', default=False, action='store_true')
 
-    # ex: --lsf 10 will send 1 job for 10 heppy chunks
     parser.add_option('--lsf', dest='lsf', default=False, action='store_true')
     parser.add_option('-q', '--queue', dest='queue', type=str, default='1nh')
     parser.add_option('--clean', dest='clean', default=False, action='store_true')
@@ -111,22 +110,7 @@ def main():
     if sel:
         block = collections.OrderedDict()
         formBlock(processes, procDict, param.signal_groups,param.background_groups, sel, treeDir, treePath, block, ops.nevents)
-        producePlots(param.selections[sel], 
-                     block, 
-                     param.colors, 
-                     param.variables, 
-                     param.variables2D, 
-                     param.uncertainties, 
-                     sel, 
-                     param.intLumi, 
-                     param.delphesVersion, 
-                     param.runFull,
-                     analysisDir,
-                     MT,
-                     latex_table=ops.latex_table,
-                     no_plots=ops.no_plots,
-                     nevents=ops.nevents
-                     )
+        producePlots(param, block, sel, ops)
 
     elif not lsf:
         if MT:
@@ -139,22 +123,7 @@ def main():
                 formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block, ops.nevents)
 
             ### run analysis
-                producePlots(param.selections[sh], 
-                             block, 
-                             param.colors, 
-                             param.variables, 
-                             param.variables2D, 
-                             param.uncertainties, 
-                             sh, 
-                             param.intLumi, 
-                             param.delphesVersion, 
-                             param.runFull,
-                             analysisDir,
-                             MT,
-                             latex_table=ops.latex_table,
-                             no_plots=ops.no_plots,
-                             nevents=ops.nevents
-                             )
+                producePlots(param, block, sh, ops)
 
     else:
         runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops)
@@ -176,23 +145,7 @@ def runMT(processes, procDict, param, treeDir, treePath, analysisDir, MT, ops):
 #_____________________________________________________________________________________________________
 def runMT_join(block, param, sh, analysisDir, MT, ops):
     print "START %s" % (sh)
-    producePlots(param.selections[sh], 
-                 block, 
-                 param.colors, 
-                 param.variables, 
-                 param.variables2D, 
-                 param.uncertainties, 
-                 sh, 
-                 param.intLumi, 
-                 param.delphesVersion, 
-                 param.runFull,
-                 analysisDir,
-                 MT,
-                 latex_table=ops.latex_table,
-                 no_plots=ops.no_plots,
-                 nevents=ops.nevents
-                 )
-    
+    producePlots(param, block, sh, ops)    
     print "END %s" % (sh)
 
 #_____________________________________________________________________________________________________
@@ -214,7 +167,7 @@ def runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops):
         name_batch_dir = 'BatchOutput/{}/{}'.format(ops.analysis_output, outseldir)
         rootfile = name_batch_dir + '/root_'+selname+'/histos.root'
         
-	if not os.path.isfile(rootfile) or not isValidROOTfile(rootfile) or not getsize(rootfile):
+        if not os.path.isfile(rootfile) or not isValidROOTfile(rootfile) or not getsize(rootfile):
             selection_list_4sub.append(sh)
             nbad += 1
     
@@ -266,7 +219,6 @@ def runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops):
 
             name_batch_dir = 'BatchOutput/{}/{}'.format(ops.analysis_output, outseldir)
             if not os.path.exists(name_batch_dir):
-                print 'here'
                 os.makedirs(name_batch_dir)
 
             scriptdir = name_batch_dir+'/cfg/'
@@ -309,10 +261,10 @@ def runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops):
             root_dir = '{}/root_{}'.format(name_batch_dir,selname)
             cmd = 'cp -r {} {}'.format(root_dir,ops.analysis_output)
             
-	    local_root_dir = '{}/root_{}'.format(ops.analysis_output,selname)
-	    
-	    print local_root_dir
-	    
+            local_root_dir = '{}/root_{}'.format(ops.analysis_output,selname)
+            
+            print local_root_dir
+            
             # collecting files
             if not os.path.exists(local_root_dir):
                 processCmd(cmd)
@@ -321,22 +273,8 @@ def runLSF(processes, procDict, param, treeDir, treePath, analysisDir, ops):
             block = collections.OrderedDict()
             formBlock(processes, procDict, param.signal_groups,param.background_groups,sh, treeDir, treePath, block, ops.nevents)
             
-            producePlots(param.selections[sh], 
-                         block, 
-                         param.colors, 
-                         param.variables, 
-                         param.variables2D, 
-                         param.uncertainties, 
-                         sh, 
-                         param.intLumi, 
-                         param.delphesVersion, 
-                         False,
-                         ops.analysis_output,
-                         ops.MT,
-                         latex_table=ops.latex_table,
-                         no_plots=ops.no_plots,
-                         nevents=ops.nevents
-                         )
+	    param.runFull = False
+            producePlots(param, block, sh, ops)
 
 #______________________________________________________________________________
 def formBlock(processes, procdict, sb, bb, shyp, treedir, treepath, block, nevents):
