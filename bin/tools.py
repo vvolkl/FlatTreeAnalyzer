@@ -294,7 +294,7 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
     #SOLUTION 1
         
 	threads.append((proc, selections, variables, variables2D, name, nev))
-    pool = mp.Pool(8)
+    pool = mp.Pool(mp.cpu_count())
     histos_list = pool.map(runMT_pool,threads) 
 
 
