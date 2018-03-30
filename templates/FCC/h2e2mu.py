@@ -7,10 +7,10 @@ variables = {
     "pthl":{"name":"higgs_pt","title":"p_{T}^{H} [GeV]","bin":100,"xmin":0,"xmax":3000},
     "mh":{"name":"higgs_m","title":"m_{H} [GeV]","bin":100,"xmin":110,"xmax":140},
     "mhl":{"name":"higgs_m","title":"m_{H} [GeV]","bin":100,"xmin":50,"xmax":600},
-    "ptm1":{"name":"l1_pt","title":"p_{T}^{1}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
-    "ptm2":{"name":"l2_pt","title":"p_{T}^{2}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
-    "ptm3":{"name":"l3_pt","title":"p_{T}^{3}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
-    "ptm4":{"name":"l4_pt","title":"p_{T}^{4}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
+    "ptm1":{"name":"mu1_pt","title":"p_{T}^{1}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
+    "ptm2":{"name":"mu2_pt","title":"p_{T}^{2}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
+    "pte1":{"name":"e1_pt","title":"p_{T}^{3}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
+    "pte2":{"name":"e2_pt","title":"p_{T}^{4}(#mu) [GeV]","bin":100,"xmin":0,"xmax":500},
 }
 
 variables2D = {
@@ -56,7 +56,8 @@ selbase_nomasscut = ('zed1_m > 40. && zed1_m < 120. &&'
                 'l1_pt > 20. && l2_pt > 10. && l3_pt > 7. && l4_pt > 5. &&'
                 'abs(l1_eta) < 4 && abs(l2_eta) < 4')
 
-selbase_nomasscut += ' && abs(l1_pdgid)==13 && abs(l2_pdgid)==13  && abs(l3_pdgid)==13 && abs(l4_pdgid)==13'
+selbase_nomasscut += ' && !(abs(l1_pdgid)==13 && abs(l2_pdgid)==13 && abs(l3_pdgid)==13 && abs(l4_pdgid)==13)'
+selbase_nomasscut += ' && !(abs(l1_pdgid)==11 && abs(l2_pdgid)==11 && abs(l3_pdgid)==11 && abs(l4_pdgid)==11)'
 
 selbase_masscut = ('zed1_m > 40. && zed1_m < 120. &&'
                 'zed2_m > 12. && zed2_m < 120. &&'
@@ -64,7 +65,8 @@ selbase_masscut = ('zed1_m > 40. && zed1_m < 120. &&'
                 'abs(l1_eta) < 4 && abs(l2_eta) < 4 &&'
                 'higgs_m > 122.5 && higgs_m < 127.5')
 
-selbase_masscut += ' && abs(l1_pdgid)==13 && abs(l2_pdgid)==13  && abs(l3_pdgid)==13 && abs(l4_pdgid)==13'
+selbase_masscut += ' && !(abs(l1_pdgid)==13 && abs(l2_pdgid)==13  && abs(l3_pdgid)==13 && abs(l4_pdgid)==13)'
+selbase_masscut += ' && !(abs(l1_pdgid)==11 && abs(l2_pdgid)==11  && abs(l3_pdgid)==11 && abs(l4_pdgid)==11)'
 
 selections = collections.OrderedDict()
 
