@@ -53,24 +53,24 @@ colors['#gamma#gamma + Jets'] = ROOT.kCyan-8
 colors['ttH'] = ROOT.kViolet
 
 signal_groups = collections.OrderedDict()
-signal_groups['HH(#kappa_{l}=0.90)'] = ['pp_hh_lambda090_5f_haa']
-signal_groups['HH(#kappa_{l}=0.95)'] = ['pp_hh_lambda095_5f_haa']
-signal_groups['HH(#kappa_{l}=0.96)'] = ['pp_hh_lambda096_5f_haa']
-signal_groups['HH(#kappa_{l}=0.97)'] = ['pp_hh_lambda097_5f_haa']
-signal_groups['HH(#kappa_{l}=0.98)'] = ['pp_hh_lambda098_5f_haa']
-signal_groups['HH(#kappa_{l}=0.99)'] = ['pp_hh_lambda099_5f_haa']
-signal_groups['HH(#kappa_{l}=1.00)'] = ['pp_hh_lambda100_5f_haa']
-signal_groups['HH(#kappa_{l}=1.01)'] = ['pp_hh_lambda101_5f_haa']
-signal_groups['HH(#kappa_{l}=1.02)'] = ['pp_hh_lambda102_5f_haa']
-signal_groups['HH(#kappa_{l}=1.03)'] = ['pp_hh_lambda103_5f_haa']
-signal_groups['HH(#kappa_{l}=1.04)'] = ['pp_hh_lambda104_5f_haa']
-signal_groups['HH(#kappa_{l}=1.05)'] = ['pp_hh_lambda105_5f_haa']
-signal_groups['HH(#kappa_{l}=1.10)'] = ['pp_hh_lambda110_5f_haa']
+signal_groups['HH(#kappa_{l}=0.90)'] = ['mgp8_pp_hh_lambda090_5f_haa']
+signal_groups['HH(#kappa_{l}=0.95)'] = ['mgp8_pp_hh_lambda095_5f_haa']
+signal_groups['HH(#kappa_{l}=0.96)'] = ['mgp8_pp_hh_lambda096_5f_haa']
+signal_groups['HH(#kappa_{l}=0.97)'] = ['mgp8_pp_hh_lambda097_5f_haa']
+signal_groups['HH(#kappa_{l}=0.98)'] = ['mgp8_pp_hh_lambda098_5f_haa']
+signal_groups['HH(#kappa_{l}=0.99)'] = ['mgp8_pp_hh_lambda099_5f_haa']
+signal_groups['HH(#kappa_{l}=1.00)'] = ['mgp8_pp_hh_lambda100_5f_haa']
+signal_groups['HH(#kappa_{l}=1.01)'] = ['mgp8_pp_hh_lambda101_5f_haa']
+signal_groups['HH(#kappa_{l}=1.02)'] = ['mgp8_pp_hh_lambda102_5f_haa']
+signal_groups['HH(#kappa_{l}=1.03)'] = ['mgp8_pp_hh_lambda103_5f_haa']
+signal_groups['HH(#kappa_{l}=1.04)'] = ['mgp8_pp_hh_lambda104_5f_haa']
+signal_groups['HH(#kappa_{l}=1.05)'] = ['mgp8_pp_hh_lambda105_5f_haa']
+signal_groups['HH(#kappa_{l}=1.10)'] = ['mgp8_pp_hh_lambda110_5f_haa']
 
 background_groups = collections.OrderedDict()
-background_groups['j#gamma + Jets'] = ['pp_jjja_5f']
-background_groups['#gamma#gamma + Jets'] = ['pp_jjaa_5f']
-background_groups['ttH'] = ['pp_tth01j_5f_haa']
+background_groups['j#gamma + Jets'] = ['mgp8_pp_jjja_5f']
+background_groups['#gamma#gamma + Jets'] = ['mgp8_pp_jjaa_5f']
+background_groups['ttH'] = ['mgp8_pp_tth01j_5f_haa']
 
 # global parameters
 intLumi = 30000000

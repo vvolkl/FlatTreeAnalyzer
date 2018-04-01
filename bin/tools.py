@@ -3,7 +3,7 @@ from __future__ import division
 import ROOT, collections, os, sys
 from ROOT import TFile, TTree, TTreeFormula, gROOT, TH1D, TH2D, kRed, TLegend, THStack, TVector2,  TGraph, TMultiGraph
 from math import sqrt
-import warnings
+import warnings, re
 from array import array
 
 warnings.filterwarnings(action="ignore", category=RuntimeWarning, message="creating converter.*")
@@ -89,23 +89,29 @@ class Process:
 
         rf = TFile(self.rt)
         t = rf.Get("events")
-	if nevents == -1:
-	    numberOfEntries = t.GetEntries()
+        if nevents == -1:
+            numberOfEntries = t.GetEntries()
             print 'running over the full entries  %i'%numberOfEntries
-	else:
-	    numberOfEntries = nevents
+        else:
+            numberOfEntries = nevents
             if t.GetEntries()<nevents:
                 numberOfEntries = t.GetEntries()
-            print 'running over a subset of entries  %i'%numberOfEntries
+                print 'running over the full entries  %i'%numberOfEntries
+            else:
+                print 'running over a subset of entries  %i'%numberOfEntries
 
         for s in selections:
             weighttrf_name=''
+            weighttrfin_name=''
+
             sformula=s
             if '**' in s:
                 s_split=s.split('**')
                 sformula=s_split[1]
                 weighttrf_name=s_split[0]
                 weighttrf_name=weighttrf_name.strip()
+                if 'tagin' in weighttrf_name:
+                    weighttrfin_name='weight_%itagex'%(int(filter(str.isdigit, weighttrf_name))-1)
 
             formula = TTreeFormula("",sformula,t)
 
@@ -119,7 +125,11 @@ class Process:
                 t.GetEntry(entry)
                 weight = self.w * getattr(t,"weight")
                 weighttrf=1.
-                if weighttrf_name!='': weighttrf = getattr(t,weighttrf_name)
+                if weighttrf_name!='' and weighttrfin_name=='':
+                    weighttrf = getattr(t,weighttrf_name)
+                elif weighttrf_name!='' and weighttrfin_name!='':
+                    weighttrf = 1-getattr(t,weighttrfin_name)
+                                        
                 weight=weight*weighttrf
                 # apply selection
                 result  = formula.EvalInstance() 
@@ -166,7 +176,23 @@ def selectionDict(selections):
     return seldict
 
 #_____________________________________________________________________________________________________
-def producePlots(selections, groups, colors, variables, variables2D, unc, name, lumi, version, run_full, analysisDir, MT, latex_table=False, no_plots=False, nevents=-1):
+def producePlots(param, block, sel, ops):
+
+    selections = param.selections[sel]
+    groups = block
+    colors = param.colors
+    variables = param.variables
+    variables2D = param.variables2D
+    unc = param.uncertainties 
+    name = sel 
+    lumi = param.intLumi
+    version = param.delphesVersion 
+    run_full = param.runFull
+    analysisDir = ops.analysis_output
+    MT = ops.MT
+    latex_table=ops.latex_table
+    no_plots=ops.no_plots
+    nevents=ops.nevents
     
     analysisDir = formatted(analysisDir)
     name = formatted(name)
@@ -222,16 +248,26 @@ def producePlots(selections, groups, colors, variables, variables2D, unc, name, 
         printYieldsFromHistosAsLatexTable(processes, selections, variables, unc, lumi, hfile)
 
     if not no_plots:
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, False, True, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, version, True, True, hfile)
 
-        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, False, hfile)
-        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, version, True, hfile)
+        intLumiab = lumi/1e+06 
 
-        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, True, hfile)
-        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, version, False, hfile)
+        lt = "FCC-hh Simulation (Delphes)"
+        rt = "#sqrt{{s}} = 100 TeV, L = {:.0f} ab^{{-1}}".format(intLumiab)
+
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
+
+        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
+        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, hfile)
+
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, True, hfile)
+        produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, False, hfile)
+
+
+
+
 
     print '======================================================================================'
     print '======================================================================================'
@@ -287,8 +323,8 @@ def runAnalysisMT(listOfProcesses, selections, variables, variables2D, groups, n
 
     #SOLUTION 1
         
-	threads.append((proc, selections, variables, variables2D, name, nev))
-    pool = mp.Pool(8)
+        threads.append((proc, selections, variables, variables2D, name, nev))
+    pool = mp.Pool(mp.cpu_count())
     histos_list = pool.map(runMT_pool,threads) 
 
 
@@ -346,63 +382,6 @@ def dMuOverMu(s, es, b, eb):
         return 100*sqrt(s + (s*es)**2 + b + (b*eb)**2)/s
 
 #_____________________________________________________________________________________________________
-def printYields(listOfSignals, listOfBackgrounds, selections, uncertainties, intLumi):
-
-    print ''    
-    for sel in selections:
-        intLumiab = intLumi/1e+06 
-        print ''    
-        print '======================================================================================================================='
-        print '         selection:', sel
-        print '======================================================================================================================='
-
-        print ''    
-        print '{:>20} {:>12} ({:>4} {:>3}) {:>20}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error')
-        print '    ------------------------------------------------------------'
-
-        # print signal yields
-        s = 0
-        es = 0
-        for proc in listOfSignals:
-            yld = proc.getYields()[sel][0]*intLumi
-            err = proc.getYields()[sel][1]*intLumi
-            s += yld
-            es += err**2
-            print '{:>20} {:>20} {:>20} {:>20}'.format(proc.name, round(yld,1), round(err,1))
-        print '    ------------------------------------------------------------'
-        print '{:>20} {:>20} {:>20}'.format('signal', round(s,3), round(sqrt(es),3))
-        print ''    
-        print ''    
-
-        print ''    
-        print '{:>20} {:>12} ({:>4} {:>3}) {:>20}'.format('process', 'yield', intLumiab, 'ab-1', 'stat. error')
-        print '    ------------------------------------------------------------'
-
-        # print background yields
-        b = 0
-        eb = 0
-        for proc in listOfBackgrounds:
-            yld = proc.getYields()[sel][0]*intLumi
-            err = proc.getYields()[sel][1]*intLumi
-            b += yld
-            eb += err**2
-            print '{:>20} {:>20} {:>20}'.format(proc.name, round(yld,1), round(err,1))
-        print '    ------------------------------------------------------------'
-        print '{:>20} {:>20} {:>20}'.format('background', round(b,3), round(sqrt(eb),3))
-        print ''    
-        print ''    
-
-        # calculate significance and delta_mu/mu (uncertainty on the signal strength)
-        print '{:>24} {:>15} {:>23} {:>22}'.format('(sig_s, sig_b) (%)', 'S/B', 'significance', 'dmu/mu (%)')
-        print '    --------------------------------------------------------------------------------------------------'
-        for unc in uncertainties:
-            sign = significance(s, unc[0], b, unc[1])
-            rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-	    s_over_b = s/b
-            print '{:>11} {:>7} {:>21} {:>20} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(s_over_b,2), round(sign,2), round(rel_unc,2))
-
-
-#_____________________________________________________________________________________________________
 def printYieldsFromHistos(processes, selections, variables, uncertainties, intLumi, hfile):
 
     print ''    
@@ -457,7 +436,10 @@ def printYieldsFromHistos(processes, selections, variables, uncertainties, intLu
         for unc in uncertainties:
             sign = significance(s, unc[0], b, unc[1])
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-	    s_over_b = s/b
+            if b > 0:
+                s_over_b = s/b
+            else:
+                s_over_b = 999
             print '{:>11} {:>7} {:>21} {:>20} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(s_over_b,2), round(sign,2), round(rel_unc,2))
 
 #_____________________________________________________________________________________________________
@@ -516,184 +498,6 @@ def printYieldsFromHistosAsLatexTable(processes, selections, variables, uncertai
             sign = significance(s, unc[0], b, unc[1])
             rel_unc = dMuOverMu(s, unc[0], b, unc[1])
             print '{:>11} {:>7} {:>21} {:>20}'.format(round(unc[0]*100.,1), round(unc[1]*100.,1), round(sign,2), round(rel_unc,2))
-#_____________________________________________________________________________________________________
-def produceYieldPlots(processes, seldict, variables, uncertainties, intLumi, pdir, delphesVersion, hfile):
-
-    print ''    
-    print 'Preparing yield plots ...'    
-    # prepare yield plots
-    gr_sb = TGraph()
-    mg_sign = TMultiGraph()
-    mg_dmu = TMultiGraph()
-
-    gr_sb.SetTitle(";p_{T}^{H} (min) [GeV]; S/B")
-    mg_sign.SetTitle(";p_{T}^{H} (min) [GeV]; Significance = #frac{S}{#sqrt{S + #sigma_{S}^{2} + B + #sigma_{B}^{2}}}")
-    mg_dmu.SetTitle(";p_{T}^{H} (min) [GeV]; #delta #mu / #mu (%)")
-
-    grs_sign = {}
-    grs_dmu = {}
-
-    colors = []
-    colors.append(ROOT.kBlack);
-    colors.append(ROOT.kRed-9);
-    colors.append(ROOT.kBlue-3);
-    colors.append(ROOT.kGreen+2);
-    colors.append(ROOT.kOrange-3);
-    colors.append(ROOT.kYellow+2);
-    colors.append(ROOT.kMagenta+1);
-
-    index = 0
-    gr_sb.SetLineColor(ROOT.kBlack)
-    gr_sb.SetLineWidth(3)
-    for unc in uncertainties:
-        gr_sign = TGraph()
-        gr_dmu = TGraph()
-        gr_sign.SetLineColor(colors[index])
-        gr_dmu.SetLineColor(colors[index])
-
-        gr_sign.SetLineWidth(3)
-        gr_dmu.SetLineWidth(3)
-        gr_sign.SetMarkerSize(0.0001)
-        gr_dmu.SetMarkerSize(0.0001)
-        gr_sign.SetFillColor(0)
-        gr_dmu.SetFillColor(0)
-
-        grs_sign[index] = gr_sign
-        grs_dmu[index] = gr_dmu
-        index += 1
-
-    # fill yield graphs
-    nsel = 0
-    
-    maxsb = -999
-    minsb = 999
-    maxsig = -999
-    minsig = 999
-    maxdmu = -999
-    mindmu = 999
-
-    for cut in seldict.keys():
-        index = 0
-        v = variables.keys()[0]
-        selstr = 'sel{}'.format(int(nsel))
-        nproc = 0
-        b = 0
-        for p in processes:
-            hname = '{}_{}_{}'.format(p, selstr, v)
-            h = hfile.Get(hname)
-            err = ROOT.Double()
-            yld = h.IntegralAndError(0, h.GetNbinsX()+1, err)
-            yld *= intLumi
-            err *= intLumi
-            
-            if nproc == 0:
-                s = yld
-            else: 
-                b += yld
-            nproc += 1
-        if b == 0:
-           gr_sb.SetPoint(nsel,cut,0.)
-           if 0 < minsb : minsb = 0.
-           if 0 > maxsb : maxsb = 0.
-        else:
-           if s/b < minsb : minsb = s/b
-           if s/b > maxsb : maxsb = s/b
-           gr_sb.SetPoint(nsel,cut,s/b)
-        for unc in uncertainties:
-            sign = significance(s, unc[0], b, unc[1])
-            rel_unc = dMuOverMu(s, unc[0], b, unc[1])
-            if sign < minsig : minsig = sign
-            if sign > maxsig : maxsig = sign
-            if rel_unc < mindmu : mindmu = rel_unc
-            if rel_unc > maxdmu : maxdmu = rel_unc
-            
-            grs_sign[index].SetPoint(nsel,cut,sign)
-            grs_dmu[index].SetPoint(nsel,cut,rel_unc)
-            
-            title = '#sigma_{{S}}/S = {}, #sigma_{{B}}/B = {}'.format(unc[0], unc[1])
-            
-            grs_sign[index].SetTitle(title)
-            grs_dmu[index].SetTitle(title)
-            
-            index += 1
-        nsel += 1
-
-    index = 0
-    for unc in uncertainties:
-        mg_sign.Add(grs_sign[index])
-        mg_dmu.Add(grs_dmu[index])
-        index += 1
-
-    intLumiab = intLumi/1e+06 
-    rt = 'RECO: Delphes-{}'.format(delphesVersion)
-    lt = '#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}'.format(intLumiab)
-
-    drawMultiGraph(mg_sign, 'optim_sign', lt, rt, pdir, minsig/10., maxsig*10., True)
-    drawMultiGraph(mg_dmu, 'optim_dmu', lt, rt, pdir , mindmu/10., maxdmu*10., True)
-    drawMultiGraph(gr_sb, 'optim_sb', lt, rt, pdir, minsb/10., maxsb*10., True,  False)
-    print 'DONE'
-
-#_____________________________________________________________________________________________________
-def drawMultiGraph(mg, name, lt, rt, pdir, ymin, ymax, log, bl = True):
-
-    myStyle()
-    gROOT.SetBatch(True)
-    ROOT.gStyle.SetOptStat(0000000)
-    ROOT.gStyle.SetTextFont(132)
-
-    canvas = ROOT.TCanvas('', '', 800,600) 
-
-    ROOT.gPad.SetLeftMargin(0.20) ; 
-    ROOT.gPad.SetRightMargin(0.05) ; 
-    ROOT.gPad.SetBottomMargin(0.20) ; 
-    ROOT.gStyle.SetOptStat(0000000);
-    ROOT.gStyle.SetTextFont(132);
-   
-    Tleft = ROOT.TLatex(0.23, 0.92, lt) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextSize(0.044) 
-    Tleft.SetTextFont(132) 
-    
-    Tright = ROOT.TText(0.95, 0.92, rt) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.044) 
-    Tright.SetTextFont(132) 
-
-    canvas.cd(0)
-    
-    mg.Draw("AL")
-    mg.GetYaxis().SetLabelFont(132)
-    mg.GetYaxis().SetTitleFont(132)
-    mg.GetYaxis().SetLabelOffset(0.02)
-    mg.GetYaxis().CenterTitle()
-    mg.GetYaxis().SetNdivisions(505)
-    mg.GetYaxis().SetTitleOffset(1.8)
-
-    mg.GetXaxis().SetTitleFont(132)
-    mg.GetXaxis().SetLabelFont(132)
-    mg.GetXaxis().SetLabelOffset(0.02)
-    mg.GetXaxis().SetTitleOffset(1.5)
-    mg.GetXaxis().SetTitleSize(0.06)
-    mg.GetYaxis().SetTitleSize(0.048)
-    mg.GetXaxis().SetLabelSize(0.06)
-    mg.GetYaxis().SetLabelSize(0.06)
-    mg.SetMinimum(ymin)
-    mg.SetMaximum(ymax)
-    
-    if log: ROOT.gPad.SetLogy()
-
-    if bl:
-        leg = canvas.BuildLegend(0.65,0.70,0.90,0.88)
-        leg.SetTextFont(132) 
-        leg.SetFillColor(0)
-        leg.SetFillStyle(0)
-        leg.SetLineColor(0)
-        leg.Draw() 
-    
-    Tleft.Draw() 
-    Tright.Draw() 
-    canvas.Print('{}/{}.png'.format(pdir, name), 'png')
 
 
 #___________________________________________________________________________
@@ -720,18 +524,14 @@ def formatted(string):
     return finalstr
 
 #___________________________________________________________________________
-def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, delphesVersion, logZ, hfile):
+def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, lt, rt, logZ, hfile):
 
     print ''
     print 'Preparing 2D plots ...'
 
-    myStyle()
     gROOT.SetBatch(True)
 
     intLumiab = intLumi/1e+06 
-
-    rt = "RECO: Delphes-{}".format(delphesVersion)
-    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
 
     ff = "png"
 
@@ -761,19 +561,16 @@ def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, de
 
 
 #___________________________________________________________________________
-def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, delphesVersion, log, stacksig, hfile):
+def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, lt, rt, log, stacksig, hfile):
     
     print ''
     print 'Preparing stacked plots ...'
 
-    myStyle()
     gROOT.SetBatch(True)
 
     intLumiab = intLumi/1e+06 
 
     yl = "Events"
-    rt = "RECO: Delphes-{}".format(delphesVersion)
-    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
 
     ff = "png"
 
@@ -793,7 +590,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     nsel = 0
     
-    legsize = 0.06*float(len(processes))
+    legsize = 0.05*float(len(processes))
     
     for s in selections:
         selstr = 'sel{}'.format(int(nsel))
@@ -808,6 +605,10 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
+             leg.SetShadowColor(10)
+             leg.SetTextSize(0.040)
+             leg.SetTextFont(42)
+
 
              cols = []
              for p in processes:
@@ -825,19 +626,16 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
              drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
     print 'DONE.'
 #___________________________________________________________________________
-def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pdir, delphesVersion, log, hfile):
+def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pdir, lt, rt, log, hfile):
     
     print ''
     print 'Preparing normalized plots ...'
 
-    myStyle()
     gROOT.SetBatch(True)
 
     intLumiab = intLumi/1e+06 
 
     yl = "Normalized Event Rate"
-    rt = "RECO: Delphes-{}".format(delphesVersion)
-    lt = "#sqrt{{s}} = 100 TeV, L = {} ab^{{-1}}".format(intLumiab)
 
     ff = "png"
 
@@ -865,6 +663,10 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
+             leg.SetShadowColor(10)
+             leg.SetTextSize(0.040)
+             leg.SetTextFont(42)
+
 
              cols = []
              for p in processes:
@@ -882,151 +684,13 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
     print 'DONE.'
 
 #_____________________________________________________________________________________________________________
-def draw2D(name, leftText, rightText, format, directory, logZ, histo):
-
-    canvas = ROOT.TCanvas(name, name, 800, 800) 
-
-    canvas.SetRightMargin(0.18)
-    canvas.SetLeftMargin(0.22)
-    canvas.SetBottomMargin(0.18)
-    canvas.SetTopMargin(0.12)
-
-    
-    if logZ: 
-       canvas.SetLogz(1)
-
-    histo.SetContour(999)
-
-    histo.Draw('COLZ')
-
-
-    Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextAlign(11);
-    Tleft.SetTextSize(0.035) 
-    Tleft.SetTextFont(132) 
-    
-    Tright = ROOT.TText(0.90, 0.92, rightText) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.035) 
-    Tright.SetTextFont(132) 
-
-    Tleft.Draw('same') 
-    Tright.Draw('same') 
-    printCanvas(canvas, name, format, directory) 
-
-#_____________________________________________________________________________________________________________
-def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory, logY, histos, colors):
-
-    canvas = ROOT.TCanvas(name, name, 800, 600) 
-    
-    font = 132
-    
-    ROOT.gPad.SetLeftMargin(0.20) ; 
-    ROOT.gPad.SetRightMargin(0.10) ; 
-    ROOT.gPad.SetBottomMargin(0.20) ; 
-    ROOT.gStyle.SetOptStat(0000000);
-    ROOT.gStyle.SetTextFont(font);
-    
-    Tleft = ROOT.TLatex(0.23, 0.82, leftText) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextSize(0.044) 
-    Tleft.SetTextFont(font) 
-    
-    Tright = ROOT.TText(0.90, 0.92, rightText) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.044) 
-    Tright.SetTextFont(font) 
-    
-    maxh = -999.
-    i = 0
-    imax = -999
-    for h in histos:
-        if h.GetMaximum() > maxh:
-            maxh = h.GetMaximum()
-            imax = i
-        i += 1
-
-    if logY:
-       canvas.SetLogy(1)
-
-    
-    if maxh > 0:
-        h = histos[imax]
-
-        h.SetLineWidth(4)
-        h.SetLineColor(colors[imax])
-
-        h.GetXaxis().SetTitleFont(font)
-        h.GetXaxis().SetLabelFont(font)
-        h.GetXaxis().SetTitle(histos[imax].GetXaxis().GetTitle())
-        h.GetYaxis().SetTitle(ylabel)
-        h.GetYaxis().SetTitleFont(font)
-        h.GetYaxis().SetLabelFont(font)
-        h.GetXaxis().SetTitleOffset(1.5)
-        h.GetYaxis().SetTitleOffset(1.6)
-        h.GetXaxis().SetLabelOffset(0.02)
-        h.GetYaxis().SetLabelOffset(0.02)
-        h.GetXaxis().SetTitleSize(0.06)
-        h.GetYaxis().SetTitleSize(0.06)
-        h.GetXaxis().SetLabelSize(0.06)
-        h.GetYaxis().SetLabelSize(0.06)
-        h.GetXaxis().SetNdivisions(505)
-        h.GetYaxis().SetNdivisions(505)
-        h.SetTitle("") 
-        h.Draw("hist") 
-
-        if logY:
-            h.SetMaximum(100*maxh)
-            #h.SetMinimum(0.1*maxh)
-        else:
-            h.SetMaximum(2*maxh)
-            h.SetMinimum(0.)
-
-        i = 0
-        for h in histos:
-           
-           if i == imax: 
-               i += 1
-               continue
-               
-           h.SetLineWidth(4)
-           h.SetLineColor(colors[i])
-           h.Draw('same hist')
-           i += 1
-
-        legend.SetTextFont(font) 
-        legend.Draw() 
-        #Tleft.Draw() 
-        Tright.Draw() 
-        name = name + '_norm'
-        printCanvas(canvas, name, format, directory) 
-
-#_____________________________________________________________________________________________________________
 def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY, stacksig, histos, colors):
 
-    canvas = ROOT.TCanvas(name, name, 800, 600) 
-    
-    font = 132
-    
-    ROOT.gPad.SetLeftMargin(0.20) ; 
-    ROOT.gPad.SetRightMargin(0.10) ; 
-    ROOT.gPad.SetBottomMargin(0.20) ; 
-    ROOT.gStyle.SetOptStat(0000000);
-    ROOT.gStyle.SetTextFont(font);
-    
-    Tleft = ROOT.TLatex(0.23, 0.82, leftText) 
-    Tleft.SetNDC(ROOT.kTRUE) 
-    Tleft.SetTextSize(0.044) 
-    Tleft.SetTextFont(font) 
-    
-    Tright = ROOT.TText(0.90, 0.92, rightText) ;
-    Tright.SetTextAlign(31);
-    Tright.SetNDC(ROOT.kTRUE) 
-    Tright.SetTextSize(0.044) 
-    Tright.SetTextFont(font) 
+    canvas = ROOT.TCanvas(name, name, 600, 600) 
+    canvas.SetLogy(logY)
+    canvas.SetTicks(1,1)
+    canvas.SetLeftMargin(0.14)
+    canvas.SetRightMargin(0.08)
     
     # first retrieve maximum 
     sumhistos = histos[0].Clone()
@@ -1086,13 +750,13 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
 
     hStack.Draw("hist")
 
-    hStack.GetXaxis().SetTitleFont(font)
-    hStack.GetXaxis().SetLabelFont(font)
+    #hStack.GetXaxis().SetTitleFont(font)
+    #hStack.GetXaxis().SetLabelFont(font)
     hStack.GetXaxis().SetTitle(histos[1].GetXaxis().GetTitle())
     hStack.GetYaxis().SetTitle(ylabel)
-    hStack.GetYaxis().SetTitleFont(font)
-    hStack.GetYaxis().SetLabelFont(font)
-    hStack.GetXaxis().SetTitleOffset(1.5)
+    #hStack.GetYaxis().SetTitleFont(font)
+    #hStack.GetYaxis().SetLabelFont(font)
+    '''hStack.GetXaxis().SetTitleOffset(1.5)
     hStack.GetYaxis().SetTitleOffset(1.6)
     hStack.GetXaxis().SetLabelOffset(0.02)
     hStack.GetYaxis().SetLabelOffset(0.02)
@@ -1102,7 +766,11 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     hStack.GetYaxis().SetLabelSize(0.06)
     hStack.GetXaxis().SetNdivisions(505);
     hStack.GetYaxis().SetNdivisions(505);
-    hStack.SetTitle("") 
+    hStack.SetTitle("") '''
+
+    hStack.GetYaxis().SetTitleOffset(1.75)
+    hStack.GetXaxis().SetTitleOffset(1.40)
+    
     #hStack.SetMaximum(1.5*maxh) 
     
     if logY:
@@ -1115,11 +783,161 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     if not stacksig:
         histos[0].Draw("same hist")
    
-    legend.SetTextFont(font) 
+    #legend.SetTextFont(font) 
     legend.Draw() 
-    Tleft.Draw() 
-    Tright.Draw() 
+    
+    Text = ROOT.TLatex()
+    
+    Text.SetNDC() 
+    Text.SetTextAlign(31);
+    Text.SetTextSize(0.04) 
+
+    text = '#it{' + leftText +'}'
+    
+    Text.DrawLatex(0.90, 0.92, text) 
+
+    rightText = re.split(",", rightText)
+    text = '#bf{#it{' + rightText[0] +'}}'
+    
+    Text.SetTextAlign(12);
+    Text.SetNDC(ROOT.kTRUE) 
+    Text.SetTextSize(0.04) 
+    Text.DrawLatex(0.18, 0.83, text)
+    
+    text = '#bf{#it{' + rightText[1] +'}}'
+    Text.DrawLatex(0.18, 0.78, text)
+    #Text.DrawLatex(0.18, 0.78, rightText[1])
+
+    canvas.RedrawAxis()
+    #canvas.Update()
+    canvas.GetFrame().SetBorderSize( 12 )
+    canvas.Modified()
+    canvas.Update()
+
     printCanvas(canvas, name, format, directory) 
+
+#_____________________________________________________________________________________________________________
+def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory, logY, histos, colors):
+
+    canvas = ROOT.TCanvas(name, name, 600, 600) 
+    canvas.SetLogy(logY)
+    canvas.SetTicks(1,1)
+    canvas.SetLeftMargin(0.14)
+    canvas.SetRightMargin(0.08)
+    ROOT.gStyle.SetOptStat(0000000)    
+    
+    maxh = -999.
+    i = 0
+    imax = -999
+    for h in histos:
+        if h.GetMaximum() > maxh:
+            maxh = h.GetMaximum()
+            imax = i
+        i += 1
+
+    if logY:
+       canvas.SetLogy(1)
+
+    if maxh > 0:
+        h = histos[imax]
+
+        h.SetLineWidth(4)
+        h.SetLineColor(colors[imax])
+
+        h.GetYaxis().SetTitleOffset(1.75)
+        h.GetXaxis().SetTitleOffset(1.40)
+        h.GetXaxis().SetTitle(histos[imax].GetXaxis().GetTitle())
+        h.GetYaxis().SetTitle(ylabel)
+
+        '''h.GetXaxis().SetTitleFont(font)
+        h.GetXaxis().SetLabelFont(font)
+        h.GetYaxis().SetTitleFont(font)
+        h.GetYaxis().SetLabelFont(font)
+        h.GetXaxis().SetTitleOffset(1.5)
+        h.GetYaxis().SetTitleOffset(1.6)
+        h.GetXaxis().SetLabelOffset(0.02)
+        h.GetYaxis().SetLabelOffset(0.02)
+        h.GetXaxis().SetTitleSize(0.06)
+        h.GetYaxis().SetTitleSize(0.06)
+        h.GetXaxis().SetLabelSize(0.06)
+        h.GetYaxis().SetLabelSize(0.06)
+        h.GetXaxis().SetNdivisions(505)
+        h.GetYaxis().SetNdivisions(505)'''
+        h.SetTitle("") 
+        h.Draw("hist") 
+
+        if logY:
+            h.SetMaximum(100*maxh)
+            #h.SetMinimum(0.1*maxh)
+        else:
+            h.SetMaximum(2*maxh)
+            h.SetMinimum(0.)
+
+        i = 0
+        for h in histos:
+           
+           if i == imax: 
+               i += 1
+               continue
+               
+           h.SetLineWidth(4)
+           h.SetLineColor(colors[i])
+           h.Draw('same hist')
+           i += 1
+
+        #legend.SetTextFont(font) 
+        legend.Draw() 
+
+        Text = ROOT.TLatex()
+
+        Text.SetNDC() 
+        Text.SetTextAlign(31)
+        Text.SetTextSize(0.04)
+
+        text = '#it{' + leftText +'}'
+
+        Text.DrawLatex(0.90, 0.92, text) 
+
+        name = name + '_norm'
+        printCanvas(canvas, name, format, directory) 
+
+
+#_____________________________________________________________________________________________________________
+def draw2D(name, leftText, rightText, format, directory, logZ, histo):
+
+    canvas = ROOT.TCanvas(name, name, 800, 800) 
+
+    canvas.SetRightMargin(0.18)
+    canvas.SetLeftMargin(0.22)
+    canvas.SetBottomMargin(0.18)
+    canvas.SetTopMargin(0.12)
+
+    
+    if logZ: 
+       canvas.SetLogz(1)
+
+    histo.SetContour(999)
+
+    histo.Draw('COLZ')
+
+
+    Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
+    Tleft.SetNDC(ROOT.kTRUE) 
+    Tleft.SetTextAlign(11);
+    Tleft.SetTextSize(0.035) 
+    Tleft.SetTextFont(132) 
+    
+    Tright = ROOT.TText(0.90, 0.92, rightText) ;
+    Tright.SetTextAlign(31);
+    Tright.SetNDC(ROOT.kTRUE) 
+    Tright.SetTextSize(0.035) 
+    Tright.SetTextFont(132) 
+
+    Tleft.Draw('same') 
+    Tright.Draw('same') 
+    printCanvas(canvas, name, format, directory) 
+
+
 
 #____________________________________________________
 def printCanvas(canvas, name, format, directory):
@@ -1129,90 +947,3 @@ def printCanvas(canvas, name, format, directory):
                 os.system("mkdir "+directory)
         outFile = os.path.join(directory, name) + "." + format
         canvas.Print(outFile)
-
-#____________________________________________________
-def myStyle():
-    import ROOT
-
-    font = 132
-    ROOT.gStyle.SetFrameBorderMode(0)
-    ROOT.gStyle.SetCanvasBorderMode(0)
-    ROOT.gStyle.SetPadBorderMode(0)
-
-    ROOT.gStyle.SetFrameFillColor(0)
-    ROOT.gStyle.SetFrameFillStyle(0)
-
-    ROOT.gStyle.SetPadColor(0)
-    ROOT.gStyle.SetCanvasColor(0)
-    ROOT.gStyle.SetTitleColor(1)
-    ROOT.gStyle.SetStatColor(0)
-
-    ROOT.gStyle.SetLegendBorderSize(0)
-    ROOT.gStyle.SetLegendFillColor(0)
-    ROOT.gStyle.SetLegendFont(font)
-    
-    # set the paper & margin sizes
-    '''ROOT.gPad.SetLeftMargin(0.22)
-    ROOT.gPad.SetRightMargin(0.10)
-    ROOT.gPad.SetBottomMargin(0.18)'''
-    #ROOT.gPad.SetLogy()
-    #ROOT.gPad.SetGridy()
-    ROOT.gStyle.SetOptStat(0000000)
-    ROOT.gStyle.SetTextFont(font)
-
-    ROOT.gStyle.SetTextFont(font)
-    ROOT.gStyle.SetTextSize(0.05)
-    ROOT.gStyle.SetLabelFont(font,"XYZ")
-    ROOT.gStyle.SetTitleFont(font,"XYZ")
-    ROOT.gStyle.SetLabelSize(0.05,"XYZ") #0.035
-    ROOT.gStyle.SetTitleSize(0.05,"XYZ")
-    
-    ROOT.gStyle.SetTitleOffset(1.25,"X")
-    ROOT.gStyle.SetTitleOffset(1.95,"Y")
-    ROOT.gStyle.SetLabelOffset(0.02,"XY")
-    
-    # use bold lines and markers
-    ROOT.gStyle.SetMarkerStyle(8)
-    ROOT.gStyle.SetHistLineWidth(3)
-    ROOT.gStyle.SetLineWidth(1)
-
-    ROOT.gStyle.SetNdivisions(505,"xy")
-
-    # do not display any of the standard histogram decorations
-    ROOT.gStyle.SetOptTitle(0)
-    ROOT.gStyle.SetOptStat(0) #("m")
-    ROOT.gStyle.SetOptFit(0)
-    
-    #ROOT.gStyle.SetPalette(1,0)
-    ROOT.gStyle.cd()
-    ROOT.gROOT.ForceStyle()
-
-#________________________________________________________________________________
-def set_palette(name='palette', ncontours=999):
-    """Set a color palette from a given RGB list
-    stops, red, green and blue should all be lists of the same length
-    see set_decent_colors for an example"""
-
-    if name == "gray" or name == "grayscale":
-        stops = [0.00, 0.34, 0.61, 0.84, 1.00]
-        red   = [1.00, 0.84, 0.61, 0.34, 0.00]
-        green = [1.00, 0.84, 0.61, 0.34, 0.00]
-        blue  = [1.00, 0.84, 0.61, 0.34, 0.00]
-    # elif name == "whatever":
-        # (define more palettes)
-    else:
-        # default palette, looks cool
-        stops = [0.00, 0.34, 0.61, 0.84, 1.00]
-        red   = [0.00, 0.00, 0.87, 1.00, 0.51]
-        green = [0.00, 0.81, 1.00, 0.20, 0.00]
-        blue  = [0.51, 1.00, 0.12, 0.00, 0.00]
-
-    s = array('d', stops)
-    r = array('d', red)
-    g = array('d', green)
-    b = array('d', blue)
-
-    npoints = len(s)
-    ROOT.TColor.CreateGradientColorTable(npoints, s, r, g, b, ncontours)
-    ROOT.gStyle.SetNumberContours(ncontours)
-
