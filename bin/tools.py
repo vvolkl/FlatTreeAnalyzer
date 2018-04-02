@@ -254,13 +254,13 @@ def producePlots(param, block, sel, ops):
         lt = "FCC-hh Simulation (Delphes)"
         rt = "#sqrt{{s}} = 100 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
 
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
-        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
+        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
         #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
         #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
 
         '''
-	produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
+        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, hfile)
 
         produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, True, hfile)
@@ -571,7 +571,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     intLumiab = intLumi/1e+06 
 
-    yl = "Events"
+    yl = "events"
 
     ff = "pdf"
 
@@ -618,10 +618,10 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  hh = TH1D.Clone(h)
                  hh.Scale(intLumi)
                  
-		 # rebin if needed
-		 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
+                 # rebin if needed
+                 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
 
-		 histos.append(hh)
+                 histos.append(hh)
                  cols.append(colors[p])
                  if i > 0: 
                      leg.AddEntry(hh,p,"f")
@@ -679,10 +679,10 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
                  h = hfile.Get(hname)
                  hh = TH1D.Clone(h)
 
-		 # rebin if needed
-		 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
+                 # rebin if needed
+                 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
 
-		 if hh.Integral(0, hh.GetNbinsX()+1) > 0:
+                 if hh.Integral(0, hh.GetNbinsX()+1) > 0:
                      hh.Scale(1./hh.Integral(0, hh.GetNbinsX()+1))
                  histos.append(hh)
                  cols.append(colors[p])
@@ -706,13 +706,16 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     iterh = iter(histos)
     next(iterh)
     
-    if 'GeV' in str(histos[1].GetXaxis().GetTitle()):
-        bwidth=int(sumhistos.GetBinWidth(1))
-        ylabel+='/%i[GeV]'%bwidth
-
-    elif 'TeV' in str(histos[1].GetXaxis().GetTitle()):
+    unit = 'GeV'
+    if 'TeV' in str(histos[1].GetXaxis().GetTitle()):
+        unit = 'TeV'
+    
+    if unit in str(histos[1].GetXaxis().GetTitle()):
         bwidth=sumhistos.GetBinWidth(1)
-        ylabel+='/%.1f[TeV]'%bwidth
+        if bwidth.is_integer():
+            ylabel+=' / {} {}'.format(int(bwidth), unit)
+        else:
+            ylabel+=' / {:.1f} {}'.format(bwidth, unit)
 
     for h in iterh:
       sumhistos.Add(h)
@@ -919,7 +922,6 @@ def draw2D(name, leftText, rightText, format, directory, logZ, histo):
     canvas.SetBottomMargin(0.18)
     canvas.SetTopMargin(0.12)
 
-    
     if logZ: 
        canvas.SetLogz(1)
 
