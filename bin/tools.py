@@ -252,19 +252,20 @@ def producePlots(param, block, sel, ops):
         intLumiab = lumi/1e+06 
 
         lt = "FCC-hh Simulation (Delphes)"
-        rt = "#sqrt{{s}} = 100 TeV, L = {:.0f} ab^{{-1}}".format(intLumiab)
+        rt = "#sqrt{{s}} = 100 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
 
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
+        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
+        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
+        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
 
-        produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
+        '''
+	produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, hfile)
 
         produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, True, hfile)
         produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, False, hfile)
-
+        '''
 
 
 
@@ -590,23 +591,23 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     nsel = 0
     
-    legsize = 0.05*float(len(processes))
+    legsize = 0.04*float(len(processes))
     
     for s in selections:
         selstr = 'sel{}'.format(int(nsel))
         nsel += 1
-        for v in variables.keys() :
+        for v, dic in variables.iteritems() :
              histos = []
              i = 0
 
              filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
 
-             leg = TLegend(0.60,0.88 - legsize,0.90,0.88)
+             leg = TLegend(0.60,0.86 - legsize,0.86,0.88)
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
              leg.SetShadowColor(10)
-             leg.SetTextSize(0.040)
+             leg.SetTextSize(0.035)
              leg.SetTextFont(42)
 
 
@@ -616,7 +617,11 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  h = hfile.Get(hname)
                  hh = TH1D.Clone(h)
                  hh.Scale(intLumi)
-                 histos.append(hh)
+                 
+		 # rebin if needed
+		 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
+
+		 histos.append(hh)
                  cols.append(colors[p])
                  if i > 0: 
                      leg.AddEntry(hh,p,"f")
@@ -664,7 +669,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
              leg.SetShadowColor(10)
-             leg.SetTextSize(0.040)
+             leg.SetTextSize(0.035)
              leg.SetTextFont(42)
 
 
@@ -673,7 +678,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
                  hname = '{}_{}_{}'.format(p, selstr, v)
                  h = hfile.Get(hname)
                  hh = TH1D.Clone(h)
-                 if hh.Integral(0, hh.GetNbinsX()+1) > 0:
+		 if hh.Integral(0, hh.GetNbinsX()+1) > 0:
                      hh.Scale(1./hh.Integral(0, hh.GetNbinsX()+1))
                  histos.append(hh)
                  cols.append(colors[p])
@@ -704,9 +709,6 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     elif 'TeV' in str(histos[1].GetXaxis().GetTitle()):
         bwidth=sumhistos.GetBinWidth(1)
         ylabel+='/%.1f[TeV]'%bwidth
-
-  #  if sumhistos.GetNbinsX()*sumhistos.GetBinWidth(1)>10000:
-        
 
     for h in iterh:
       sumhistos.Add(h)
@@ -768,7 +770,7 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     hStack.GetYaxis().SetNdivisions(505);
     hStack.SetTitle("") '''
 
-    hStack.GetYaxis().SetTitleOffset(1.75)
+    hStack.GetYaxis().SetTitleOffset(1.95)
     hStack.GetXaxis().SetTitleOffset(1.40)
     
     #hStack.SetMaximum(1.5*maxh) 
@@ -805,6 +807,7 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     Text.DrawLatex(0.18, 0.83, text)
     
     text = '#bf{#it{' + rightText[1] +'}}'
+    Text.SetTextSize(0.035) 
     Text.DrawLatex(0.18, 0.78, text)
     #Text.DrawLatex(0.18, 0.78, rightText[1])
 
