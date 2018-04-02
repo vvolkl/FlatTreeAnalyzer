@@ -254,21 +254,18 @@ def producePlots(param, block, sel, ops):
         lt = "FCC-hh Simulation (Delphes)"
         rt = "#sqrt{{s}} = 100 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
 
-        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
+        
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
-        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
-        #produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
-
-        '''
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
+        
+        
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, hfile)
-
+        
         produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, True, hfile)
         produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, False, hfile)
-        '''
-
-
-
 
     print '======================================================================================'
     print '======================================================================================'
@@ -854,7 +851,7 @@ def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory,
         h.SetLineWidth(4)
         h.SetLineColor(colors[imax])
 
-        h.GetYaxis().SetTitleOffset(1.75)
+        h.GetYaxis().SetTitleOffset(1.90)
         h.GetXaxis().SetTitleOffset(1.40)
         h.GetXaxis().SetTitle(histos[imax].GetXaxis().GetTitle())
         h.GetYaxis().SetTitle(ylabel)
@@ -915,22 +912,22 @@ def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory,
 #_____________________________________________________________________________________________________________
 def draw2D(name, leftText, rightText, format, directory, logZ, histo):
 
-    canvas = ROOT.TCanvas(name, name, 800, 800) 
-
-    canvas.SetRightMargin(0.18)
-    canvas.SetLeftMargin(0.22)
-    canvas.SetBottomMargin(0.18)
-    canvas.SetTopMargin(0.12)
-
-    if logZ: 
-       canvas.SetLogz(1)
+    canvas = ROOT.TCanvas(name, name, 600, 600) 
+    canvas.SetLogz(logZ)
+    canvas.SetTicks(1,1)
+    canvas.SetLeftMargin(0.14)
+    canvas.SetRightMargin(0.14)
+    ROOT.gStyle.SetOptStat(0000000)    
 
     histo.SetContour(999)
 
     histo.Draw('COLZ')
 
+    histo.SetTitle("") 
+    histo.GetYaxis().SetTitleOffset(1.90)
+    histo.GetXaxis().SetTitleOffset(1.40)
 
-    Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
+    '''Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
     Tleft.SetNDC(ROOT.kTRUE) 
     Tleft.SetTextAlign(11);
     Tleft.SetTextSize(0.035) 
@@ -941,9 +938,41 @@ def draw2D(name, leftText, rightText, format, directory, logZ, histo):
     Tright.SetNDC(ROOT.kTRUE) 
     Tright.SetTextSize(0.035) 
     Tright.SetTextFont(132) 
+    '''
+    Text = ROOT.TLatex()    
+    Text.SetNDC() 
+    Text.SetTextAlign(31);
+    Text.SetTextSize(0.04) 
 
-    Tleft.Draw('same') 
-    Tright.Draw('same') 
+    text = '#it{' + leftText +'}'
+    
+    Text.DrawLatex(0.90, 0.92, text) 
+
+    rightText = re.split(",", rightText)
+    text = '#color[1]{#bf{#it{' + rightText[0] +'}}}'
+    
+    Text.SetTextAlign(22);
+    Text.SetNDC(ROOT.kTRUE) 
+    Text.SetTextSize(0.04) 
+    Text.DrawLatex(0.26, 0.86, text)
+    
+    text = '#color[1]{#bf{#it{' + rightText[1] +'}}}'
+    Text.SetTextSize(0.035) 
+    Text.DrawLatex(0.26, 0.81, text)
+    #Text.DrawLatex(0.12, 0.78, rightText[1])
+    
+    
+    canvas.RedrawAxis()
+    #canvas.Update()
+    canvas.GetFrame().SetBorderSize( 12 )
+    canvas.Modified()
+    canvas.Update()
+
+
+
+
+    #Tleft.Draw('same') 
+    #Tright.Draw('same') 
     printCanvas(canvas, name, format, directory) 
 
 
