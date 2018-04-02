@@ -89,7 +89,7 @@ def main():
         processCmd('rm -rf {}'.format(analysisDir))
         os.makedirs(analysisDir)
 
-    elif os.path.exists(analysisDir) and not ops.clean:
+    elif os.path.exists(analysisDir) and not ops.clean and not ops.sel:
         print ''
         sys.exit('Output dir: "'+analysisDir+'" exists. To overwrite existing dir run with --force option')
     

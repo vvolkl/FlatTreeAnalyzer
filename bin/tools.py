@@ -252,22 +252,20 @@ def producePlots(param, block, sel, ops):
         intLumiab = lumi/1e+06 
 
         lt = "FCC-hh Simulation (Delphes)"
-        rt = "#sqrt{{s}} = 100 TeV, L = {:.0f} ab^{{-1}}".format(intLumiab)
+        rt = "#sqrt{{s}} = 100 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
 
+        
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
-
+        
+        
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, hfile)
-
+        
         produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, True, hfile)
         produce2DPlots(processes, selections, variables2D, colors, lumi, pdir, lt, rt, False, hfile)
-
-
-
-
 
     print '======================================================================================'
     print '======================================================================================'
@@ -533,7 +531,7 @@ def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, lt
 
     intLumiab = intLumi/1e+06 
 
-    ff = "png"
+    ff = "pdf"
 
     logstr = ''
     if logZ:
@@ -570,9 +568,9 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     intLumiab = intLumi/1e+06 
 
-    yl = "Events"
+    yl = "events"
 
-    ff = "png"
+    ff = "pdf"
 
     logstr = ''
     if log:
@@ -590,23 +588,23 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     nsel = 0
     
-    legsize = 0.05*float(len(processes))
+    legsize = 0.04*float(len(processes))
     
     for s in selections:
         selstr = 'sel{}'.format(int(nsel))
         nsel += 1
-        for v in variables.keys() :
+        for v, dic in variables.iteritems() :
              histos = []
              i = 0
 
              filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
 
-             leg = TLegend(0.60,0.88 - legsize,0.90,0.88)
+             leg = TLegend(0.60,0.86 - legsize,0.86,0.88)
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
              leg.SetShadowColor(10)
-             leg.SetTextSize(0.040)
+             leg.SetTextSize(0.035)
              leg.SetTextFont(42)
 
 
@@ -616,6 +614,10 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  h = hfile.Get(hname)
                  hh = TH1D.Clone(h)
                  hh.Scale(intLumi)
+                 
+                 # rebin if needed
+                 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
+
                  histos.append(hh)
                  cols.append(colors[p])
                  if i > 0: 
@@ -637,7 +639,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
 
     yl = "Normalized Event Rate"
 
-    ff = "png"
+    ff = "pdf"
 
     logstr = ''
     if log:
@@ -653,7 +655,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
     for s in selections:
         selstr = 'sel{}'.format(int(nsel))
         nsel += 1
-        for v in variables.keys() :
+        for v, dic in variables.iteritems() :
              histos = []
              i = 0
 
@@ -664,7 +666,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
              leg.SetShadowColor(10)
-             leg.SetTextSize(0.040)
+             leg.SetTextSize(0.035)
              leg.SetTextFont(42)
 
 
@@ -673,6 +675,10 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
                  hname = '{}_{}_{}'.format(p, selstr, v)
                  h = hfile.Get(hname)
                  hh = TH1D.Clone(h)
+
+                 # rebin if needed
+                 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
+
                  if hh.Integral(0, hh.GetNbinsX()+1) > 0:
                      hh.Scale(1./hh.Integral(0, hh.GetNbinsX()+1))
                  histos.append(hh)
@@ -697,16 +703,16 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     iterh = iter(histos)
     next(iterh)
     
-    if 'GeV' in str(histos[1].GetXaxis().GetTitle()):
-        bwidth=int(sumhistos.GetBinWidth(1))
-        ylabel+='/%i[GeV]'%bwidth
-
-    elif 'TeV' in str(histos[1].GetXaxis().GetTitle()):
+    unit = 'GeV'
+    if 'TeV' in str(histos[1].GetXaxis().GetTitle()):
+        unit = 'TeV'
+    
+    if unit in str(histos[1].GetXaxis().GetTitle()):
         bwidth=sumhistos.GetBinWidth(1)
-        ylabel+='/%.1f[TeV]'%bwidth
-
-  #  if sumhistos.GetNbinsX()*sumhistos.GetBinWidth(1)>10000:
-        
+        if bwidth.is_integer():
+            ylabel+=' / {} {}'.format(int(bwidth), unit)
+        else:
+            ylabel+=' / {:.1f} {}'.format(bwidth, unit)
 
     for h in iterh:
       sumhistos.Add(h)
@@ -768,7 +774,7 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     hStack.GetYaxis().SetNdivisions(505);
     hStack.SetTitle("") '''
 
-    hStack.GetYaxis().SetTitleOffset(1.75)
+    hStack.GetYaxis().SetTitleOffset(1.95)
     hStack.GetXaxis().SetTitleOffset(1.40)
     
     #hStack.SetMaximum(1.5*maxh) 
@@ -805,6 +811,7 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     Text.DrawLatex(0.18, 0.83, text)
     
     text = '#bf{#it{' + rightText[1] +'}}'
+    Text.SetTextSize(0.035) 
     Text.DrawLatex(0.18, 0.78, text)
     #Text.DrawLatex(0.18, 0.78, rightText[1])
 
@@ -844,7 +851,7 @@ def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory,
         h.SetLineWidth(4)
         h.SetLineColor(colors[imax])
 
-        h.GetYaxis().SetTitleOffset(1.75)
+        h.GetYaxis().SetTitleOffset(1.90)
         h.GetXaxis().SetTitleOffset(1.40)
         h.GetXaxis().SetTitle(histos[imax].GetXaxis().GetTitle())
         h.GetYaxis().SetTitle(ylabel)
@@ -905,23 +912,22 @@ def drawNormalized(name, ylabel, legend, leftText, rightText, format, directory,
 #_____________________________________________________________________________________________________________
 def draw2D(name, leftText, rightText, format, directory, logZ, histo):
 
-    canvas = ROOT.TCanvas(name, name, 800, 800) 
-
-    canvas.SetRightMargin(0.18)
-    canvas.SetLeftMargin(0.22)
-    canvas.SetBottomMargin(0.18)
-    canvas.SetTopMargin(0.12)
-
-    
-    if logZ: 
-       canvas.SetLogz(1)
+    canvas = ROOT.TCanvas(name, name, 600, 600) 
+    canvas.SetLogz(logZ)
+    canvas.SetTicks(1,1)
+    canvas.SetLeftMargin(0.14)
+    canvas.SetRightMargin(0.14)
+    ROOT.gStyle.SetOptStat(0000000)    
 
     histo.SetContour(999)
 
     histo.Draw('COLZ')
 
+    histo.SetTitle("") 
+    histo.GetYaxis().SetTitleOffset(1.90)
+    histo.GetXaxis().SetTitleOffset(1.40)
 
-    Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
+    '''Tleft = ROOT.TLatex(0.23, 0.92, leftText) 
     Tleft.SetNDC(ROOT.kTRUE) 
     Tleft.SetTextAlign(11);
     Tleft.SetTextSize(0.035) 
@@ -932,9 +938,41 @@ def draw2D(name, leftText, rightText, format, directory, logZ, histo):
     Tright.SetNDC(ROOT.kTRUE) 
     Tright.SetTextSize(0.035) 
     Tright.SetTextFont(132) 
+    '''
+    Text = ROOT.TLatex()    
+    Text.SetNDC() 
+    Text.SetTextAlign(31);
+    Text.SetTextSize(0.04) 
 
-    Tleft.Draw('same') 
-    Tright.Draw('same') 
+    text = '#it{' + leftText +'}'
+    
+    Text.DrawLatex(0.90, 0.92, text) 
+
+    rightText = re.split(",", rightText)
+    text = '#color[1]{#bf{#it{' + rightText[0] +'}}}'
+    
+    Text.SetTextAlign(22);
+    Text.SetNDC(ROOT.kTRUE) 
+    Text.SetTextSize(0.04) 
+    Text.DrawLatex(0.26, 0.86, text)
+    
+    text = '#color[1]{#bf{#it{' + rightText[1] +'}}}'
+    Text.SetTextSize(0.035) 
+    Text.DrawLatex(0.26, 0.81, text)
+    #Text.DrawLatex(0.12, 0.78, rightText[1])
+    
+    
+    canvas.RedrawAxis()
+    #canvas.Update()
+    canvas.GetFrame().SetBorderSize( 12 )
+    canvas.Modified()
+    canvas.Update()
+
+
+
+
+    #Tleft.Draw('same') 
+    #Tright.Draw('same') 
     printCanvas(canvas, name, format, directory) 
 
 
