@@ -658,7 +658,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
     for s in selections:
         selstr = 'sel{}'.format(int(nsel))
         nsel += 1
-        for v in variables.keys() :
+        for v, dic in variables.iteritems() :
              histos = []
              i = 0
 
@@ -678,6 +678,10 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
                  hname = '{}_{}_{}'.format(p, selstr, v)
                  h = hfile.Get(hname)
                  hh = TH1D.Clone(h)
+
+		 # rebin if needed
+		 hh.Rebin(int(hh.GetNbinsX()/dic['bin']))
+
 		 if hh.Integral(0, hh.GetNbinsX()+1) > 0:
                      hh.Scale(1./hh.Integral(0, hh.GetNbinsX()+1))
                  histos.append(hh)
