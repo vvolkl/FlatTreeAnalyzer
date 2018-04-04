@@ -544,7 +544,7 @@ def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, lt
 
     intLumiab = intLumi/1e+06 
 
-    ff = "png"
+    ff = "eps"
 
     logstr = ''
     if logZ:
@@ -583,7 +583,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     yl = "events"
 
-    ff = "png"
+    ff = "eps"
 
     logstr = ''
     if log:
@@ -652,7 +652,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
 
     yl = "Normalized Event Rate"
 
-    ff = "png"
+    ff = "eps"
 
     logstr = ''
     if log:
