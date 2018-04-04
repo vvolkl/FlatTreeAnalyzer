@@ -84,15 +84,16 @@ def main():
     sel = ops.sel
 
     # check if output dir exists already
-    if ops.force and not ops.clean:
+    '''if ops.force and not ops.clean:
         print 'removing {}'.format(analysisDir)
         processCmd('rm -rf {}'.format(analysisDir))
         os.makedirs(analysisDir)
 
-    elif os.path.exists(analysisDir) and not ops.clean:
+    elif os.path.exists(analysisDir) and not ops.clean and not ops.sel:
         print ''
         sys.exit('Output dir: "'+analysisDir+'" exists. To overwrite existing dir run with --force option')
-    
+    ''' 
+
     # retrieve list of processes from heppy cfg
     processes = []
     with open(heppyCfg) as f:
