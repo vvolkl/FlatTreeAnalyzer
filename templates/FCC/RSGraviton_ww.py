@@ -66,21 +66,21 @@ colors['vv'] = ROOT.kGreen+2
 colors['vj'] = ROOT.kMagenta+2
 
 signal_groups = collections.OrderedDict()
-signal_groups['m_{RSG} = 10 TeV'] = ['pp_RSGraviton_10TeV_ww']
-signal_groups['m_{RSG} = 15 TeV'] = ['pp_RSGraviton_15TeV_ww']
-signal_groups['m_{RSG} = 20 TeV'] = ['pp_RSGraviton_20TeV_ww']
-signal_groups['m_{RSG} = 25 TeV'] = ['pp_RSGraviton_25TeV_ww']
-signal_groups['m_{RSG} = 30 TeV'] = ['pp_RSGraviton_30TeV_ww']
-signal_groups['m_{RSG} = 35 TeV'] = ['pp_RSGraviton_35TeV_ww']
+signal_groups['m_{RSG} = 10 TeV'] = ['p8_pp_RSGraviton_10TeV_ww']
+signal_groups['m_{RSG} = 15 TeV'] = ['p8_pp_RSGraviton_15TeV_ww']
+signal_groups['m_{RSG} = 20 TeV'] = ['p8_pp_RSGraviton_20TeV_ww']
+signal_groups['m_{RSG} = 25 TeV'] = ['p8_pp_RSGraviton_25TeV_ww']
+signal_groups['m_{RSG} = 30 TeV'] = ['p8_pp_RSGraviton_30TeV_ww']
+signal_groups['m_{RSG} = 35 TeV'] = ['p8_pp_RSGraviton_35TeV_ww']
 
 
 
 background_groups = collections.OrderedDict()
 
-background_groups['vv']  = ['pp_vv_lo'] 
-background_groups['vj'] = ['pp_vj_4f_M_5000_inf']
-background_groups['tt']  = ['pp_tt_lo']
-background_groups['QCD'] = ['pp_jj_lo']
+background_groups['vv']  = ['mgp8_pp_vv_lo'] 
+background_groups['vj']  = ['mgp8_pp_vj_4f_M_5000_inf']
+background_groups['tt']  = ['mgp8_pp_tt_lo']
+background_groups['QCD'] = ['mgp8_pp_jj_lo_5f']
 
 
 
@@ -109,49 +109,56 @@ selbase += ' && rapiditySeparation_trk02<2.4'
 #####################
 # CUT base selection
 #####################
-sel1 = selbase + ' && Jet1_trk02_SD_Corr_m > 50.&& Jet1_trk02_SD_Corr_m < 100. && Jet2_trk02_SD_Corr_m > 50.&& Jet2_trk02_SD_Corr_m < 100. && Jet1_trk02_tau21 <0.6 && Jet2_trk02_tau21 <0.6'
-sel2 = sel1 +    ' && Jet1_Flow45 < 0.07 && Jet2_Flow45 < 0.07 && Jet1_Flow55 < 0.07 && Jet2_Flow55 < 0.07'
-
-#####################
-# MVA selection
-#####################
-#sel2 = selbase + ' && BDTvariable_qcd > 0.27'
+sel1c = selbase + ' && Jet1_trk02_SD_Corr_m > 50.&& Jet1_trk02_SD_Corr_m < 100. && Jet2_trk02_SD_Corr_m > 50.&& Jet2_trk02_SD_Corr_m < 100. && Jet1_trk02_tau21 <0.6 && Jet2_trk02_tau21 <0.6'
+sel2c = sel1c   + ' && Jet1_Flow45 < 0.07 && Jet2_Flow45 < 0.07 && Jet1_Flow55 < 0.07 && Jet2_Flow55 < 0.07'
 
 #####################
 # anti-QCD jet tagger selection
 #####################
-#sel1 = selbase + ' && Jet1_Whad_vs_QCD_tagger>0.15 && Jet2_Whad_vs_QCD_tagger>0.15'
-### + extra cuts
-#sel2 = sel1    + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
+sel1t = selbase + ' && Jet1_Whad_vs_QCD_tagger>0.15 && Jet2_Whad_vs_QCD_tagger>0.15'
+## + extra cuts
+sel2t = sel1t   + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
 
 selections = collections.OrderedDict()
 selections['m_{RSG} = 10 TeV'] = []
 selections['m_{RSG} = 10 TeV'].append(selbase)
-selections['m_{RSG} = 10 TeV'].append(sel1)
-selections['m_{RSG} = 10 TeV'].append(sel2)
+selections['m_{RSG} = 10 TeV'].append(sel1c)
+selections['m_{RSG} = 10 TeV'].append(sel2c)
+selections['m_{RSG} = 10 TeV'].append(sel1t)
+selections['m_{RSG} = 10 TeV'].append(sel2t)
 
 selections['m_{RSG} = 15 TeV'] = []
 selections['m_{RSG} = 15 TeV'].append(selbase)
-selections['m_{RSG} = 15 TeV'].append(sel1)
-selections['m_{RSG} = 15 TeV'].append(sel2)
+selections['m_{RSG} = 15 TeV'].append(sel1c)
+selections['m_{RSG} = 15 TeV'].append(sel2c)
+selections['m_{RSG} = 15 TeV'].append(sel1t)
+selections['m_{RSG} = 15 TeV'].append(sel2t)
 
 selections['m_{RSG} = 20 TeV'] = []
 selections['m_{RSG} = 20 TeV'].append(selbase)
-selections['m_{RSG} = 20 TeV'].append(sel1)
-selections['m_{RSG} = 20 TeV'].append(sel2)
+selections['m_{RSG} = 20 TeV'].append(sel1c)
+selections['m_{RSG} = 20 TeV'].append(sel2c)
+selections['m_{RSG} = 20 TeV'].append(sel1t)
+selections['m_{RSG} = 20 TeV'].append(sel2t)
 
 selections['m_{RSG} = 25 TeV'] = []
 selections['m_{RSG} = 25 TeV'].append(selbase)
-selections['m_{RSG} = 25 TeV'].append(sel1)
-selections['m_{RSG} = 25 TeV'].append(sel2)
+selections['m_{RSG} = 25 TeV'].append(sel1c)
+selections['m_{RSG} = 25 TeV'].append(sel2c)
+selections['m_{RSG} = 25 TeV'].append(sel1t)
+selections['m_{RSG} = 25 TeV'].append(sel2t)
 
 selections['m_{RSG} = 30 TeV'] = []
 selections['m_{RSG} = 30 TeV'].append(selbase)
-selections['m_{RSG} = 30 TeV'].append(sel1)
-selections['m_{RSG} = 30 TeV'].append(sel2)
+selections['m_{RSG} = 30 TeV'].append(sel1c)
+selections['m_{RSG} = 30 TeV'].append(sel2c)
+selections['m_{RSG} = 30 TeV'].append(sel1t)
+selections['m_{RSG} = 30 TeV'].append(sel2t)
 
 selections['m_{RSG} = 35 TeV'] = []
 selections['m_{RSG} = 35 TeV'].append(selbase)
-selections['m_{RSG} = 35 TeV'].append(sel1)
-selections['m_{RSG} = 35 TeV'].append(sel2)
+selections['m_{RSG} = 35 TeV'].append(sel1c)
+selections['m_{RSG} = 35 TeV'].append(sel2c)
+selections['m_{RSG} = 35 TeV'].append(sel1t)
+selections['m_{RSG} = 35 TeV'].append(sel2t)
 
