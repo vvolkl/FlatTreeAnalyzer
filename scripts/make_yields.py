@@ -9,6 +9,7 @@ else : path = "./"
 
 
 variable="Jet1_trk02_SD_Cor_m"
+#variable="mzp"
 lumi=3e+7
 the_file = ""
 Trees = []
