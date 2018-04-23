@@ -20,7 +20,7 @@ colors['m_{Z} = 35 TeV'] = ROOT.kRed
 colors['m_{Z} = 40 TeV'] = ROOT.kRed
 colors['m_{Z} = 45 TeV'] = ROOT.kRed
 colors['m_{Z} = 50 TeV'] = ROOT.kRed
-colors['Drell-Yann'] = ROOT.kGreen+2
+colors['Drell-Yan'] = ROOT.kGreen+2
 
 signal_groups = collections.OrderedDict()
 signal_groups['m_{Z} = 15 TeV'] = ['p8_pp_Zprime_15TeV_ll']
@@ -33,7 +33,7 @@ signal_groups['m_{Z} = 45 TeV'] = ['p8_pp_Zprime_45TeV_ll']
 signal_groups['m_{Z} = 50 TeV'] = ['p8_pp_Zprime_50TeV_ll']
 
 background_groups = collections.OrderedDict()
-background_groups['Drell-Yann'] = ['mgp8_pp_ee_lo']
+background_groups['Drell-Yan'] = ['mgp8_pp_ee_lo']
 
 # global parameters
 intLumi = 3.0e+07

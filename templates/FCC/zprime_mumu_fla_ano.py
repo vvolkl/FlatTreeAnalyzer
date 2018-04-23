@@ -28,7 +28,7 @@ colors['m_{Z} = 30 TeV'] = ROOT.kRed
 colors['m_{Z} = 35 TeV'] = ROOT.kRed
 colors['m_{Z} = 40 TeV'] = ROOT.kRed
 colors['m_{Z} = 45 TeV'] = ROOT.kRed
-colors['Drell-Yann'] = ROOT.kGreen+2
+colors['Drell-Yan'] = ROOT.kGreen+2
 
 signal_groups = collections.OrderedDict()
 signal_groups['m_{Z} = 4 TeV']  = ['mgp8_pp_Zprime_mumu_5f_Mzp_4TeV' ]
@@ -61,7 +61,7 @@ uncertainties.append([0.02, 0.02])
 uncertainties.append([0.02, 0.10])
 
 # the first time needs to be set to True
-runFull = False
+runFull = True
 
 # base pre-selections
 #selbase = 'lep1_pt > 6000. && lep2_pt > 6000. && abs(lep1_eta) < 4 && abs(lep2_eta) < 4 && zprime_muon_m>12000'
