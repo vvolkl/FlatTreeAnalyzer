@@ -49,6 +49,9 @@ signal_groups['m_{Z} = 45 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_45TeV']
 
 background_groups = collections.OrderedDict()
 background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo_2TeV']
+# prepare next
+#background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo_2_5TeV']
+#background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo']
 
 # global parameters
 intLumi = 3.0e+07
