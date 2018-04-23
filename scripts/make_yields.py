@@ -8,8 +8,11 @@ if len(sys.argv)>1: path = sys.argv[1]
 else : path = "./" 
 
 
-variable="Jet1_trk02_SD_Cor_m"
+#variable="Jet1_trk02_SD_Cor_m"
 #variable="mzp"
+variable="h_mjj_l2"
+#variable="Mj1j2_pf08_MetCorr"
+
 lumi=3e+7
 the_file = ""
 Trees = []

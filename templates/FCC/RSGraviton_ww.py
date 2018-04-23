@@ -45,7 +45,6 @@ variables = {
         'Jet2_Flow45':{'name':'Jet2_Flow45','title':'Flow_{4,5} Jet_2','bin':200,'xmin':0.0,'xmax':1.0},
         'Jet1_Flow55':{'name':'Jet1_Flow55','title':'Flow_{5,5} Jet_1','bin':200,'xmin':0.0,'xmax':1.0},
         'Jet2_Flow55':{'name':'Jet2_Flow55','title':'Flow_{5,5} Jet_2','bin':200,'xmin':0.0,'xmax':1.0},
-#        'BDTvariable_qcd' :{'name':'BDTvariable_qcd','title':'QCD BDT score','bin':100,'xmin':-0.5,'xmax':0.5},
         'Jet1_Whad_vs_QCD_tagger' :{'name':'Jet1_Whad_vs_QCD_tagger','title':'Jet1 W had. vs QCD tagger','bin':100,'xmin':-1.,'xmax':1.},
         'Jet2_Whad_vs_QCD_tagger' :{'name':'Jet2_Whad_vs_QCD_tagger','title':'Jet2 W had. vs QCD tagger','bin':100,'xmin':-1.,'xmax':1.},
 }

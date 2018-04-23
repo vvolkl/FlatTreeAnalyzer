@@ -132,8 +132,6 @@ sel2t = sel1t   + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
 # bTag selection
 #####################
 # direct btag
-#sel3 = sel2 + '&&(Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 || Jet2_trk02_SD_Corr_MetCorr_pdgid ==5) '
-#sel4 = sel2 + '&& Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 && Jet2_trk02_SD_Corr_MetCorr_pdgid ==5 '
 sel3c = sel2c + '&& Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 && Jet2_trk02_SD_Corr_MetCorr_pdgid ==5 '
 sel3t = sel2t + '&& Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 && Jet2_trk02_SD_Corr_MetCorr_pdgid ==5 '
 # apply 2 btag weight TRF
