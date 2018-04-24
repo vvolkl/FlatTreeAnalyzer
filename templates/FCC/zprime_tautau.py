@@ -38,7 +38,7 @@ colors['m_{Z} = 25 TeV'] = ROOT.kRed
 colors['m_{Z} = 30 TeV'] = ROOT.kRed
 colors['m_{Z} = 35 TeV'] = ROOT.kRed
 colors['m_{Z} = 40 TeV'] = ROOT.kRed
-colors['Drell-Yann'] = ROOT.kGreen+2
+colors['Drell-Yan'] = ROOT.kGreen+2
 colors['QCD'] = ROOT.kBlue+1
 
 signal_groups = collections.OrderedDict()
@@ -60,7 +60,7 @@ signal_groups['m_{Z} = 35 TeV'] = ['p8_pp_Zprime_35TeV_ll']
 signal_groups['m_{Z} = 40 TeV'] = ['p8_pp_Zprime_40TeV_ll']
 
 background_groups = collections.OrderedDict()
-background_groups['Drell-Yann'] = ['mgp8_pp_tautau_lo','mgp8_pp_tautau_lo_PT_1000_2500']
+background_groups['Drell-Yan'] = ['mgp8_pp_tautau_lo','mgp8_pp_tautau_lo_PT_1000_2500']
 background_groups['QCD'] = ['mgp8_pp_jj_lo','mgp8_pp_jj_lo_PT_1000_2500']
 
 

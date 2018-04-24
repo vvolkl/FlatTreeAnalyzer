@@ -28,27 +28,30 @@ colors['m_{Z} = 30 TeV'] = ROOT.kRed
 colors['m_{Z} = 35 TeV'] = ROOT.kRed
 colors['m_{Z} = 40 TeV'] = ROOT.kRed
 colors['m_{Z} = 45 TeV'] = ROOT.kRed
-colors['Drell-Yann'] = ROOT.kGreen+2
+colors['Drell-Yan'] = ROOT.kGreen+2
 
 signal_groups = collections.OrderedDict()
-signal_groups['m_{Z} = 4 TeV']  = ['pp_Zprime_mumu_5f_Mzp_4TeV' ]
-signal_groups['m_{Z} = 6 TeV']  = ['pp_Zprime_mumu_5f_Mzp_6TeV' ]
-signal_groups['m_{Z} = 8 TeV']  = ['pp_Zprime_mumu_5f_Mzp_8TeV' ]
-signal_groups['m_{Z} = 10 TeV'] = ['pp_Zprime_mumu_5f_Mzp_10TeV']
-signal_groups['m_{Z} = 12 TeV'] = ['pp_Zprime_mumu_5f_Mzp_12TeV']
-signal_groups['m_{Z} = 14 TeV'] = ['pp_Zprime_mumu_5f_Mzp_14TeV']
-signal_groups['m_{Z} = 15 TeV'] = ['pp_Zprime_mumu_5f_Mzp_15TeV']
-signal_groups['m_{Z} = 16 TeV'] = ['pp_Zprime_mumu_5f_Mzp_16TeV']
-signal_groups['m_{Z} = 18 TeV'] = ['pp_Zprime_mumu_5f_Mzp_18TeV']
-signal_groups['m_{Z} = 20 TeV'] = ['pp_Zprime_mumu_5f_Mzp_20TeV']
-signal_groups['m_{Z} = 25 TeV'] = ['pp_Zprime_mumu_5f_Mzp_25TeV']
-signal_groups['m_{Z} = 30 TeV'] = ['pp_Zprime_mumu_5f_Mzp_30TeV']
-signal_groups['m_{Z} = 35 TeV'] = ['pp_Zprime_mumu_5f_Mzp_35TeV']
-signal_groups['m_{Z} = 40 TeV'] = ['pp_Zprime_mumu_5f_Mzp_40TeV']
-signal_groups['m_{Z} = 45 TeV'] = ['pp_Zprime_mumu_5f_Mzp_45TeV']
+signal_groups['m_{Z} = 4 TeV']  = ['mgp8_pp_Zprime_mumu_5f_Mzp_4TeV' ]
+signal_groups['m_{Z} = 6 TeV']  = ['mgp8_pp_Zprime_mumu_5f_Mzp_6TeV' ]
+signal_groups['m_{Z} = 8 TeV']  = ['mgp8_pp_Zprime_mumu_5f_Mzp_8TeV' ]
+signal_groups['m_{Z} = 10 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_10TeV']
+signal_groups['m_{Z} = 12 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_12TeV']
+signal_groups['m_{Z} = 14 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_14TeV']
+signal_groups['m_{Z} = 15 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_15TeV']
+signal_groups['m_{Z} = 16 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_16TeV']
+signal_groups['m_{Z} = 18 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_18TeV']
+signal_groups['m_{Z} = 20 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_20TeV']
+signal_groups['m_{Z} = 25 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_25TeV']
+signal_groups['m_{Z} = 30 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_30TeV']
+signal_groups['m_{Z} = 35 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_35TeV']
+signal_groups['m_{Z} = 40 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_40TeV']
+signal_groups['m_{Z} = 45 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_45TeV']
 
 background_groups = collections.OrderedDict()
-background_groups['Drell-Yann'] = ['pp_mumu_lo_2TeV']
+background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo_2TeV']
+# prepare next
+#background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo_2_5TeV']
+#background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo']
 
 # global parameters
 intLumi = 3.0e+07

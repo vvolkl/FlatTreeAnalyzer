@@ -53,6 +53,7 @@ variables = {
 #        'BDTvariable_qcd' :{'name':'BDTvariable_qcd','title':'QCD BDT score','bin':100,'xmin':-0.5,'xmax':0.5},
         'Jet1_thad_vs_QCD_tagger' :{'name':'Jet1_thad_vs_QCD_tagger','title':'Jet1 top had. vs QCD tagger','bin':100,'xmin':-1.,'xmax':1.},
         'Jet2_thad_vs_QCD_tagger' :{'name':'Jet2_thad_vs_QCD_tagger','title':'Jet2 top had. vs QCD tagger','bin':100,'xmin':-1.,'xmax':1.},
+        'weight_2tagex' :{'name':'weight_2tagex','title':'TRF 2b-tags exclusive weight','bin':100,'xmin':0.,'xmax':1.}
 }
 
 variables2D = {}
@@ -76,20 +77,20 @@ colors['vj'] = ROOT.kMagenta+2
 signal_groups = collections.OrderedDict()
 ##signal_groups['m_{Z} = 2 TeV'] = ['pp_Zprime_2TeV_ttbar']
 ##signal_groups['m_{Z} = 5 TeV'] = ['pp_Zprime_5TeV_ttbar']
-signal_groups['m_{Z} = 10 TeV'] = ['pp_Zprime_10TeV_ttbar']
-signal_groups['m_{Z} = 15 TeV'] = ['pp_Zprime_15TeV_ttbar']
-signal_groups['m_{Z} = 20 TeV'] = ['pp_Zprime_20TeV_ttbar']
-signal_groups['m_{Z} = 25 TeV'] = ['pp_Zprime_25TeV_ttbar']
-signal_groups['m_{Z} = 30 TeV'] = ['pp_Zprime_30TeV_ttbar']
-signal_groups['m_{Z} = 35 TeV'] = ['pp_Zprime_35TeV_ttbar']
+signal_groups['m_{Z} = 10 TeV'] = ['p8_pp_Zprime_10TeV_ttbar']
+signal_groups['m_{Z} = 15 TeV'] = ['p8_pp_Zprime_15TeV_ttbar']
+signal_groups['m_{Z} = 20 TeV'] = ['p8_pp_Zprime_20TeV_ttbar']
+signal_groups['m_{Z} = 25 TeV'] = ['p8_pp_Zprime_25TeV_ttbar']
+signal_groups['m_{Z} = 30 TeV'] = ['p8_pp_Zprime_30TeV_ttbar']
+signal_groups['m_{Z} = 35 TeV'] = ['p8_pp_Zprime_35TeV_ttbar']
 #signal_groups['m_{Z} = 40 TeV'] = ['pp_Zprime_40TeV_ttbar']
 
 background_groups = collections.OrderedDict()
 
-background_groups['vv']  = ['pp_vv_lo'] 
-background_groups['vj'] = ['pp_vj_4f_M_5000_inf']
-background_groups['tt']  = ['pp_tt_lo']
-background_groups['QCD'] = ['pp_jj_lo']
+background_groups['vv']  = ['mgp8_pp_vv_lo'] 
+background_groups['vj']  = ['mgp8_pp_vj_4f_M_5000_inf']
+background_groups['QCD'] = ['mgp8_pp_jj_lo_5f']
+background_groups['tt']  = ['mgp8_pp_tt_lo']
 
 
 
@@ -109,7 +110,7 @@ runFull = True
 #####################
 # base pre-selections
 #####################
-selbase = 'Jet1_trk02_SD_Corr_pt > 3000. && Jet2_trk02_SD_Corr_pt > 3000. && abs(Jet1_trk02_SD_Corr_eta) < 3. && abs(Jet1_trk02_SD_Corr_eta) < 3.'
+selbase  = 'Jet1_trk02_SD_Corr_pt > 3000. && Jet2_trk02_SD_Corr_pt > 3000. && abs(Jet1_trk02_SD_Corr_eta) < 3. && abs(Jet1_trk02_SD_Corr_eta) < 3.'
 # clean cuts
 selbase += ' && Jet1_trk02_tau21>0 && Jet1_trk02_tau31>0 && Jet1_trk02_tau32>0 && Jet2_trk02_tau21>0 && Jet2_trk02_tau31>0 && Jet2_trk02_tau32>0'
 # add extra free clean cut
@@ -118,64 +119,91 @@ selbase += ' && rapiditySeparation_trk02<2.4'
 #####################
 # CUT base selection
 #####################
-sel1 = selbase + '&& Jet1_trk02_tau32 < 0.7  && Jet1_trk02_SD_Corr_m > 100. && Jet1_trk02_tau21 < 0.7 &&  Jet1_trk02_tau21 > 0.3'
-sel2 = sel1 +    '&& Jet2_trk02_tau32 < 0.75 && Jet2_trk02_SD_Corr_m > 100. && Jet2_trk02_tau21 < 0.7 &&  Jet2_trk02_tau21 > 0.3'
-
-#####################
-# MVA selection
-#####################
-#sel2 = selbase + '&& BDTvariable_qcd > 0.22'
+sel1c = selbase + '&& Jet1_trk02_tau32 < 0.7  && Jet1_trk02_SD_Corr_m > 100. && Jet1_trk02_tau21 < 0.7 &&  Jet1_trk02_tau21 > 0.3'
+sel2c = sel1c + '&& Jet2_trk02_tau32 < 0.75 && Jet2_trk02_SD_Corr_m > 100. && Jet2_trk02_tau21 < 0.7 &&  Jet2_trk02_tau21 > 0.3'
 
 #####################
 # anti-QCD jet tagger selection
 #####################
-#sel1 = selbase + ' &&  Jet1_thad_vs_QCD_tagger>0.15 &&  Jet2_thad_vs_QCD_tagger>0.15'
-#sel2 = sel1    + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
+sel1t = selbase + ' && Jet1_thad_vs_QCD_tagger>0.15 &&  Jet2_thad_vs_QCD_tagger>0.15'
+sel2t = sel1t   + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
 
 #####################
 # bTag selection
 #####################
-sel3 = sel2 +    '&&(Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 || Jet2_trk02_SD_Corr_MetCorr_pdgid ==5) '
-sel4 = sel2 +    '&& Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 && Jet2_trk02_SD_Corr_MetCorr_pdgid ==5 '
-
+# direct btag
+sel3c = sel2c + '&& Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 && Jet2_trk02_SD_Corr_MetCorr_pdgid ==5 '
+sel3t = sel2t + '&& Jet1_trk02_SD_Corr_MetCorr_pdgid ==5 && Jet2_trk02_SD_Corr_MetCorr_pdgid ==5 '
+# apply 2 btag weight TRF
+sel4c = 'weight_2tagex**' + sel2c
+sel4t = 'weight_2tagex**' + sel2t
 
 # add mass-dependent list of event #selections here if needed...
 
 selections = collections.OrderedDict()
 selections['m_{Z} = 10 TeV'] = []
 selections['m_{Z} = 10 TeV'].append(selbase)
-selections['m_{Z} = 10 TeV'].append(sel1)
-selections['m_{Z} = 10 TeV'].append(sel2)
-selections['m_{Z} = 10 TeV'].append(sel3)
-selections['m_{Z} = 10 TeV'].append(sel4)
+selections['m_{Z} = 10 TeV'].append(sel1c)
+selections['m_{Z} = 10 TeV'].append(sel2c)
+selections['m_{Z} = 10 TeV'].append(sel1t)
+selections['m_{Z} = 10 TeV'].append(sel2t)
+selections['m_{Z} = 10 TeV'].append(sel3c)
+selections['m_{Z} = 10 TeV'].append(sel3t)
+selections['m_{Z} = 10 TeV'].append(sel4c)
+selections['m_{Z} = 10 TeV'].append(sel4t)
 
 selections['m_{Z} = 15 TeV'] = []
-#selections['m_{Z} = 15 TeV'].append(selbase)
-selections['m_{Z} = 15 TeV'].append(sel2)
-selections['m_{Z} = 15 TeV'].append(sel4)
+selections['m_{Z} = 15 TeV'].append(selbase)
+selections['m_{Z} = 15 TeV'].append(sel1c)
+selections['m_{Z} = 15 TeV'].append(sel2c)
+selections['m_{Z} = 15 TeV'].append(sel1t)
+selections['m_{Z} = 15 TeV'].append(sel2t)
+selections['m_{Z} = 15 TeV'].append(sel3c)
+selections['m_{Z} = 15 TeV'].append(sel3t)
+selections['m_{Z} = 15 TeV'].append(sel4c)
+selections['m_{Z} = 15 TeV'].append(sel4t)
 
 selections['m_{Z} = 20 TeV'] = []
-#selections['m_{Z} = 20 TeV'].append(selbase)
-selections['m_{Z} = 20 TeV'].append(sel2)
-selections['m_{Z} = 20 TeV'].append(sel4)
+selections['m_{Z} = 20 TeV'].append(selbase)
+selections['m_{Z} = 20 TeV'].append(sel1c)
+selections['m_{Z} = 20 TeV'].append(sel2c)
+selections['m_{Z} = 20 TeV'].append(sel1t)
+selections['m_{Z} = 20 TeV'].append(sel2t)
+selections['m_{Z} = 20 TeV'].append(sel3c)
+selections['m_{Z} = 20 TeV'].append(sel3t)
+selections['m_{Z} = 20 TeV'].append(sel4c)
+selections['m_{Z} = 20 TeV'].append(sel4t)
 
 selections['m_{Z} = 25 TeV'] = []
-#selections['m_{Z} = 25 TeV'].append(selbase)
-selections['m_{Z} = 25 TeV'].append(sel2)
-selections['m_{Z} = 25 TeV'].append(sel4)
+selections['m_{Z} = 25 TeV'].append(selbase)
+selections['m_{Z} = 25 TeV'].append(sel1c)
+selections['m_{Z} = 25 TeV'].append(sel2c)
+selections['m_{Z} = 25 TeV'].append(sel1t)
+selections['m_{Z} = 25 TeV'].append(sel2t)
+selections['m_{Z} = 25 TeV'].append(sel3c)
+selections['m_{Z} = 25 TeV'].append(sel3t)
+selections['m_{Z} = 25 TeV'].append(sel4c)
+selections['m_{Z} = 25 TeV'].append(sel4t)
 
 selections['m_{Z} = 30 TeV'] = []
-#selections['m_{Z} = 30 TeV'].append(selbase)
-selections['m_{Z} = 30 TeV'].append(sel2)
-selections['m_{Z} = 30 TeV'].append(sel4)
+selections['m_{Z} = 30 TeV'].append(selbase)
+selections['m_{Z} = 30 TeV'].append(sel1c)
+selections['m_{Z} = 30 TeV'].append(sel2c)
+selections['m_{Z} = 30 TeV'].append(sel1t)
+selections['m_{Z} = 30 TeV'].append(sel2t)
+selections['m_{Z} = 30 TeV'].append(sel3c)
+selections['m_{Z} = 30 TeV'].append(sel3t)
+selections['m_{Z} = 30 TeV'].append(sel4c)
+selections['m_{Z} = 30 TeV'].append(sel4t)
 
 selections['m_{Z} = 35 TeV'] = []
-#selections['m_{Z} = 35 TeV'].append(selbase)
-selections['m_{Z} = 35 TeV'].append(sel2)
-selections['m_{Z} = 35 TeV'].append(sel4)
-
-#selections['m_{Z} = 40 TeV'] = []
-##selections['m_{Z} = 40 TeV'].append(selbase)
-#selections['m_{Z} = 40 TeV'].append(sel2)
-#selections['m_{Z} = 40 TeV'].append(sel4)
+selections['m_{Z} = 35 TeV'].append(selbase)
+selections['m_{Z} = 35 TeV'].append(sel1c)
+selections['m_{Z} = 35 TeV'].append(sel2c)
+selections['m_{Z} = 35 TeV'].append(sel1t)
+selections['m_{Z} = 35 TeV'].append(sel2t)
+selections['m_{Z} = 35 TeV'].append(sel3c)
+selections['m_{Z} = 35 TeV'].append(sel3t)
+selections['m_{Z} = 35 TeV'].append(sel4c)
+selections['m_{Z} = 35 TeV'].append(sel4t)
 

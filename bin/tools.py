@@ -102,7 +102,8 @@ class Process:
 
         for s in selections:
             weighttrf_name=''
-            weighttrfin_name=''
+            weighttrfin_name=[]
+            weighttrfless_name=[]
 
             sformula=s
             if '**' in s:
@@ -111,7 +112,13 @@ class Process:
                 weighttrf_name=s_split[0]
                 weighttrf_name=weighttrf_name.strip()
                 if 'tagin' in weighttrf_name:
-                    weighttrfin_name='weight_%itagex'%(int(filter(str.isdigit, weighttrf_name))-1)
+                    nbtagex = int(filter(str.isdigit, weighttrf_name))
+                    for i in range(nbtagex) :
+                      weighttrfin_name.append('weight_%itagex'%(i))
+                if 'tagless' in weighttrf_name:
+                    nbtagex = int(filter(str.isdigit, weighttrf_name))
+                    for i in range(nbtagex) :
+                      weighttrfless_name.append('weight_%itagex'%(i))
 
             formula = TTreeFormula("",sformula,t)
 
@@ -125,11 +132,17 @@ class Process:
                 t.GetEntry(entry)
                 weight = self.w * getattr(t,"weight")
                 weighttrf=1.
-                if weighttrf_name!='' and weighttrfin_name=='':
+                if weighttrf_name!='' and len(weighttrfin_name)==0 and len(weighttrfless_name)==0 :
                     weighttrf = getattr(t,weighttrf_name)
-                elif weighttrf_name!='' and weighttrfin_name!='':
-                    weighttrf = 1-getattr(t,weighttrfin_name)
-                                        
+                elif weighttrf_name!='' and len(weighttrfin_name)!=0 and len(weighttrfless_name)==0 :
+                    weighttrf = 1.
+                    for i in weighttrfin_name :
+                      weighttrf -= getattr(t,i)
+                elif weighttrf_name!='' and len(weighttrfin_name)==0 and len(weighttrfless_name)!=0 :
+                    weighttrf = 0.
+                    for i in weighttrfless_name :
+                      weighttrf += getattr(t,i)
+
                 weight=weight*weighttrf
                 # apply selection
                 result  = formula.EvalInstance() 
@@ -531,7 +544,7 @@ def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, lt
 
     intLumiab = intLumi/1e+06 
 
-    ff = "pdf"
+    ff = "eps"
 
     logstr = ''
     if logZ:
@@ -570,7 +583,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
     yl = "events"
 
-    ff = "pdf"
+    ff = "eps"
 
     logstr = ''
     if log:
@@ -639,7 +652,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
 
     yl = "Normalized Event Rate"
 
-    ff = "pdf"
+    ff = "eps"
 
     logstr = ''
     if log:
