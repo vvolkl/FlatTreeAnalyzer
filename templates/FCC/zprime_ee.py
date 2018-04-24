@@ -54,19 +54,19 @@ selbase = 'lep1_pt > 6000. && lep2_pt > 6000. && abs(lep1_eta) < 4 && abs(lep2_e
 # add mass-dependent list of event selections here if needed...
 
 selections = collections.OrderedDict()
-selections['m_{Z} = 15 TeV'] = []
-selections['m_{Z} = 15 TeV'].append(selbase)
-selections['m_{Z} = 20 TeV'] = []
-selections['m_{Z} = 20 TeV'].append(selbase)
-selections['m_{Z} = 25 TeV'] = []
-selections['m_{Z} = 25 TeV'].append(selbase)
+#selections['m_{Z} = 15 TeV'] = []
+#selections['m_{Z} = 15 TeV'].append(selbase)
+#selections['m_{Z} = 20 TeV'] = []
+#selections['m_{Z} = 20 TeV'].append(selbase)
+#selections['m_{Z} = 25 TeV'] = []
+#selections['m_{Z} = 25 TeV'].append(selbase)
 selections['m_{Z} = 30 TeV'] = []
 selections['m_{Z} = 30 TeV'].append(selbase)
-selections['m_{Z} = 35 TeV'] = []
-selections['m_{Z} = 35 TeV'].append(selbase)
+#selections['m_{Z} = 35 TeV'] = []
+#selections['m_{Z} = 35 TeV'].append(selbase)
 selections['m_{Z} = 40 TeV'] = []
 selections['m_{Z} = 40 TeV'].append(selbase)
-selections['m_{Z} = 45 TeV'] = []
-selections['m_{Z} = 45 TeV'].append(selbase)
-selections['m_{Z} = 50 TeV'] = []
-selections['m_{Z} = 50 TeV'].append(selbase)
+#selections['m_{Z} = 45 TeV'] = []
+#selections['m_{Z} = 45 TeV'].append(selbase)
+#selections['m_{Z} = 50 TeV'] = []
+#selections['m_{Z} = 50 TeV'].append(selbase)
