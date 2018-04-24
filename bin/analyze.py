@@ -66,7 +66,7 @@ def main():
     module_path = os.path.abspath(paramFile)
     module_dir = os.path.dirname(module_path)
     base_name = os.path.splitext(ntpath.basename(paramFile))[0]
-   
+
     sys.path.insert(0, module_dir)
     param = importlib.import_module(base_name)
     
