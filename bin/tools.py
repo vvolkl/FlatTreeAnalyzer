@@ -636,7 +636,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  if i > 0: 
                      leg.AddEntry(hh,p,"f")
                  else: 
-                     leg.AddEntry(hh,p,"l")
+                     leg.AddEntry(hh,p.replace('m_{Z}','m_{Z\'}'),"l")
                  i+=1
              drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
     print 'DONE.'
