@@ -5,9 +5,7 @@ import collections
 variables = {
     "met":{"name":"met_pt","title":"MET [GeV]","bin":50,"xmin":0,"xmax":1000},
     "mzp":{"name":"Mj1j2_pf04","title":"m_{Z'} [TeV]","bin":100,"xmin":2,"xmax":23, "divide":1000},
-    "mr":{"name":"mr","title":"m_{Z'}^{razor} [TeV]","bin":100,"xmin":2,"xmax":23, "divide":1000},
-    "mr2":{"name":"mr2","title":"m_{Z'}^{razor} [TeV]","bin":100,"xmin":2,"xmax":23, "divide":1000},
-    "mr3":{"name":"mr3","title":"m_{Z'}^{razor} [TeV]","bin":100,"xmin":2,"xmax":23, "divide":1000},
+    "mzp_metcor":{"name":"Mj1j2_pf04_MetCorr","title":"m_{Z'} [TeV]","bin":100,"xmin":2,"xmax":23, "divide":1000},
     "mt":{"name":"mt","title":"m_{Z'}^{trans} [TeV]","bin":75,"xmin":0,"xmax":15, "divide":1000},
     "dr":{"name":"dr","title":"#DeltaR(#tau_{1},#tau_{2})","bin":50,"xmin":0,"xmax":5},
     "dphi":{"name":"dphi","title":"#DeltaPhi(#tau_{1},#tau_{2})","bin":50,"xmin":-4,"xmax":4},
@@ -42,26 +40,27 @@ colors['Drell-Yan'] = ROOT.kGreen+2
 colors['QCD'] = ROOT.kBlue+1
 
 signal_groups = collections.OrderedDict()
-signal_groups['m_{Z} = 2 TeV'] = ['p8_pp_Zprime_2TeV_ll']
-signal_groups['m_{Z} = 4 TeV'] = ['p8_pp_Zprime_4TeV_ll']
-signal_groups['m_{Z} = 5 TeV'] = ['p8_pp_Zprime_5TeV_ll']
-signal_groups['m_{Z} = 6 TeV'] = ['p8_pp_Zprime_6TeV_ll']
-signal_groups['m_{Z} = 8 TeV'] = ['p8_pp_Zprime_8TeV_ll']
-signal_groups['m_{Z} = 10 TeV'] = ['p8_pp_Zprime_10TeV_ll']
-signal_groups['m_{Z} = 12 TeV'] = ['p8_pp_Zprime_12TeV_ll']
-signal_groups['m_{Z} = 14 TeV'] = ['p8_pp_Zprime_14TeV_ll']
-signal_groups['m_{Z} = 15 TeV'] = ['p8_pp_Zprime_15TeV_ll']
-signal_groups['m_{Z} = 16 TeV'] = ['p8_pp_Zprime_16TeV_ll']
-signal_groups['m_{Z} = 18 TeV'] = ['p8_pp_Zprime_18TeV_ll']
-signal_groups['m_{Z} = 20 TeV'] = ['p8_pp_Zprime_20TeV_ll']
-signal_groups['m_{Z} = 25 TeV'] = ['p8_pp_Zprime_25TeV_ll']
-signal_groups['m_{Z} = 30 TeV'] = ['p8_pp_Zprime_30TeV_ll']
-signal_groups['m_{Z} = 35 TeV'] = ['p8_pp_Zprime_35TeV_ll']
-signal_groups['m_{Z} = 40 TeV'] = ['p8_pp_Zprime_40TeV_ll']
+signal_groups['m_{Z} = 2 TeV'] = ['p8_pp_ZprimeSSM_2TeV_ll']
+signal_groups['m_{Z} = 4 TeV'] = ['p8_pp_ZprimeSSM_4TeV_ll']
+signal_groups['m_{Z} = 5 TeV'] = ['p8_pp_ZprimeSSM_5TeV_ll']
+signal_groups['m_{Z} = 6 TeV'] = ['p8_pp_ZprimeSSM_6TeV_ll']
+signal_groups['m_{Z} = 8 TeV'] = ['p8_pp_ZprimeSSM_8TeV_ll']
+signal_groups['m_{Z} = 10 TeV'] = ['p8_pp_ZprimeSSM_10TeV_ll']
+signal_groups['m_{Z} = 12 TeV'] = ['p8_pp_ZprimeSSM_12TeV_ll']
+signal_groups['m_{Z} = 14 TeV'] = ['p8_pp_ZprimeSSM_14TeV_ll']
+signal_groups['m_{Z} = 15 TeV'] = ['p8_pp_ZprimeSSM_15TeV_ll']
+signal_groups['m_{Z} = 16 TeV'] = ['p8_pp_ZprimeSSM_16TeV_ll']
+signal_groups['m_{Z} = 18 TeV'] = ['p8_pp_ZprimeSSM_18TeV_ll']
+signal_groups['m_{Z} = 20 TeV'] = ['p8_pp_ZprimeSSM_20TeV_ll']
+signal_groups['m_{Z} = 25 TeV'] = ['p8_pp_ZprimeSSM_25TeV_ll']
+signal_groups['m_{Z} = 30 TeV'] = ['p8_pp_ZprimeSSM_30TeV_ll']
+signal_groups['m_{Z} = 35 TeV'] = ['p8_pp_ZprimeSSM_35TeV_ll']
+signal_groups['m_{Z} = 40 TeV'] = ['p8_pp_ZprimeSSM_40TeV_ll']
 
 background_groups = collections.OrderedDict()
-background_groups['Drell-Yan'] = ['mgp8_pp_tautau_lo','mgp8_pp_tautau_lo_PT_1000_2500']
-background_groups['QCD'] = ['mgp8_pp_jj_lo','mgp8_pp_jj_lo_PT_1000_2500']
+background_groups['Drell-Yan'] =  ['mgp8_pp_tautau_5f_HT_1000_2000','mgp8_pp_tautau_5f_HT_2000_5000','mgp8_pp_tautau_5f_HT_5000_10000','mgp8_pp_tautau_5f_HT_10000_27000','mgp8_pp_tautau_5f_HT_27000_100000']
+['mgp8_pp_tautau_lo','mgp8_pp_tautau_lo_PT_1000_2500']
+background_groups['QCD'] = ['mgp8_pp_jj_5f_HT_1000_2000','mgp8_pp_jj_5f_HT_2000_5000','mgp8_pp_jj_5f_HT_5000_10000','mgp8_pp_jj_5f_HT_10000_27000','mgp8_pp_jj_5f_HT_27000_100000']
 
 
 # global parameters
