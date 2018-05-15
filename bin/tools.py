@@ -263,10 +263,16 @@ def producePlots(param, block, sel, ops):
     if not no_plots:
 
         intLumiab = lumi/1e+06 
-
         lt = "FCC-hh Simulation (Delphes)"
         rt = "#sqrt{{s}} = 100 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
 
+        try:
+            helhc=param.HELHC
+            if helhc:
+                lt = "FCC-hh Simulation (Delphes)"
+                rt = "#sqrt{{s}} = 27 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
+        except :
+            print 'FCC'
         
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
