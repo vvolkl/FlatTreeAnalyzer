@@ -59,8 +59,8 @@ signal_groups['m_{Q*} = 50 TeV'] = ['p8_pp_ExcitedQ_50TeV_qq']
 background_groups = collections.OrderedDict()
 
 background_groups['QCD'] = [
-'mgp8_pp_jj_5f_HT_2000_5000'
-'mgp8_pp_jj_5f_HT_5000_10000'
+'mgp8_pp_jj_5f_HT_2000_5000',
+'mgp8_pp_jj_5f_HT_5000_10000',
 'mgp8_pp_jj_5f_HT_10000_27000',
 'mgp8_pp_jj_5f_HT_27000_100000']
 
