@@ -4,9 +4,10 @@ import collections
 ### variable list
 variables = {
     "met":{"name":"met_pt","title":"MET [GeV]","bin":50,"xmin":0,"xmax":1000},
-    "mzp":{"name":"Mj1j2_pf04","title":"m_{Z'} [TeV]","bin":100,"xmin":2,"xmax":23, "divide":1000},
-    "mzp_metcor":{"name":"Mj1j2_pf04_MetCorr","title":"m_{Z'} [TeV]","bin":100,"xmin":2,"xmax":23, "divide":1000},
-    "mt":{"name":"mt","title":"m_{Z'}^{trans} [TeV]","bin":75,"xmin":0,"xmax":15, "divide":1000},
+    "mzp":{"name":"Mj1j2_pf04","title":"m_{Z'} [TeV]","bin":150,"xmin":0,"xmax":30, "divide":1000},
+    "mzp_metcor":{"name":"Mj1j2_pf04_MetCorr","title":"m_{Z'} [TeV]","bin":150,"xmin":0,"xmax":30, "divide":1000},
+    "mzp_metcor2":{"name":"Mj1j2_pf04_MetCorr2","title":"m_{Z'} [TeV]","bin":150,"xmin":0,"xmax":30, "divide":1000},
+    "mt":{"name":"mt","title":"m_{Z'}^{trans} [TeV]","bin":50,"xmin":0,"xmax":20, "divide":1000},
     "dr":{"name":"dr","title":"#DeltaR(#tau_{1},#tau_{2})","bin":50,"xmin":0,"xmax":5},
     "dphi":{"name":"dphi","title":"#DeltaPhi(#tau_{1},#tau_{2})","bin":50,"xmin":-4,"xmax":4},
     "dphi_met":{"name":"dphi_met","title":"#DeltaPhi(Z',met)","bin":50,"xmin":-4,"xmax":4},
@@ -79,46 +80,90 @@ runFull = True
 # base pre-selections
 #selbase = 'Jet1_pf04_pt > 1000. && Jet2_pf04_pt > 1000. && ntau>1'
 
-selbase = 'weight_2tagex**Jet1_pf04_pt > 1000. && Jet2_pf04_pt > 1000.'
+selbase = 'weight_2tagex**Jet1_pf04_pt > 500. && Jet2_pf04_pt > 500.'
 seleta = ' && abs(Jet1_pf04_eta) < 2.5 && abs(Jet2_pf04_eta) < 2.5'
 seldr = ' && abs(dphi)>2.0 && dr>2.5 && dr<4. '
 selhighm = '&& met_pt>300.'
 sellowm = '&& met_pt>400. && dr<3.8 && abs(dphi)>2.4'
+selmtcut0p5TeV=' && mt > 500.'
+selmtcut1TeV=' && mt > 1000.'
+selmtcut2TeV=' && mt > 2000.'
+sel4TeV =selbase+seleta+' && abs(dphi)>2.4 && dr>2.5 && dr<3.5 && met_pt>400.'
+sel6TeV =selbase+seleta+' && abs(dphi)>2.4 && dr>2.5 && dr<3.5 && met_pt>400.'
+sel10TeV=selbase+seleta+' && abs(dphi)>2.4 && dr>2.7 && dr<4.0 && met_pt>300.'
+sel12TeV=selbase+seleta+' && abs(dphi)>2.6 && dr>2.7 && dr<4.0 && met_pt>300.'
+sel16TeV=selbase+seleta+' && abs(dphi)>2.7 && dr>2.7 && dr<4.0 && met_pt>300.'
+sel20TeV=selbase+seleta+' && abs(dphi)>2.8 && dr>3.0 && dr<4.0 && met_pt>300.'
 
 # add mass-dependent list of event selections here if needed...
 
 selections = collections.OrderedDict()
-#selections['m_{Z} = 4 TeV'] = []
-#selections['m_{Z} = 4 TeV'].append(selbase)
+selections['m_{Z} = 2 TeV'] = []
+#selections['m_{Z} = 2 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 2 TeV'].append(selbase+seleta+seldr)
+selections['m_{Z} = 2 TeV'].append(sel4TeV)
 
-selections['m_{Z} = 5 TeV'] = []
-selections['m_{Z} = 5 TeV'].append(selbase+seleta)
-selections['m_{Z} = 5 TeV'].append(selbase+seleta+seldr)
-selections['m_{Z} = 5 TeV'].append(selbase+seleta+seldr+sellowm)
+selections['m_{Z} = 4 TeV'] = []
+#selections['m_{Z} = 4 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 4 TeV'].append(selbase+seleta+seldr)
+selections['m_{Z} = 4 TeV'].append(sel4TeV)
+
+selections['m_{Z} = 6 TeV'] = []
+#selections['m_{Z} = 6 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 6 TeV'].append(selbase+seleta+seldr)
+selections['m_{Z} = 6 TeV'].append(sel6TeV)
+
+selections['m_{Z} = 8 TeV'] = []
+#selections['m_{Z} = 8 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 8 TeV'].append(selbase+seleta+seldr)
+selections['m_{Z} = 8 TeV'].append(sel6TeV)
 
 selections['m_{Z} = 10 TeV'] = []
-selections['m_{Z} = 10 TeV'].append(selbase+seleta)
-selections['m_{Z} = 10 TeV'].append(selbase+seleta+seldr)
-selections['m_{Z} = 10 TeV'].append(selbase+seleta+seldr+selhighm)
+#selections['m_{Z} = 10 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 10 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 10 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 10 TeV'].append(sel10TeV)
 
-selections['m_{Z} = 15 TeV'] = []
-selections['m_{Z} = 15 TeV'].append(selbase+seleta)
-selections['m_{Z} = 15 TeV'].append(selbase+seleta+seldr)
-selections['m_{Z} = 15 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 12 TeV'] = []
+#selections['m_{Z} = 12 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 12 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 12 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 12 TeV'].append(sel12TeV)
+
+selections['m_{Z} = 14 TeV'] = []
+#selections['m_{Z} = 14 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 14 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 14 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 14 TeV'].append(sel12TeV)
+
+selections['m_{Z} = 16 TeV'] = []
+#selections['m_{Z} = 16 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 16 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 16 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 16 TeV'].append(sel16TeV)
+
+selections['m_{Z} = 18 TeV'] = []
+#selections['m_{Z} = 18 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 18 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 18 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 18 TeV'].append(sel16TeV)
 
 selections['m_{Z} = 20 TeV'] = []
-selections['m_{Z} = 20 TeV'].append(selbase+seleta)
-selections['m_{Z} = 20 TeV'].append(selbase+seleta+seldr)
-selections['m_{Z} = 20 TeV'].append(selbase+seleta+seldr+selhighm)
+#selections['m_{Z} = 20 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 20 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 20 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 20 TeV'].append(sel20TeV)
 
 selections['m_{Z} = 25 TeV'] = []
-selections['m_{Z} = 25 TeV'].append(selbase+seleta)
-selections['m_{Z} = 25 TeV'].append(selbase+seleta+seldr)
-selections['m_{Z} = 25 TeV'].append(selbase+seleta+seldr+selhighm)
+#selections['m_{Z} = 25 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 25 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 25 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 25 TeV'].append(sel20TeV)
 
 selections['m_{Z} = 30 TeV'] = []
-selections['m_{Z} = 30 TeV'].append(selbase+seleta)
-selections['m_{Z} = 30 TeV'].append(selbase+seleta+seldr)
-selections['m_{Z} = 30 TeV'].append(selbase+seleta+seldr+selhighm)
+#selections['m_{Z} = 30 TeV'].append(selbase+seleta)
+#selections['m_{Z} = 30 TeV'].append(selbase+seleta+seldr)
+#selections['m_{Z} = 30 TeV'].append(selbase+seleta+seldr+selhighm)
+selections['m_{Z} = 30 TeV'].append(sel20TeV)
 
 weights = collections.OrderedDict()
