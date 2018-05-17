@@ -22,6 +22,10 @@ variables = {
         'transverseMomentumAsymmetry_pf_04':{'name':'transverseMomentumAsymmetry_pf04','title':'Transverse Momentum Asymmetry','bin':50,'xmin':0.0,'xmax':1.0},
 
         'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Z\'} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
+        'Mj1j2_pf04_5p'  :{'name':'Mj1j2_pf04_5p','title':'m_{Z\'} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
+        'Mj1j2_pf04_10p' :{'name':'Mj1j2_pf04_10p','title':'m_{Z\'} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
+        'Mj1j2_pf04_15p' :{'name':'Mj1j2_pf04_15p','title':'m_{Z\'} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
+        'Mj1j2_pf04_20p' :{'name':'Mj1j2_pf04_20p','title':'m_{Z\'} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
         'Mj1j2_calo04' :{'name':'Mj1j2_calo04','title':'m_{Z\'} [TeV] (calo04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
 
 }
@@ -54,7 +58,11 @@ signal_groups['m_{Q*} = 50 TeV'] = ['p8_pp_ExcitedQ_50TeV_qq']
 
 background_groups = collections.OrderedDict()
 
-background_groups['QCD'] = ['mgp8_pp_jj_lo']
+background_groups['QCD'] = [
+'mgp8_pp_jj_5f_HT_2000_5000'
+'mgp8_pp_jj_5f_HT_5000_10000'
+'mgp8_pp_jj_5f_HT_10000_27000',
+'mgp8_pp_jj_5f_HT_27000_100000']
 
 
 
