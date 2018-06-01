@@ -22,8 +22,18 @@ hist.Fit("myfit","S","",7.,35.)
 
 -> adjust x bounds to get the best fit
 
-then to check how it is good, fill an histo
--------------------------------------------
+for dijet need to reconstruct an histo starting from 0:
+-------------------------------------------------------
+hist0=ROOT.TH1D("hist0","hist0",250,low_x,high_x)
+for i_bin in xrange( 1, hist0.GetNbinsX()+1 ):
+  the_val=0.
+  if i_bin>50 : the_val=hist.GetBinContent(i_bin-50)
+  hist0.SetBinContent(i_bin, the_val)
+myfit = ROOT.TF1("myfit",fit_func, low_x, high_x)
+hist0.Fit("myfit","S","",5.,25.)
+
+then to check how it is good, fill an histo:
+--------------------------------------------
 
 for i_bin in xrange( 1, new_hist.GetNbinsX()+1 ):
   the_val = myfit.Eval(new_hist.GetBinCenter(i_bin))
@@ -47,14 +57,18 @@ tree = sys.argv[1]
 ana=""
 if tree.find("m_RSG")>=0 : ana="RSG"
 elif tree.find("m_Z")>=0 : ana="zptt"
+elif tree.find("m_Q")>=0 : ana="dijet"
 
 variable=""
-if ana=="RSG"    : variable="Mj1j2_pf08"
-elif ana=="zptt" : variable="Mj1j2_pf08_MetCorr"
+if ana=="RSG"     : variable="Mj1j2_pf08"
+elif ana=="zptt"  : variable="Mj1j2_pf08_MetCorr"
+elif ana=="dijet" : variable="Mj1j2_pf04"
 
 extra_out="_fit"
+extra=variable+"_"
 
 low_x=5.
+if ana=="dijet" : low_x=10.
 high_x=50.
 lumi="sqrt(100.)"
 fit_func="[0]*((1-(x/"+lumi+"))^[1])*((x/"+lumi+")^[2])*((x/"+lumi+")^([3]*log(x/"+lumi+")))"
@@ -117,6 +131,8 @@ fitList.append(["zptt","vv_sel8" ,1.54104e-07,0.00000e+00,-2.03855e+00,-6.37648e
 fitList.append(["zptt","vj_sel8" ,2.31778e-06,0.00000e+00,-2.63856e+00,-6.25726e+00])
 fitList.append(["zptt","tt_sel8" ,7.27016e-04,0.00000e+00,-1.85126e+00,-6.63731e+00])
 fitList.append(["zptt","QCD_sel8",1.12662e-04,0.00000e+00,-1.10449e+00,-7.70251e+00])
+fitList.append(["dijet","QCD_sel0",2.78876e-01,0.00000e+00,-3.36772e+00,-1.21888e+00])
+fitList.append(["dijet","QCD_sel1",2.66067e-01,0.00000e+00,-2.49503e+00,-3.68841e+00])
 
 rf = TFile(tree,"UPDATE")
 
@@ -124,7 +140,8 @@ for tkey in rf.GetListOfKeys():
   key = tkey.GetName()
   plotToFit=False
   isSig=False
-  if key.find(variable)>=0 and key.find(extra_out)<0 :
+  #if key.find(variable)>=0 and key.find(extra_out)<0: # old fail with dijet ana
+  if key.find(variable)>=0 and key.find(extra)<0:
     if key.find("} =")>=0 : isSig=True
     print key
     # check key

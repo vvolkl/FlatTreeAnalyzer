@@ -2,15 +2,16 @@ import ROOT as r
 import re
 
 Ana=[
-'RSGww',
-'Zptt',
+#'RSGww',
+#'Zptt',
+'dijet',
 ]
 
 Sample=[
 'QCD',
-'tt',
-'vv',
-'vj',
+#'tt',
+#'vv',
+#'vj',
 ]
 
 ############
@@ -33,6 +34,10 @@ Sel['Zptt']=[
 "sel7",
 "sel8",
 ]
+Sel['dijet']=[
+"sel0",
+"sel1",
+]
 
 ############
 Colors = {}
@@ -45,29 +50,19 @@ Colors['vj']  = r.kMagenta+2
 Var = {}
 Var['RSGww']="Mj1j2_pf08"
 Var['Zptt']="Mj1j2_pf08_MetCorr"
+Var['dijet']="Mj1j2_pf04"
 
 ############
 Path = {}
 Path['RSGww']='/eos/experiment/fcc/hh/analyses/RSGraviton_ww/FlatTreeAnalyzer_outputs/fcc_v02/May2018_HTsplit_prod/root_m_RSG_10TeV/histos.root'
 Path['Zptt']='/eos/experiment/fcc/hh/analyses/Zprime_tt/FlatTreeAnalyzer_outputs/fcc_v02/May2018_HTsplit_prod/root_m_Z_10TeV/histos.root'
+Path['dijet']='/eos/experiment/fcc/hh/analyses/Dijet_reso/FlatTreeAnalyzer_outputs/fcc_v02/root_m_Q*_50TeV/histos.root'
 
 ############
 Title = {}
 Title['RSGww']='m_{RSG} [TeV] (pf08)'
 Title['Zptt']='m_{Z\'} [TeV] (pf08 metcor)'
-
-#############
-#hist=''
-#path=''
-#title=''
-#if ana=='RSGww':
-#  hist='QCD_sel4_Mj1j2_pf08'
-#  path='/eos/experiment/fcc/hh/analyses/RSGraviton_ww/FlatTreeAnalyzer_outputs/fcc_v02/May2018_HTsplit_prod/root_m_RSG_10TeV/histos.root'
-#  title='m_{RSG} [TeV] (pf08)'
-#elif ana=='Zptt' :
-#  hist='QCD_sel8_Mj1j2_pf08_MetCorr'
-#  path='/eos/experiment/fcc/hh/analyses/Zprime_tt/FlatTreeAnalyzer_outputs/fcc_v02/May2018_HTsplit_prod/root_m_Z_10TeV/histos.root'
-#  title='m_{Z\'} [TeV] (pf08 metcor)'
+Title['dijet']='m_{Z\'} [TeV] (pf04)'
 
 ############
 for ana in Ana :
