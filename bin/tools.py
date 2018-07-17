@@ -269,7 +269,7 @@ def producePlots(param, block, sel, ops):
         try:
             helhc=param.HELHC
             if helhc:
-                lt = "FCC-hh Simulation (Delphes)"
+                lt = "HE-LHC Simulation (Delphes)"
                 rt = "#sqrt{{s}} = 27 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
         except :
             print 'FCC'
