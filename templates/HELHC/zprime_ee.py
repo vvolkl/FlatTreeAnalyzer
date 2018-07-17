@@ -8,16 +8,15 @@ variables = {
     "ptel_1":{"name":"lep1_pt","title":"p_{T}^{e, max} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
     "ptel_2":{"name":"lep2_pt","title":"p_{T}^{e, min} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
     "yzp":{"name":"zprime_y","title":"y_{Z'}","bin":80,"xmin":-4,"xmax":4},
-
 }
 
 variables2D = {}
 
 colors = {}
-colors['m_{Z} = 2 TeV'] = ROOT.kRed
-colors['m_{Z} = 4 TeV'] = ROOT.kRed
-colors['m_{Z} = 6 TeV'] = ROOT.kRed
-colors['m_{Z} = 8 TeV'] = ROOT.kRed
+colors['m_{Z} = 2 TeV']  = ROOT.kRed
+colors['m_{Z} = 4 TeV']  = ROOT.kRed
+colors['m_{Z} = 6 TeV']  = ROOT.kRed
+colors['m_{Z} = 8 TeV']  = ROOT.kRed
 colors['m_{Z} = 10 TeV'] = ROOT.kRed
 colors['m_{Z} = 12 TeV'] = ROOT.kRed
 colors['m_{Z} = 14 TeV'] = ROOT.kRed
@@ -30,15 +29,15 @@ colors['m_{Z LRM} = 6 TeV'] = ROOT.kRed
 colors['m_{Z I} = 6 TeV'] = ROOT.kRed
 
 
+
 signal_groups = collections.OrderedDict()
-signal_groups['m_{Z} = 2 TeV'] = ['p8_pp_ZprimeSSM_2TeV_ll']
-signal_groups['m_{Z} = 4 TeV'] = ['p8_pp_ZprimeSSM_4TeV_ll']
-signal_groups['m_{Z} = 6 TeV'] = ['p8_pp_ZprimeSSM_6TeV_ll']
-signal_groups['m_{Z} = 8 TeV'] = ['p8_pp_ZprimeSSM_8TeV_ll']
+signal_groups['m_{Z} = 2 TeV']  = ['p8_pp_ZprimeSSM_2TeV_ll']
+signal_groups['m_{Z} = 4 TeV']  = ['p8_pp_ZprimeSSM_4TeV_ll']
+signal_groups['m_{Z} = 6 TeV']  = ['p8_pp_ZprimeSSM_6TeV_ll']
+signal_groups['m_{Z} = 8 TeV']  = ['p8_pp_ZprimeSSM_8TeV_ll']
 signal_groups['m_{Z} = 10 TeV'] = ['p8_pp_ZprimeSSM_10TeV_ll']
 signal_groups['m_{Z} = 12 TeV'] = ['p8_pp_ZprimeSSM_12TeV_ll']
 signal_groups['m_{Z} = 14 TeV'] = ['p8_pp_ZprimeSSM_14TeV_ll']
-
 
 signal_groups['m_{Z ETA} = 6 TeV'] = ['p8_pp_ZprimeETA_6TeV_ll']
 signal_groups['m_{Z CHI} = 6 TeV'] = ['p8_pp_ZprimeCHI_6TeV_ll']
@@ -56,7 +55,7 @@ background_groups['Drell-Yan'] = ['mgp8_pp_ee_5f_HT_500_1000',
                                   'mgp8_pp_ee_5f_HT_10000_27000']
 
 # global parameters
-intLumi = 1.0e+07
+intLumi = 1.5e+07
 delphesVersion = '3.4.2'
 
 HELHC=True
@@ -101,3 +100,4 @@ selections['m_{Z} = 6 TeV'].append(selbase)
 #selections['m_{Z LRM} = 6 TeV'].append(selbase)
 #selections['m_{Z I} = 6 TeV'] = []
 #selections['m_{Z I} = 6 TeV'].append(selbase)
+

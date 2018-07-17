@@ -14,10 +14,10 @@ variables2D = {}
 
 
 colors = {}
-colors['m_{Z} = 2 TeV'] = ROOT.kRed
-colors['m_{Z} = 4 TeV'] = ROOT.kRed
-colors['m_{Z} = 6 TeV'] = ROOT.kRed
-colors['m_{Z} = 8 TeV'] = ROOT.kRed
+colors['m_{Z} = 2 TeV']  = ROOT.kRed
+colors['m_{Z} = 4 TeV']  = ROOT.kRed
+colors['m_{Z} = 6 TeV']  = ROOT.kRed
+colors['m_{Z} = 8 TeV']  = ROOT.kRed
 colors['m_{Z} = 10 TeV'] = ROOT.kRed
 colors['m_{Z} = 12 TeV'] = ROOT.kRed
 colors['m_{Z} = 14 TeV'] = ROOT.kRed
@@ -53,7 +53,8 @@ background_groups['Drell-Yan'] = ['mgp8_pp_mumu_5f_HT_500_1000',
                                   'mgp8_pp_mumu_5f_HT_10000_27000']
 
 # global parameters
-intLumi = 1.0e+07
+intLumi = 1.5e+07
+
 delphesVersion = '3.4.2'
 
 uncertainties = []
@@ -65,6 +66,7 @@ uncertainties.append([0.02, 0.10])
 # the first time needs to be set to True
 runFull = True
 HELHC=True
+
 
 # base pre-selections
 selbase = 'lep1_pt > 500. && lep2_pt > 500. && abs(lep1_eta) < 4 && abs(lep2_eta) < 4 && zprime_muon_m>1000'

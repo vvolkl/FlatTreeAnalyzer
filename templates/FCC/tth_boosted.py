@@ -11,8 +11,14 @@ variables = {
     "h_m_l":{"name":"softDropped_higgsjet_m","title":"m_{SD}(H) [GeV]","bin":30,"xmin":0.0,"xmax":300.0},
     "h_mjj_l":{"name":"higgsjet_mjs","title":"m_{jj}(H) [GeV]","bin":30,"xmin":0.0,"xmax":300.0},
     "h_mbb_l":{"name":"higgsjet_mbs","title":"m_{bb}(H) [GeV]","bin":30,"xmin":0.0,"xmax":300.0},
-    "h_mjj_l2":{"name":"higgsjet_mjs","title":"m_{jj}(H) [GeV]","bin":150,"xmin":0.0,"xmax":300.0},
-    "h_mbb_l2":{"name":"higgsjet_mbs","title":"m_{bb}(H) [GeV]","bin":150,"xmin":0.0,"xmax":300.0},
+    "h_mjj_l60":{"name":"higgsjet_mjs","title":"m_{jj}(H) [GeV]","bin":60,"xmin":0.0,"xmax":300.0},
+    "h_mbb_l60":{"name":"higgsjet_mbs","title":"m_{bb}(H) [GeV]","bin":60,"xmin":0.0,"xmax":300.0},
+    "h_mjj_l90":{"name":"higgsjet_mjs","title":"m_{jj}(H) [GeV]","bin":90,"xmin":0.0,"xmax":300.0},
+    "h_mbb_l90":{"name":"higgsjet_mbs","title":"m_{bb}(H) [GeV]","bin":90,"xmin":0.0,"xmax":300.0},
+    "h_mjj_l120":{"name":"higgsjet_mjs","title":"m_{jj}(H) [GeV]","bin":120,"xmin":0.0,"xmax":300.0},
+    "h_mbb_l120":{"name":"higgsjet_mbs","title":"m_{bb}(H) [GeV]","bin":120,"xmin":0.0,"xmax":300.0},
+    "h_mjj_l150":{"name":"higgsjet_mjs","title":"m_{jj}(H) [GeV]","bin":150,"xmin":0.0,"xmax":300.0},
+    "h_mbb_l150":{"name":"higgsjet_mbs","title":"m_{bb}(H) [GeV]","bin":150,"xmin":0.0,"xmax":300.0},
     "h_tau21":{"name":"higgsjet_tau21","title":"#tau_{2,1}(H)","bin":50,"xmin":0.0,"xmax":1.0},
     "h_tau32":{"name":"higgsjet_tau32","title":"#tau_{3,2}(H)","bin":50,"xmin":0.0,"xmax":1.0},
     "h_njs":{"name":"higgsjet_njs","title":"N_{j}(H)","bin":6,"xmin":-0.5,"xmax":5.5},
@@ -96,6 +102,8 @@ sel_top = selbase + ' && softDropped_topjet_m > 120. && softDropped_topjet_m < 2
 # do not apply mSD cut, because we will fit on that variable later
 sel_higgs = sel_top + ' && higgsjet_tau21 < 0.6'
 
+# clean cut -> remove low mjj peak
+sel_higgs += ' && higgsjet_mjs > 50.'
 
 ## tight btag selection
 #######################

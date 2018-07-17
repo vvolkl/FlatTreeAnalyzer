@@ -48,10 +48,7 @@ signal_groups['m_{Z} = 40 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_40TeV']
 signal_groups['m_{Z} = 45 TeV'] = ['mgp8_pp_Zprime_mumu_5f_Mzp_45TeV']
 
 background_groups = collections.OrderedDict()
-background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo_2TeV']
-# prepare next
-#background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo_2_5TeV']
-#background_groups['Drell-Yann'] = ['mgp8_pp_mumu_lo']
+background_groups['Drell-Yan'] = ['mgp8_pp_mumu_5f_HT_500_1000','mgp8_pp_mumu_5f_HT_1000_2000','mgp8_pp_mumu_5f_HT_2000_5000','mgp8_pp_mumu_5f_HT_5000_10000','mgp8_pp_mumu_5f_HT_10000_27000','mgp8_pp_mumu_5f_HT_27000_100000']
 
 # global parameters
 intLumi = 3.0e+07
@@ -67,8 +64,7 @@ uncertainties.append([0.02, 0.10])
 runFull = True
 
 # base pre-selections
-#selbase = 'lep1_pt > 6000. && lep2_pt > 6000. && abs(lep1_eta) < 4 && abs(lep2_eta) < 4 && zprime_muon_m>12000'
-selbase = 'lep1_pt > 1200. && lep2_pt > 1200. && abs(lep1_eta) < 4 && abs(lep2_eta) < 4'
+selbase = 'lep1_pt > 1200. && lep2_pt > 1200. && abs(lep1_eta) < 4 && abs(lep2_eta) < 4 && zprime_muon_m > 2500.'
 
 # add mass-dependent list of event selections here if needed...
 
