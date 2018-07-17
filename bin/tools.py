@@ -263,10 +263,16 @@ def producePlots(param, block, sel, ops):
     if not no_plots:
 
         intLumiab = lumi/1e+06 
-
         lt = "FCC-hh Simulation (Delphes)"
         rt = "#sqrt{{s}} = 100 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
 
+        try:
+            helhc=param.HELHC
+            if helhc:
+                lt = "FCC-hh Simulation (Delphes)"
+                rt = "#sqrt{{s}} = 27 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
+        except :
+            print 'FCC'
         
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
         produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
@@ -636,7 +642,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  if i > 0: 
                      leg.AddEntry(hh,p,"f")
                  else: 
-                     leg.AddEntry(hh,p,"l")
+                     leg.AddEntry(hh,p.replace('m_{Z}','m_{Z\'}'),"l")
                  i+=1
              drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
     print 'DONE.'
