@@ -8,9 +8,12 @@ the way to get fit params :
 import ROOT, os, sys
 from ROOT import *
 tree="outputs/analysis_fcc_v02/tmp/RSGww/root_m_RSG_25TeV/histos.root"
+tree="outputs/analysis_helhc_v01/RSGww/root_m_RSG_2TeV/histos.root"
 low_x=5.
 high_x=50.
+high_x=20.
 lumi="sqrt(100.)"
+lumi="sqrt(27.)"
 fit_func="[0]*((1-(x/"+lumi+"))^[1])*((x/"+lumi+")^[2])*((x/"+lumi+")^([3]*log(x/"+lumi+")))"
 rebin=10
 rf = TFile(tree,"READ")
@@ -19,6 +22,7 @@ new_hist = hist.Clone()
 hist.Rebin(rebin)
 myfit = ROOT.TF1("myfit",fit_func, low_x, high_x)
 hist.Fit("myfit","S","",7.,35.)
+hist.Fit("myfit","S","",4.,15.)
 
 -> adjust x bounds to get the best fit
 
@@ -52,6 +56,9 @@ python scripts/fit_histo_Mjj.py outputs/analysis_fcc_v02/RSGww/root_m_RSG_10TeV/
 
 '''
 
+#isFCChh = True
+isFCChh = False
+
 tree = sys.argv[1]
 
 ana=""
@@ -69,8 +76,10 @@ extra=variable+"_"
 
 low_x=5.
 if ana=="dijet" : low_x=10.
+if isFCChh == False : low_x=2.
 high_x=50.
-lumi="sqrt(100.)"
+if isFCChh == True : lumi="sqrt(100.)"
+else               : lumi="sqrt(27.)"
 fit_func="[0]*((1-(x/"+lumi+"))^[1])*((x/"+lumi+")^[2])*((x/"+lumi+")^([3]*log(x/"+lumi+")))"
 # [0]*((1-(x/sqrt(100.)))^[1])*((x/sqrt(100.))^[2])*((x/sqrt(100.))^([3]*log(x/sqrt(100.))))
 
@@ -134,6 +143,21 @@ fitList.append(["zptt","QCD_sel8",1.12662e-04,0.00000e+00,-1.10449e+00,-7.70251e
 fitList.append(["dijet","QCD_sel0",2.78876e-01,0.00000e+00,-3.36772e+00,-1.21888e+00])
 fitList.append(["dijet","QCD_sel1",2.66067e-01,0.00000e+00,-2.49503e+00,-3.68841e+00])
 
+fitList_27 = []
+fitList_27.append(["RSG","vv_sel4"  ,2.44844e-06,0.00000e+00,-4.10323e+00,-4.77460e+00])
+fitList_27.append(["RSG","vj_sel4"  ,6.28039e-06,0.00000e+00,-4.03591e+00,-4.51547e+00])
+fitList_27.append(["RSG","tt_sel4"  ,1.55086e-06,0.00000e+00,-8.18615e+00,-7.98745e+00])
+fitList_27.append(["RSG","QCD_sel4" ,5.72396e-06,0.00000e+00,2.42211e+00,-8.38424e+00])
+fitList_27.append(["zptt","vv_sel8" ,1.17109e-07,0.00000e+00,-3.99751e+00,-5.76939e+00])
+fitList_27.append(["zptt","vj_sel8" ,9.46013e-07,0.00000e+00,-4.17355e+00,-5.54113e+00])
+fitList_27.append(["zptt","tt_sel8" ,4.01787e-04,0.00000e+00,-3.95015e+00,-6.43429e+00])
+fitList_27.append(["zptt","QCD_sel8",2.30000e-05,0.00000e+00,-3.09631e+00,-5.00743e+00])
+
+# FCC-hh
+if isFCChh == True : the_fitList = fitList
+# HELHC
+else : the_fitList = fitList_27
+
 rf = TFile(tree,"UPDATE")
 
 for tkey in rf.GetListOfKeys():
@@ -145,7 +169,7 @@ for tkey in rf.GetListOfKeys():
     if key.find("} =")>=0 : isSig=True
     print key
     # check key
-    for sample in fitList:
+    for sample in the_fitList:
       if ana==sample[0] and key.find(sample[1])>=0 :
         plotToFit=True
         p0=sample[2]
@@ -166,7 +190,12 @@ for tkey in rf.GetListOfKeys():
         new_hist.SetBinContent(i_bin, the_val)
         new_hist.SetBinError(i_bin,0.)
       # keep norm
-      new_hist.Scale( hist.Integral() / new_hist.Integral() )
+      if isFCChh == False and key == "QCD_sel4_Mj1j2_pf08":
+        new_hist.Scale( hist.Integral( hist.FindBin(4.),hist.FindBin(20.) ) / new_hist.Integral( hist.FindBin(4.),hist.FindBin(20.) ) )
+      elif isFCChh == False and key == "QCD_sel8_Mj1j2_pf08_MetCorr":
+        new_hist.Scale( hist.Integral( hist.FindBin(6.),hist.FindBin(20.) ) / new_hist.Integral( hist.FindBin(6.),hist.FindBin(20.) ) )
+      else :
+        new_hist.Scale( hist.Integral() / new_hist.Integral() )
     # save it
     new_hist.SetName(key+extra_out)
     new_hist.Write()
