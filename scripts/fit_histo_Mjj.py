@@ -59,6 +59,9 @@ python scripts/fit_histo_Mjj.py outputs/analysis_fcc_v02/RSGww/root_m_RSG_10TeV/
 #isFCChh = True
 isFCChh = False
 
+tmp_fix=True
+#tmp_fix=False
+
 tree = sys.argv[1]
 
 ana=""
@@ -148,10 +151,16 @@ fitList_27.append(["RSG","vv_sel4"  ,2.44844e-06,0.00000e+00,-4.10323e+00,-4.774
 fitList_27.append(["RSG","vj_sel4"  ,6.28039e-06,0.00000e+00,-4.03591e+00,-4.51547e+00])
 fitList_27.append(["RSG","tt_sel4"  ,1.55086e-06,0.00000e+00,-8.18615e+00,-7.98745e+00])
 fitList_27.append(["RSG","QCD_sel4" ,5.72396e-06,0.00000e+00,2.42211e+00,-8.38424e+00])
+if tmp_fix==True :
+  fitList_27.append(["zptt","vv_sel0" ,1.17109e-07,0.00000e+00,-3.99751e+00,-5.76939e+00])
+  fitList_27.append(["zptt","vj_sel0" ,9.46013e-07,0.00000e+00,-4.17355e+00,-5.54113e+00])
+  fitList_27.append(["zptt","tt_sel0" ,4.01787e-04,0.00000e+00,-3.95015e+00,-6.43429e+00])
+  fitList_27.append(["zptt","QCD_sel0",2.30000e-05,0.00000e+00,-3.09631e+00,-5.00743e+00])
 fitList_27.append(["zptt","vv_sel8" ,1.17109e-07,0.00000e+00,-3.99751e+00,-5.76939e+00])
 fitList_27.append(["zptt","vj_sel8" ,9.46013e-07,0.00000e+00,-4.17355e+00,-5.54113e+00])
 fitList_27.append(["zptt","tt_sel8" ,4.01787e-04,0.00000e+00,-3.95015e+00,-6.43429e+00])
 fitList_27.append(["zptt","QCD_sel8",2.30000e-05,0.00000e+00,-3.09631e+00,-5.00743e+00])
+
 
 # FCC-hh
 if isFCChh == True : the_fitList = fitList
@@ -193,6 +202,8 @@ for tkey in rf.GetListOfKeys():
       if isFCChh == False and key == "QCD_sel4_Mj1j2_pf08":
         new_hist.Scale( hist.Integral( hist.FindBin(4.),hist.FindBin(20.) ) / new_hist.Integral( hist.FindBin(4.),hist.FindBin(20.) ) )
       elif isFCChh == False and key == "QCD_sel8_Mj1j2_pf08_MetCorr":
+        new_hist.Scale( hist.Integral( hist.FindBin(6.),hist.FindBin(20.) ) / new_hist.Integral( hist.FindBin(6.),hist.FindBin(20.) ) )
+      elif isFCChh == False and key == "QCD_sel0_Mj1j2_pf08_MetCorr" and tmp_fix==True:
         new_hist.Scale( hist.Integral( hist.FindBin(6.),hist.FindBin(20.) ) / new_hist.Integral( hist.FindBin(6.),hist.FindBin(20.) ) )
       else :
         new_hist.Scale( hist.Integral() / new_hist.Integral() )
