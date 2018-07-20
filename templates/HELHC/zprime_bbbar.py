@@ -47,6 +47,7 @@ variables = {
 
 #        'Mj1j2_pf08' :{'name':'Mj1j2_pf08','title':'m_{Z\'} [TeV] (pf08)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
         'Mj1j2_pf08_MetCorr' :{'name':'Mj1j2_pf08_MetCorr','title':'m_{Z\'} [TeV] (pf08 metcor)','bin':100,'xmin':0.0,'xmax':20.0, 'divide':1000},
+        #'Mj1j2_pf08_MetCorr_fit' :{'name':'Mj1j2_pf08_MetCorr_fit','title':'m_{Z\'} [TeV] (pf08 metcor)','bin':100,'xmin':0.0,'xmax':20.0, 'divide':1000},
 
 #        'Jet1_dR_lep' :{'name':'Jet1_trk02_dR_lep','title':'#DeltaR(l,j1) (trk02)','bin':50,'xmin':0,'xmax':5},
 #        'Jet2_dR_lep' :{'name':'Jet2_trk02_dR_lep','title':'#DeltaR(l,j2) (trk02)','bin':50,'xmin':0,'xmax':5},
@@ -98,24 +99,24 @@ colors['vv']  = ROOT.kGreen+2
 colors['vj']  = ROOT.kMagenta+2
 
 signal_groups = collections.OrderedDict()
-signal_groups['m_{Z_I} = 2 TeV']    = ['p8_pp_ZprimeI_2TeV_ttbar']
-signal_groups['m_{Z_I} = 4 TeV']    = ['p8_pp_ZprimeI_4TeV_ttbar']
-signal_groups['m_{Z_I} = 6 TeV']    = ['p8_pp_ZprimeI_6TeV_ttbar']
-signal_groups['m_{Z_CHI} = 2 TeV']  = ['p8_pp_ZprimeCHI_2TeV_ttbar']
-signal_groups['m_{Z_CHI} = 4 TeV']  = ['p8_pp_ZprimeCHI_4TeV_ttbar']
-signal_groups['m_{Z_CHI} = 6 TeV']  = ['p8_pp_ZprimeCHI_6TeV_ttbar']
-signal_groups['m_{Z_PSI} = 2 TeV']  = ['p8_pp_ZprimePSI_2TeV_ttbar']
-signal_groups['m_{Z_PSI} = 4 TeV']  = ['p8_pp_ZprimePSI_4TeV_ttbar']
-signal_groups['m_{Z_PSI} = 6 TeV']  = ['p8_pp_ZprimePSI_6TeV_ttbar']
-signal_groups['m_{Z_LRM} = 2 TeV']  = ['p8_pp_ZprimeLRM_2TeV_ttbar']
-signal_groups['m_{Z_LRM} = 4 TeV']  = ['p8_pp_ZprimeLRM_4TeV_ttbar']
-signal_groups['m_{Z_LRM} = 6 TeV']  = ['p8_pp_ZprimeLRM_6TeV_ttbar']
-signal_groups['m_{Z_SSM} = 2 TeV']  = ['p8_pp_ZprimeSSM_2TeV_ttbar']
-signal_groups['m_{Z_SSM} = 4 TeV']  = ['p8_pp_ZprimeSSM_4TeV_ttbar']
-signal_groups['m_{Z_SSM} = 6 TeV']  = ['p8_pp_ZprimeSSM_6TeV_ttbar']
-signal_groups['m_{Z_ETA} = 2 TeV']  = ['p8_pp_ZprimeETA_2TeV_ttbar']
-signal_groups['m_{Z_ETA} = 4 TeV']  = ['p8_pp_ZprimeETA_4TeV_ttbar']
-signal_groups['m_{Z_ETA} = 6 TeV']  = ['p8_pp_ZprimeETA_6TeV_ttbar']
+signal_groups['m_{Z_I} = 2 TeV']    = ['p8_pp_ZprimeI_2TeV_jj']
+signal_groups['m_{Z_I} = 4 TeV']    = ['p8_pp_ZprimeI_4TeV_jj']
+signal_groups['m_{Z_I} = 6 TeV']    = ['p8_pp_ZprimeI_6TeV_jj']
+signal_groups['m_{Z_CHI} = 2 TeV']  = ['p8_pp_ZprimeCHI_2TeV_jj']
+signal_groups['m_{Z_CHI} = 4 TeV']  = ['p8_pp_ZprimeCHI_4TeV_jj']
+signal_groups['m_{Z_CHI} = 6 TeV']  = ['p8_pp_ZprimeCHI_6TeV_jj']
+signal_groups['m_{Z_PSI} = 2 TeV']  = ['p8_pp_ZprimePSI_2TeV_jj']
+signal_groups['m_{Z_PSI} = 4 TeV']  = ['p8_pp_ZprimePSI_4TeV_jj']
+signal_groups['m_{Z_PSI} = 6 TeV']  = ['p8_pp_ZprimePSI_6TeV_jj']
+signal_groups['m_{Z_LRM} = 2 TeV']  = ['p8_pp_ZprimeLRM_2TeV_jj']
+signal_groups['m_{Z_LRM} = 4 TeV']  = ['p8_pp_ZprimeLRM_4TeV_jj']
+signal_groups['m_{Z_LRM} = 6 TeV']  = ['p8_pp_ZprimeLRM_6TeV_jj']
+signal_groups['m_{Z_SSM} = 2 TeV']  = ['p8_pp_ZprimeSSM_2TeV_jj']
+signal_groups['m_{Z_SSM} = 4 TeV']  = ['p8_pp_ZprimeSSM_4TeV_jj']
+signal_groups['m_{Z_SSM} = 6 TeV']  = ['p8_pp_ZprimeSSM_6TeV_jj']
+signal_groups['m_{Z_ETA} = 2 TeV']  = ['p8_pp_ZprimeETA_2TeV_jj']
+signal_groups['m_{Z_ETA} = 4 TeV']  = ['p8_pp_ZprimeETA_4TeV_jj']
+signal_groups['m_{Z_ETA} = 6 TeV']  = ['p8_pp_ZprimeETA_6TeV_jj']
 #
 background_groups = collections.OrderedDict()
 background_groups['vv']  = [
@@ -130,18 +131,18 @@ background_groups['vj']  = [
 'mgp8_pp_vj_5f_HT_2000_5000',
 'mgp8_pp_vj_5f_HT_5000_10000',
 'mgp8_pp_vj_5f_HT_10000_27000']
-background_groups['QCD'] = [
-'mgp8_pp_jj_5f_HT_500_1000',
-'mgp8_pp_jj_5f_HT_1000_2000',
-'mgp8_pp_jj_5f_HT_2000_5000',
-'mgp8_pp_jj_5f_HT_5000_10000',
-'mgp8_pp_jj_5f_HT_10000_27000']
 background_groups['tt']  = [
 'mgp8_pp_tt_5f_HT_500_1000',
 'mgp8_pp_tt_5f_HT_1000_2000',
 'mgp8_pp_tt_5f_HT_2000_5000',
 'mgp8_pp_tt_5f_HT_5000_10000',
 'mgp8_pp_tt_5f_HT_10000_27000']
+background_groups['QCD'] = [
+'mgp8_pp_jj_5f_HT_500_1000',
+'mgp8_pp_jj_5f_HT_1000_2000',
+'mgp8_pp_jj_5f_HT_2000_5000',
+'mgp8_pp_jj_5f_HT_5000_10000',
+'mgp8_pp_jj_5f_HT_10000_27000']
 
 # global parameters
 intLumi = 1.5e+07
@@ -162,72 +163,69 @@ HELHC=True
 # base pre-selections
 #####################
 selbase  = 'Jet1_trk02_SD_Corr_pt > 1000. && Jet2_trk02_SD_Corr_pt > 1000. && abs(Jet1_trk02_SD_Corr_eta) < 3. && abs(Jet1_trk02_SD_Corr_eta) < 3.'
-# clean cuts
-#selbase += ' && Jet1_trk02_tau21>0 && Jet1_trk02_tau31>0 && Jet1_trk02_tau32>0 && Jet2_trk02_tau21>0 && Jet2_trk02_tau31>0 && Jet2_trk02_tau32>0'
-# add extra free clean cut
-#selbase += ' && rapiditySeparation_trk02<2.4 && Mj1j2_pf08_MetCorr>2.0'
+# cleaning cut
+selbase += ' && Mj1j2_pf08_MetCorr>2.0'
 
 #####################
 # inverted anti-QCD jet tagger selection
 #####################
 sel1 = selbase + ' && Jet1_thad_vs_QCD_tagger<0.15 &&  Jet2_thad_vs_QCD_tagger<0.15'
-#sel2t = sel1t   + ' && Jet1_trk02_SD_Corr_m>40. && Jet2_trk02_SD_Corr_m>40.'
 
 #####################
 # bTag selection
 #####################
-sel2 = 'weight_2tagex**' + sel1t
+sel2 = 'weight_2tagex**' + sel1
 
 #####################
 # extra cuts to remove QCD
 #####################
-selfinal = sel2
+sel3 = sel2 + ' && rapiditySeparation_trk02<1.6'
+sel4 = sel3 + ' && Jet1_trk02_SD_Corr_m<20. && Jet2_trk02_SD_Corr_m<20.'
+selfinal = sel4
 
 # add mass-dependent list of event #selections here if needed...
 
 selections = collections.OrderedDict()
 
-#selections['m_{Z_I} = 2 TeV'] = []
-#selections['m_{Z_I} = 2 TeV'].append(selfinal)
-#selections['m_{Z_I} = 4 TeV'] = []
-#selections['m_{Z_I} = 4 TeV'].append(selfinal)
+selections['m_{Z_I} = 2 TeV'] = []
+selections['m_{Z_I} = 2 TeV'].append(selfinal)
+selections['m_{Z_I} = 4 TeV'] = []
+selections['m_{Z_I} = 4 TeV'].append(selfinal)
 selections['m_{Z_I} = 6 TeV'] = []
-selections['m_{Z_I} = 6 TeV'].append(selbase)
-selections['m_{Z_I} = 6 TeV'].append(sel1)
 selections['m_{Z_I} = 6 TeV'].append(selfinal)
 
-#selections['m_{Z_PSI} = 2 TeV'] = []
-#selections['m_{Z_PSI} = 2 TeV'].append(selfinal)
-#selections['m_{Z_PSI} = 4 TeV'] = []
-#selections['m_{Z_PSI} = 4 TeV'].append(selfinal)
-#selections['m_{Z_PSI} = 6 TeV'] = []
-#selections['m_{Z_PSI} = 6 TeV'].append(selfinal)
-#
-#selections['m_{Z_CHI} = 2 TeV'] = []
-#selections['m_{Z_CHI} = 2 TeV'].append(selfinal)
-#selections['m_{Z_CHI} = 4 TeV'] = []
-#selections['m_{Z_CHI} = 4 TeV'].append(selfinal)
-#selections['m_{Z_CHI} = 6 TeV'] = []
-#selections['m_{Z_CHI} = 6 TeV'].append(selfinal)
-#
-#selections['m_{Z_LRM} = 2 TeV'] = []
-#selections['m_{Z_LRM} = 2 TeV'].append(selfinal)
-#selections['m_{Z_LRM} = 4 TeV'] = []
-#selections['m_{Z_LRM} = 4 TeV'].append(selfinal)
-#selections['m_{Z_LRM} = 6 TeV'] = []
-#selections['m_{Z_LRM} = 6 TeV'].append(selfinal)
-#
-#selections['m_{Z_SSM} = 2 TeV'] = []
-#selections['m_{Z_SSM} = 2 TeV'].append(selfinal)
-#selections['m_{Z_SSM} = 4 TeV'] = []
-#selections['m_{Z_SSM} = 4 TeV'].append(selfinal)
-#selections['m_{Z_SSM} = 6 TeV'] = []
-#selections['m_{Z_SSM} = 6 TeV'].append(selfinal)
-#
-#selections['m_{Z_ETA} = 2 TeV'] = []
-#selections['m_{Z_ETA} = 2 TeV'].append(selfinal)
-#selections['m_{Z_ETA} = 4 TeV'] = []
-#selections['m_{Z_ETA} = 4 TeV'].append(selfinal)
-#selections['m_{Z_ETA} = 6 TeV'] = []
-#selections['m_{Z_ETA} = 6 TeV'].append(selfinal)
+selections['m_{Z_PSI} = 2 TeV'] = []
+selections['m_{Z_PSI} = 2 TeV'].append(selfinal)
+selections['m_{Z_PSI} = 4 TeV'] = []
+selections['m_{Z_PSI} = 4 TeV'].append(selfinal)
+selections['m_{Z_PSI} = 6 TeV'] = []
+selections['m_{Z_PSI} = 6 TeV'].append(selfinal)
+
+selections['m_{Z_CHI} = 2 TeV'] = []
+selections['m_{Z_CHI} = 2 TeV'].append(selfinal)
+selections['m_{Z_CHI} = 4 TeV'] = []
+selections['m_{Z_CHI} = 4 TeV'].append(selfinal)
+selections['m_{Z_CHI} = 6 TeV'] = []
+selections['m_{Z_CHI} = 6 TeV'].append(selfinal)
+
+selections['m_{Z_LRM} = 2 TeV'] = []
+selections['m_{Z_LRM} = 2 TeV'].append(selfinal)
+selections['m_{Z_LRM} = 4 TeV'] = []
+selections['m_{Z_LRM} = 4 TeV'].append(selfinal)
+selections['m_{Z_LRM} = 6 TeV'] = []
+selections['m_{Z_LRM} = 6 TeV'].append(selfinal)
+
+selections['m_{Z_SSM} = 2 TeV'] = []
+selections['m_{Z_SSM} = 2 TeV'].append(selfinal)
+selections['m_{Z_SSM} = 4 TeV'] = []
+selections['m_{Z_SSM} = 4 TeV'].append(selfinal)
+selections['m_{Z_SSM} = 6 TeV'] = []
+selections['m_{Z_SSM} = 6 TeV'].append(selfinal)
+
+selections['m_{Z_ETA} = 2 TeV'] = []
+selections['m_{Z_ETA} = 2 TeV'].append(selfinal)
+selections['m_{Z_ETA} = 4 TeV'] = []
+selections['m_{Z_ETA} = 4 TeV'].append(selfinal)
+selections['m_{Z_ETA} = 6 TeV'] = []
+selections['m_{Z_ETA} = 6 TeV'].append(selfinal)
 

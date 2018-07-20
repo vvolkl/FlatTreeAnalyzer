@@ -47,6 +47,7 @@ variables = {
 
 #        'Mj1j2_pf08' :{'name':'Mj1j2_pf08','title':'m_{Z\'} [TeV] (pf08)','bin':125,'xmin':5.0,'xmax':30.0, 'divide':1000},
         'Mj1j2_pf08_MetCorr' :{'name':'Mj1j2_pf08_MetCorr','title':'m_{Z\'} [TeV] (pf08 metcor)','bin':100,'xmin':0.0,'xmax':20.0, 'divide':1000},
+#        'Mj1j2_pf08_MetCorr_fit' :{'name':'Mj1j2_pf08_MetCorr_fit','title':'m_{Z\'} [TeV] (pf08 metcor)','bin':100,'xmin':0.0,'xmax':20.0, 'divide':1000},
 
 #        'Jet1_dR_lep' :{'name':'Jet1_trk02_dR_lep','title':'#DeltaR(l,j1) (trk02)','bin':50,'xmin':0,'xmax':5},
 #        'Jet2_dR_lep' :{'name':'Jet2_trk02_dR_lep','title':'#DeltaR(l,j2) (trk02)','bin':50,'xmin':0,'xmax':5},
@@ -114,24 +115,24 @@ signal_groups['m_{Z} = 10 TeV'] = ['p8_pp_Zprime_10TeV_ttbar']
 signal_groups['m_{Z} = 12 TeV'] = ['p8_pp_Zprime_12TeV_ttbar']
 signal_groups['m_{Z} = 14 TeV'] = ['p8_pp_Zprime_14TeV_ttbar']
 #
-signal_groups['m_{Z_I} = 2 TeV']    = ['p8_pp_ZprimeI_2TeV_ttbar']
-signal_groups['m_{Z_I} = 4 TeV']    = ['p8_pp_ZprimeI_4TeV_ttbar']
-signal_groups['m_{Z_I} = 6 TeV']    = ['p8_pp_ZprimeI_6TeV_ttbar']
-signal_groups['m_{Z_CHI} = 2 TeV']  = ['p8_pp_ZprimeCHI_2TeV_ttbar']
-signal_groups['m_{Z_CHI} = 4 TeV']  = ['p8_pp_ZprimeCHI_4TeV_ttbar']
-signal_groups['m_{Z_CHI} = 6 TeV']  = ['p8_pp_ZprimeCHI_6TeV_ttbar']
-signal_groups['m_{Z_PSI} = 2 TeV']  = ['p8_pp_ZprimePSI_2TeV_ttbar']
-signal_groups['m_{Z_PSI} = 4 TeV']  = ['p8_pp_ZprimePSI_4TeV_ttbar']
-signal_groups['m_{Z_PSI} = 6 TeV']  = ['p8_pp_ZprimePSI_6TeV_ttbar']
-signal_groups['m_{Z_LRM} = 2 TeV']  = ['p8_pp_ZprimeLRM_2TeV_ttbar']
-signal_groups['m_{Z_LRM} = 4 TeV']  = ['p8_pp_ZprimeLRM_4TeV_ttbar']
-signal_groups['m_{Z_LRM} = 6 TeV']  = ['p8_pp_ZprimeLRM_6TeV_ttbar']
-signal_groups['m_{Z_SSM} = 2 TeV']  = ['p8_pp_ZprimeSSM_2TeV_ttbar']
-signal_groups['m_{Z_SSM} = 4 TeV']  = ['p8_pp_ZprimeSSM_4TeV_ttbar']
-signal_groups['m_{Z_SSM} = 6 TeV']  = ['p8_pp_ZprimeSSM_6TeV_ttbar']
-signal_groups['m_{Z_ETA} = 2 TeV']  = ['p8_pp_ZprimeETA_2TeV_ttbar']
-signal_groups['m_{Z_ETA} = 4 TeV']  = ['p8_pp_ZprimeETA_4TeV_ttbar']
-signal_groups['m_{Z_ETA} = 6 TeV']  = ['p8_pp_ZprimeETA_6TeV_ttbar']
+signal_groups['m_{Z_I} = 2 TeV']    = ['p8_pp_ZprimeI_2TeV_jj']
+signal_groups['m_{Z_I} = 4 TeV']    = ['p8_pp_ZprimeI_4TeV_jj']
+signal_groups['m_{Z_I} = 6 TeV']    = ['p8_pp_ZprimeI_6TeV_jj']
+signal_groups['m_{Z_CHI} = 2 TeV']  = ['p8_pp_ZprimeCHI_2TeV_jj']
+signal_groups['m_{Z_CHI} = 4 TeV']  = ['p8_pp_ZprimeCHI_4TeV_jj']
+signal_groups['m_{Z_CHI} = 6 TeV']  = ['p8_pp_ZprimeCHI_6TeV_jj']
+signal_groups['m_{Z_PSI} = 2 TeV']  = ['p8_pp_ZprimePSI_2TeV_jj']
+signal_groups['m_{Z_PSI} = 4 TeV']  = ['p8_pp_ZprimePSI_4TeV_jj']
+signal_groups['m_{Z_PSI} = 6 TeV']  = ['p8_pp_ZprimePSI_6TeV_jj']
+signal_groups['m_{Z_LRM} = 2 TeV']  = ['p8_pp_ZprimeLRM_2TeV_jj']
+signal_groups['m_{Z_LRM} = 4 TeV']  = ['p8_pp_ZprimeLRM_4TeV_jj']
+signal_groups['m_{Z_LRM} = 6 TeV']  = ['p8_pp_ZprimeLRM_6TeV_jj']
+signal_groups['m_{Z_SSM} = 2 TeV']  = ['p8_pp_ZprimeSSM_2TeV_jj']
+signal_groups['m_{Z_SSM} = 4 TeV']  = ['p8_pp_ZprimeSSM_4TeV_jj']
+signal_groups['m_{Z_SSM} = 6 TeV']  = ['p8_pp_ZprimeSSM_6TeV_jj']
+signal_groups['m_{Z_ETA} = 2 TeV']  = ['p8_pp_ZprimeETA_2TeV_jj']
+signal_groups['m_{Z_ETA} = 4 TeV']  = ['p8_pp_ZprimeETA_4TeV_jj']
+signal_groups['m_{Z_ETA} = 6 TeV']  = ['p8_pp_ZprimeETA_6TeV_jj']
 #
 background_groups = collections.OrderedDict()
 background_groups['vv']  = [
@@ -209,123 +210,123 @@ sel4t = 'weight_2tagex**' + sel2t
 
 selections = collections.OrderedDict()
 
-#selections['m_{Z} = 2 TeV'] = []
-#selections['m_{Z} = 2 TeV'].append(selbase)
-#selections['m_{Z} = 2 TeV'].append(sel1c)
-#selections['m_{Z} = 2 TeV'].append(sel2c)
-#selections['m_{Z} = 2 TeV'].append(sel1t)
-#selections['m_{Z} = 2 TeV'].append(sel2t)
-#selections['m_{Z} = 2 TeV'].append(sel3c)
-#selections['m_{Z} = 2 TeV'].append(sel3t)
-#selections['m_{Z} = 2 TeV'].append(sel4c)
-#selections['m_{Z} = 2 TeV'].append(sel4t)
-#
-#selections['m_{Z} = 4 TeV'] = []
-#selections['m_{Z} = 4 TeV'].append(selbase)
-#selections['m_{Z} = 4 TeV'].append(sel1c)
-#selections['m_{Z} = 4 TeV'].append(sel2c)
-#selections['m_{Z} = 4 TeV'].append(sel1t)
-#selections['m_{Z} = 4 TeV'].append(sel2t)
-#selections['m_{Z} = 4 TeV'].append(sel3c)
-#selections['m_{Z} = 4 TeV'].append(sel3t)
-#selections['m_{Z} = 4 TeV'].append(sel4c)
-#selections['m_{Z} = 4 TeV'].append(sel4t)
-#
-#selections['m_{Z} = 6 TeV'] = []
-#selections['m_{Z} = 6 TeV'].append(selbase)
-#selections['m_{Z} = 6 TeV'].append(sel1c)
-#selections['m_{Z} = 6 TeV'].append(sel2c)
-#selections['m_{Z} = 6 TeV'].append(sel1t)
-#selections['m_{Z} = 6 TeV'].append(sel2t)
-#selections['m_{Z} = 6 TeV'].append(sel3c)
-#selections['m_{Z} = 6 TeV'].append(sel3t)
-#selections['m_{Z} = 6 TeV'].append(sel4c)
-#selections['m_{Z} = 6 TeV'].append(sel4t)
-#
-#selections['m_{Z} = 8 TeV'] = []
-#selections['m_{Z} = 8 TeV'].append(selbase)
-#selections['m_{Z} = 8 TeV'].append(sel1c)
-#selections['m_{Z} = 8 TeV'].append(sel2c)
-#selections['m_{Z} = 8 TeV'].append(sel1t)
-#selections['m_{Z} = 8 TeV'].append(sel2t)
-#selections['m_{Z} = 8 TeV'].append(sel3c)
-#selections['m_{Z} = 8 TeV'].append(sel3t)
-#selections['m_{Z} = 8 TeV'].append(sel4c)
-#selections['m_{Z} = 8 TeV'].append(sel4t)
-#
-#selections['m_{Z} = 10 TeV'] = []
-#selections['m_{Z} = 10 TeV'].append(selbase)
-#selections['m_{Z} = 10 TeV'].append(sel1c)
-#selections['m_{Z} = 10 TeV'].append(sel2c)
-#selections['m_{Z} = 10 TeV'].append(sel1t)
-#selections['m_{Z} = 10 TeV'].append(sel2t)
-#selections['m_{Z} = 10 TeV'].append(sel3c)
-#selections['m_{Z} = 10 TeV'].append(sel3t)
-#selections['m_{Z} = 10 TeV'].append(sel4c)
-#selections['m_{Z} = 10 TeV'].append(sel4t)
-#
-#selections['m_{Z} = 12 TeV'] = []
-#selections['m_{Z} = 12 TeV'].append(selbase)
-#selections['m_{Z} = 12 TeV'].append(sel1c)
-#selections['m_{Z} = 12 TeV'].append(sel2c)
-#selections['m_{Z} = 12 TeV'].append(sel1t)
-#selections['m_{Z} = 12 TeV'].append(sel2t)
-#selections['m_{Z} = 12 TeV'].append(sel3c)
-#selections['m_{Z} = 12 TeV'].append(sel3t)
-#selections['m_{Z} = 12 TeV'].append(sel4c)
-#selections['m_{Z} = 12 TeV'].append(sel4t)
-#
-#selections['m_{Z} = 14 TeV'] = []
-#selections['m_{Z} = 14 TeV'].append(selbase)
-#selections['m_{Z} = 14 TeV'].append(sel1c)
-#selections['m_{Z} = 14 TeV'].append(sel2c)
-#selections['m_{Z} = 14 TeV'].append(sel1t)
-#selections['m_{Z} = 14 TeV'].append(sel2t)
-#selections['m_{Z} = 14 TeV'].append(sel3c)
-#selections['m_{Z} = 14 TeV'].append(sel3t)
-#selections['m_{Z} = 14 TeV'].append(sel4c)
-#selections['m_{Z} = 14 TeV'].append(sel4t)
+selections['m_{Z} = 2 TeV'] = []
+selections['m_{Z} = 2 TeV'].append(selbase)
+selections['m_{Z} = 2 TeV'].append(sel1c)
+selections['m_{Z} = 2 TeV'].append(sel2c)
+selections['m_{Z} = 2 TeV'].append(sel1t)
+selections['m_{Z} = 2 TeV'].append(sel2t)
+selections['m_{Z} = 2 TeV'].append(sel3c)
+selections['m_{Z} = 2 TeV'].append(sel3t)
+selections['m_{Z} = 2 TeV'].append(sel4c)
+selections['m_{Z} = 2 TeV'].append(sel4t)
+
+selections['m_{Z} = 4 TeV'] = []
+selections['m_{Z} = 4 TeV'].append(selbase)
+selections['m_{Z} = 4 TeV'].append(sel1c)
+selections['m_{Z} = 4 TeV'].append(sel2c)
+selections['m_{Z} = 4 TeV'].append(sel1t)
+selections['m_{Z} = 4 TeV'].append(sel2t)
+selections['m_{Z} = 4 TeV'].append(sel3c)
+selections['m_{Z} = 4 TeV'].append(sel3t)
+selections['m_{Z} = 4 TeV'].append(sel4c)
+selections['m_{Z} = 4 TeV'].append(sel4t)
+
+selections['m_{Z} = 6 TeV'] = []
+selections['m_{Z} = 6 TeV'].append(selbase)
+selections['m_{Z} = 6 TeV'].append(sel1c)
+selections['m_{Z} = 6 TeV'].append(sel2c)
+selections['m_{Z} = 6 TeV'].append(sel1t)
+selections['m_{Z} = 6 TeV'].append(sel2t)
+selections['m_{Z} = 6 TeV'].append(sel3c)
+selections['m_{Z} = 6 TeV'].append(sel3t)
+selections['m_{Z} = 6 TeV'].append(sel4c)
+selections['m_{Z} = 6 TeV'].append(sel4t)
+
+selections['m_{Z} = 8 TeV'] = []
+selections['m_{Z} = 8 TeV'].append(selbase)
+selections['m_{Z} = 8 TeV'].append(sel1c)
+selections['m_{Z} = 8 TeV'].append(sel2c)
+selections['m_{Z} = 8 TeV'].append(sel1t)
+selections['m_{Z} = 8 TeV'].append(sel2t)
+selections['m_{Z} = 8 TeV'].append(sel3c)
+selections['m_{Z} = 8 TeV'].append(sel3t)
+selections['m_{Z} = 8 TeV'].append(sel4c)
+selections['m_{Z} = 8 TeV'].append(sel4t)
+
+selections['m_{Z} = 10 TeV'] = []
+selections['m_{Z} = 10 TeV'].append(selbase)
+selections['m_{Z} = 10 TeV'].append(sel1c)
+selections['m_{Z} = 10 TeV'].append(sel2c)
+selections['m_{Z} = 10 TeV'].append(sel1t)
+selections['m_{Z} = 10 TeV'].append(sel2t)
+selections['m_{Z} = 10 TeV'].append(sel3c)
+selections['m_{Z} = 10 TeV'].append(sel3t)
+selections['m_{Z} = 10 TeV'].append(sel4c)
+selections['m_{Z} = 10 TeV'].append(sel4t)
+
+selections['m_{Z} = 12 TeV'] = []
+selections['m_{Z} = 12 TeV'].append(selbase)
+selections['m_{Z} = 12 TeV'].append(sel1c)
+selections['m_{Z} = 12 TeV'].append(sel2c)
+selections['m_{Z} = 12 TeV'].append(sel1t)
+selections['m_{Z} = 12 TeV'].append(sel2t)
+selections['m_{Z} = 12 TeV'].append(sel3c)
+selections['m_{Z} = 12 TeV'].append(sel3t)
+selections['m_{Z} = 12 TeV'].append(sel4c)
+selections['m_{Z} = 12 TeV'].append(sel4t)
+
+selections['m_{Z} = 14 TeV'] = []
+selections['m_{Z} = 14 TeV'].append(selbase)
+selections['m_{Z} = 14 TeV'].append(sel1c)
+selections['m_{Z} = 14 TeV'].append(sel2c)
+selections['m_{Z} = 14 TeV'].append(sel1t)
+selections['m_{Z} = 14 TeV'].append(sel2t)
+selections['m_{Z} = 14 TeV'].append(sel3c)
+selections['m_{Z} = 14 TeV'].append(sel3t)
+selections['m_{Z} = 14 TeV'].append(sel4c)
+selections['m_{Z} = 14 TeV'].append(sel4t)
 
 #################
-selections['m_{Z_I} = 2 TeV'] = []
-selections['m_{Z_I} = 2 TeV'].append(sel4t)
-selections['m_{Z_I} = 4 TeV'] = []
-selections['m_{Z_I} = 4 TeV'].append(sel4t)
-selections['m_{Z_I} = 6 TeV'] = []
-selections['m_{Z_I} = 6 TeV'].append(sel4t)
-
-selections['m_{Z_PSI} = 2 TeV'] = []
-selections['m_{Z_PSI} = 2 TeV'].append(sel4t)
-selections['m_{Z_PSI} = 4 TeV'] = []
-selections['m_{Z_PSI} = 4 TeV'].append(sel4t)
-selections['m_{Z_PSI} = 6 TeV'] = []
-selections['m_{Z_PSI} = 6 TeV'].append(sel4t)
-
-selections['m_{Z_CHI} = 2 TeV'] = []
-selections['m_{Z_CHI} = 2 TeV'].append(sel4t)
-selections['m_{Z_CHI} = 4 TeV'] = []
-selections['m_{Z_CHI} = 4 TeV'].append(sel4t)
-selections['m_{Z_CHI} = 6 TeV'] = []
-selections['m_{Z_CHI} = 6 TeV'].append(sel4t)
-
-selections['m_{Z_LRM} = 2 TeV'] = []
-selections['m_{Z_LRM} = 2 TeV'].append(sel4t)
-selections['m_{Z_LRM} = 4 TeV'] = []
-selections['m_{Z_LRM} = 4 TeV'].append(sel4t)
-selections['m_{Z_LRM} = 6 TeV'] = []
-selections['m_{Z_LRM} = 6 TeV'].append(sel4t)
-
-selections['m_{Z_SSM} = 2 TeV'] = []
-selections['m_{Z_SSM} = 2 TeV'].append(sel4t)
-selections['m_{Z_SSM} = 4 TeV'] = []
-selections['m_{Z_SSM} = 4 TeV'].append(sel4t)
-selections['m_{Z_SSM} = 6 TeV'] = []
-selections['m_{Z_SSM} = 6 TeV'].append(sel4t)
-
-selections['m_{Z_ETA} = 2 TeV'] = []
-selections['m_{Z_ETA} = 2 TeV'].append(sel4t)
-selections['m_{Z_ETA} = 4 TeV'] = []
-selections['m_{Z_ETA} = 4 TeV'].append(sel4t)
-selections['m_{Z_ETA} = 6 TeV'] = []
-selections['m_{Z_ETA} = 6 TeV'].append(sel4t)
+#selections['m_{Z_I} = 2 TeV'] = []
+#selections['m_{Z_I} = 2 TeV'].append(sel4t)
+#selections['m_{Z_I} = 4 TeV'] = []
+#selections['m_{Z_I} = 4 TeV'].append(sel4t)
+#selections['m_{Z_I} = 6 TeV'] = []
+#selections['m_{Z_I} = 6 TeV'].append(sel4t)
+#
+#selections['m_{Z_PSI} = 2 TeV'] = []
+#selections['m_{Z_PSI} = 2 TeV'].append(sel4t)
+#selections['m_{Z_PSI} = 4 TeV'] = []
+#selections['m_{Z_PSI} = 4 TeV'].append(sel4t)
+#selections['m_{Z_PSI} = 6 TeV'] = []
+#selections['m_{Z_PSI} = 6 TeV'].append(sel4t)
+#
+#selections['m_{Z_CHI} = 2 TeV'] = []
+#selections['m_{Z_CHI} = 2 TeV'].append(sel4t)
+#selections['m_{Z_CHI} = 4 TeV'] = []
+#selections['m_{Z_CHI} = 4 TeV'].append(sel4t)
+#selections['m_{Z_CHI} = 6 TeV'] = []
+#selections['m_{Z_CHI} = 6 TeV'].append(sel4t)
+#
+#selections['m_{Z_LRM} = 2 TeV'] = []
+#selections['m_{Z_LRM} = 2 TeV'].append(sel4t)
+#selections['m_{Z_LRM} = 4 TeV'] = []
+#selections['m_{Z_LRM} = 4 TeV'].append(sel4t)
+#selections['m_{Z_LRM} = 6 TeV'] = []
+#selections['m_{Z_LRM} = 6 TeV'].append(sel4t)
+#
+#selections['m_{Z_SSM} = 2 TeV'] = []
+#selections['m_{Z_SSM} = 2 TeV'].append(sel4t)
+#selections['m_{Z_SSM} = 4 TeV'] = []
+#selections['m_{Z_SSM} = 4 TeV'].append(sel4t)
+#selections['m_{Z_SSM} = 6 TeV'] = []
+#selections['m_{Z_SSM} = 6 TeV'].append(sel4t)
+#
+#selections['m_{Z_ETA} = 2 TeV'] = []
+#selections['m_{Z_ETA} = 2 TeV'].append(sel4t)
+#selections['m_{Z_ETA} = 4 TeV'] = []
+#selections['m_{Z_ETA} = 4 TeV'].append(sel4t)
+#selections['m_{Z_ETA} = 6 TeV'] = []
+#selections['m_{Z_ETA} = 6 TeV'].append(sel4t)
 
