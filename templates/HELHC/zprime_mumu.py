@@ -7,7 +7,7 @@ variables = {
     "mzp":{"name":"zprime_muon_m","title":"m_{Z'} [TeV]","bin":100,"xmin":0,"xmax":20, "divide":1000},
     "ptmu_1":{"name":"lep1_pt","title":"p_{T}^{#mu, max} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
     "ptmu_2":{"name":"lep2_pt","title":"p_{T}^{#mu, min} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
-    "yzp":{"name":"zprime_y","title":"y_{Z'}","bin":80,"xmin":-4,"xmax":4},
+    #"yzp":{"name":"zprime_y","title":"y_{Z'}","bin":80,"xmin":-4,"xmax":4},
 }
 
 variables2D = {}
@@ -74,20 +74,20 @@ selbase = 'lep1_pt > 500. && lep2_pt > 500. && abs(lep1_eta) < 4 && abs(lep2_eta
 # add mass-dependent list of event selections here if needed...
 
 selections = collections.OrderedDict()
-#selections['m_{Z} = 2 TeV'] = []
-#selections['m_{Z} = 2 TeV'].append(selbase)
-#selections['m_{Z} = 4 TeV'] = []
-#selections['m_{Z} = 4 TeV'].append(selbase)
+selections['m_{Z} = 2 TeV'] = []
+selections['m_{Z} = 2 TeV'].append(selbase)
+selections['m_{Z} = 4 TeV'] = []
+selections['m_{Z} = 4 TeV'].append(selbase)
 selections['m_{Z} = 6 TeV'] = []
 selections['m_{Z} = 6 TeV'].append(selbase)
-#selections['m_{Z} = 8 TeV'] = []
-#selections['m_{Z} = 8 TeV'].append(selbase)
-#selections['m_{Z} = 10 TeV'] = []
-#selections['m_{Z} = 10 TeV'].append(selbase)
-#selections['m_{Z} = 12 TeV'] = []
-#selections['m_{Z} = 12 TeV'].append(selbase)
-#selections['m_{Z} = 14 TeV'] = []
-#selections['m_{Z} = 14 TeV'].append(selbase)
+selections['m_{Z} = 8 TeV'] = []
+selections['m_{Z} = 8 TeV'].append(selbase)
+selections['m_{Z} = 10 TeV'] = []
+selections['m_{Z} = 10 TeV'].append(selbase)
+selections['m_{Z} = 12 TeV'] = []
+selections['m_{Z} = 12 TeV'].append(selbase)
+selections['m_{Z} = 14 TeV'] = []
+selections['m_{Z} = 14 TeV'].append(selbase)
 
 #selections['m_{Z ETA} = 6 TeV'] = []
 #selections['m_{Z ETA} = 6 TeV'].append(selbase)
