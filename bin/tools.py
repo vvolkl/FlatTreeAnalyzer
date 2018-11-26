@@ -639,10 +639,14 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
                  histos.append(hh)
                  cols.append(colors[p])
+                 # fix names if needed
+                 leg_name = p
+                 if p.find('m_{Z}')>=0   : leg_name = p.replace('m_{Z}',  'm_{Z\'}'   )
+                 if p.find('m_{RSG}')>=0 : leg_name = p.replace('m_{RSG}','m_{G_{RS}}')
                  if i > 0: 
-                     leg.AddEntry(hh,p,"f")
+                     leg.AddEntry(hh,leg_name,"f")
                  else: 
-                     leg.AddEntry(hh,p.replace('m_{Z}','m_{Z\'}'),"l")
+                     leg.AddEntry(hh,leg_name,"l")
                  i+=1
              drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
     print 'DONE.'
@@ -775,9 +779,13 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
 
     hStack.Draw("hist")
 
+    # fix names if needed
+    xlabel = histos[1].GetXaxis().GetTitle()
+    if xlabel.find('m_{RSG}')>=0 : xlabel = histos[1].GetXaxis().GetTitle().replace('m_{RSG}','m_{G_{RS}}')
+
     #hStack.GetXaxis().SetTitleFont(font)
     #hStack.GetXaxis().SetLabelFont(font)
-    hStack.GetXaxis().SetTitle(histos[1].GetXaxis().GetTitle())
+    hStack.GetXaxis().SetTitle(xlabel)
     hStack.GetYaxis().SetTitle(ylabel)
     #hStack.GetYaxis().SetTitleFont(font)
     #hStack.GetYaxis().SetLabelFont(font)
