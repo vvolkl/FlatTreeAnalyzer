@@ -7,10 +7,10 @@ the way to get fit params :
 
 import ROOT, os, sys
 from ROOT import *
-tree="outputs/analysis_helhc_v01/zpbb/root_m_Z_CHI_2TeV/histos.root"
+tree="outputs/analysis_fcc_v02/zptt_degrade2/root_m_Z_10TeV/histos.root"
 low_x=5.
 high_x=20.
-lumi="sqrt(27.)"
+lumi="sqrt(100.)"
 fit_func="[0]*((1-(x/"+lumi+"))^[1])*((x/"+lumi+")^[2])*((x/"+lumi+")^([3]*log(x/"+lumi+")))"
 rebin=10
 rf = TFile(tree,"READ")
@@ -18,8 +18,8 @@ hist = rf.Get("vv_sel0_Mj1j2_pf08_MetCorr")
 new_hist = hist.Clone()
 hist.Rebin(rebin)
 myfit = ROOT.TF1("myfit",fit_func, low_x, high_x)
-hist.Fit("myfit","S","",3.,12.)
-hist.Fit("myfit","S","",2.,17.)
+hist.Fit("myfit","S","",6.,45.)
+hist.Fit("myfit","S","",7.,45.)
 
 -> adjust x bounds to get the best fit
 
@@ -53,11 +53,16 @@ python scripts/fit_histo_Mjj.py outputs/analysis_fcc_v02/RSGww/root_m_RSG_10TeV/
 
 '''
 
-#isFCChh = True
-isFCChh = False
+isFCChh = True
+#isFCChh = False
 
-tmp_fix=True
-#tmp_fix=False
+#tmp_fix=True
+tmp_fix=False
+
+degrade=0
+#degrade=1
+#degrade=2
+#degrade=3
 
 tree = sys.argv[1]
 
@@ -104,10 +109,26 @@ fitList.append(["RSG","vv_sel4"  ,4.58470e-05,0.00000e+00,-2.88536e+00,-3.44451e
 fitList.append(["RSG","vj_sel4"  ,1.93022e-04,0.00000e+00,-2.65115e+00,-3.61228e+00])
 fitList.append(["RSG","tt_sel4"  ,2.41222e-05,0.00000e+00,-3.75255e+00,-4.06993e+00])
 fitList.append(["RSG","QCD_sel4" ,5.05153e-04,0.00000e+00,-1.27060e+00,-3.77269e+00])
-fitList.append(["zptt","vv_sel0" ,3.38130e-04,0.00000e+00,-5.45947e-01,-5.02950e+00])
-fitList.append(["zptt","vj_sel0" ,9.56826e-03,0.00000e+00,-9.56949e-01,-4.36535e+00])
-fitList.append(["zptt","tt_sel0" ,7.26207e-03,0.00000e+00,-1.29401e+00,-4.80901e+00])
-#fitList.append(["zptt","QCD_sel0",,,,])
+if degrade==0:
+  fitList.append(["zptt","vv_sel0" ,3.38130e-04,0.00000e+00,-5.45947e-01,-5.02950e+00])
+  fitList.append(["zptt","vj_sel0" ,9.56826e-03,0.00000e+00,-9.56949e-01,-4.36535e+00])
+  fitList.append(["zptt","tt_sel0" ,7.26207e-03,0.00000e+00,-1.29401e+00,-4.80901e+00])
+  #fitList.append(["zptt","QCD_sel0",,,,])
+if degrade==1:
+  fitList.append(["zptt","vv_sel0" ,1.37070e-07,0.00000e+00,-2.13006e+00,-6.30723e+00])
+  fitList.append(["zptt","vj_sel0" ,2.04681e-06,0.00000e+00,-2.76323e+00,-6.16998e+00])
+  fitList.append(["zptt","tt_sel0" ,6.33758e-04,0.00000e+00,-1.95219e+00,-6.84066e+00])
+  fitList.append(["zptt","QCD_sel0",9.85091e-05,0.00000e+00,-1.19073e+00,-7.59997e+00])
+if degrade==2:
+  fitList.append(["zptt","vv_sel0" ,1.12822e-07,0.00000e+00,-2.28136e+00,-6.16197e+00])
+  fitList.append(["zptt","vj_sel0" ,1.70528e-06,0.00000e+00,-2.93202e+00,-6.16569e+00])
+  fitList.append(["zptt","tt_sel0" ,5.05950e-04,0.00000e+00,-2.14359e+00,-7.24253e+00])
+  fitList.append(["zptt","QCD_sel0",7.88840e-05,0.00000e+00,-1.32488e+00,-7.44150e+00])
+if degrade==3:
+  fitList.append(["zptt","vv_sel0" ,8.22419e-08,0.00000e+00,-2.49031e+00,-6.24499e+00])
+  fitList.append(["zptt","vj_sel0" ,1.20856e-06,0.00000e+00,-3.27191e+00,-6.08640e+00])
+  fitList.append(["zptt","tt_sel0" ,3.22710e-04,0.00000e+00,-2.63806e+00,-8.22407e+00])
+  fitList.append(["zptt","QCD_sel0",5.15323e-05,0.00000e+00,-1.85175e+00,-6.91684e+00])
 fitList.append(["zptt","vv_sel1" ,6.01333e-06,0.00000e+00,-3.92261e+00,-2.93296e+00])
 fitList.append(["zptt","vj_sel1" ,4.14374e-04,0.00000e+00,-1.17864e+00,-3.82622e+00])
 fitList.append(["zptt","tt_sel1" ,1.54320e-03,0.00000e+00,-1.80813e+00,-4.10498e+00])
@@ -150,15 +171,15 @@ fitList_27.append(["RSG","tt_sel4"  ,1.55086e-06,0.00000e+00,-8.18615e+00,-7.987
 fitList_27.append(["RSG","QCD_sel4" ,5.72396e-06,0.00000e+00,2.42211e+00,-8.38424e+00])
 if tmp_fix==True :
   # Zptt
-  #fitList_27.append(["zptt","vv_sel0" ,1.17109e-07,0.00000e+00,-3.99751e+00,-5.76939e+00])
-  #fitList_27.append(["zptt","vj_sel0" ,9.46013e-07,0.00000e+00,-4.17355e+00,-5.54113e+00])
-  #fitList_27.append(["zptt","tt_sel0" ,4.01787e-04,0.00000e+00,-3.95015e+00,-6.43429e+00])
-  #fitList_27.append(["zptt","QCD_sel0",2.30000e-05,0.00000e+00,-3.09631e+00,-5.00743e+00])
+  fitList_27.append(["zptt","vv_sel0" ,1.17109e-07,0.00000e+00,-3.99751e+00,-5.76939e+00])
+  fitList_27.append(["zptt","vj_sel0" ,9.46013e-07,0.00000e+00,-4.17355e+00,-5.54113e+00])
+  fitList_27.append(["zptt","tt_sel0" ,4.01787e-04,0.00000e+00,-3.95015e+00,-6.43429e+00])
+  fitList_27.append(["zptt","QCD_sel0",2.30000e-05,0.00000e+00,-3.09631e+00,-5.00743e+00])
   # Zpbb
-  fitList_27.append(["zptt","vv_sel0" ,8.88212e-09,0.00000e+00,-5.64782e+00,-5.42419e+00])
-  fitList_27.append(["zptt","vj_sel0" ,1.31956e-06,0.00000e+00,-5.19483e+00,-5.32341e+00])
-  fitList_27.append(["zptt","tt_sel0" ,1.71020e-06,0.00000e+00,-6.51345e+00,-5.79119e+00])
-  fitList_27.append(["zptt","QCD_sel0",6.62478e-04,0.00000e+00,-5.14257e+00,-6.00409e+00])
+  #fitList_27.append(["zptt","vv_sel0" ,8.88212e-09,0.00000e+00,-5.64782e+00,-5.42419e+00])
+  #fitList_27.append(["zptt","vj_sel0" ,1.31956e-06,0.00000e+00,-5.19483e+00,-5.32341e+00])
+  #fitList_27.append(["zptt","tt_sel0" ,1.71020e-06,0.00000e+00,-6.51345e+00,-5.79119e+00])
+  #fitList_27.append(["zptt","QCD_sel0",6.62478e-04,0.00000e+00,-5.14257e+00,-6.00409e+00])
 fitList_27.append(["zptt","vv_sel8" ,1.17109e-07,0.00000e+00,-3.99751e+00,-5.76939e+00])
 fitList_27.append(["zptt","vj_sel8" ,9.46013e-07,0.00000e+00,-4.17355e+00,-5.54113e+00])
 fitList_27.append(["zptt","tt_sel8" ,4.01787e-04,0.00000e+00,-3.95015e+00,-6.43429e+00])
