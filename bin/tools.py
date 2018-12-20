@@ -273,12 +273,11 @@ def producePlots(param, block, sel, ops):
                 rt = "#sqrt{{s}} = 27 TeV,   L = {:.0f} ab^{{-1}}".format(intLumiab)
         except :
             print 'FCC'
-        
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile)
-        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile)
-        
+
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, False, hfile, param.ana_tex)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, False, hfile, param.ana_tex)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, True, hfile, param.ana_tex)
+        produceStackedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, True, hfile, param.ana_tex)
         
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, False, hfile)
         produceNormalizedPlots(processes, selections, variables, colors, lumi, pdir, lt, rt, True, hfile)
@@ -578,7 +577,7 @@ def produce2DPlots(processes, selections, variables2D, colors, intLumi, pdir, lt
 
 
 #___________________________________________________________________________
-def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, lt, rt, log, stacksig, hfile):
+def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir, lt, rt, log, stacksig, hfile, ana_tex):
     
     print ''
     print 'Preparing stacked plots ...'
@@ -643,12 +642,15 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  leg_name = p
                  if p.find('m_{Z}')>=0   : leg_name = p.replace('m_{Z}',  'm_{Z\'}'   )
                  if p.find('m_{RSG}')>=0 : leg_name = p.replace('m_{RSG}','m_{G_{RS}}')
+                 if p.find('vv')>=0 : leg_name = p.replace('vv','VV (V=Z/W)')
+                 if p.find('vj')>=0 : leg_name = p.replace('vj','Vj (V=Z/W)')
+                 if p.find('tt')>=0 : leg_name = p.replace('tt','t#bar{t}')
                  if i > 0: 
                      leg.AddEntry(hh,leg_name,"f")
                  else: 
                      leg.AddEntry(hh,leg_name,"l")
                  i+=1
-             drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols)
+             drawStack(filename, yl, leg, lt, rt, ff, pdir, log, stacksig, histos, cols, ana_tex)
     print 'DONE.'
 #___________________________________________________________________________
 def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pdir, lt, rt, log, hfile):
@@ -713,7 +715,7 @@ def produceNormalizedPlots(processes, selections, variables, colors, intLumi, pd
     print 'DONE.'
 
 #_____________________________________________________________________________________________________________
-def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY, stacksig, histos, colors):
+def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY, stacksig, histos, colors, ana_tex):
 
     canvas = ROOT.TCanvas(name, name, 600, 600) 
     canvas.SetLogy(logY)
@@ -785,10 +787,15 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     xlabel = histos[1].GetXaxis().GetTitle()
     if xlabel.find('m_{RSG}')>=0 : xlabel = xlabel.replace('m_{RSG}','m_{G_{RS}}')
     ## davFix2
-    #fix_str=" (pf04)"
-    #if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'')
-    #fix_str="Z'"
-    #if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'Q*')
+    fix_str=" (pf04)"
+    if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'')
+    fix_str=" (pf08)"
+    if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'')
+    fix_str=" (pf08 metcor)"
+    if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'')
+    if ana_tex.find("Q*")>=0 :
+      fix_str="Z'"
+      if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'Q*')
 
     #hStack.GetXaxis().SetTitleFont(font)
     #hStack.GetXaxis().SetLabelFont(font)
@@ -849,11 +856,16 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     Text.SetNDC(ROOT.kTRUE) 
     Text.SetTextSize(0.04) 
     Text.DrawLatex(0.18, 0.83, text)
-    
+
+    rightText[1]=rightText[1].replace("   ","")    
     text = '#bf{#it{' + rightText[1] +'}}'
     Text.SetTextSize(0.035) 
     Text.DrawLatex(0.18, 0.78, text)
     #Text.DrawLatex(0.18, 0.78, rightText[1])
+
+    text = '#bf{#it{' + ana_tex +'}}'
+    Text.SetTextSize(0.04)
+    Text.DrawLatex(0.18, 0.73, text)
 
     canvas.RedrawAxis()
     #canvas.Update()

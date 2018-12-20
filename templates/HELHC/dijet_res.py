@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "Q* #rightarrow jj"
+
 ### variable list
 variables = {
 

@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "G_{RS} #rightarrow W^{+}W^{-}"
+
 ### variable list
 variables = {
 #	'Jet1_tau21':{'name':'Jet1_trk02_tau21','title':'Jet1 #tau_{2,1}','bin':50,'xmin':0.0,'xmax':1.0},

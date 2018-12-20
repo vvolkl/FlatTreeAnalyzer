@@ -1,12 +1,14 @@
 import ROOT
 import collections
 
+ana_tex = "Z\'_{SSM} #rightarrow e^{+}e^{-}"
+
 ### variable list
 variables = {
-    "ptzp":{"name":"zprime_ele_pt","title":"p_{T}^{Z'} [GeV]","bin":200,"xmin":0,"xmax":20000},
+#    "ptzp":{"name":"zprime_ele_pt","title":"p_{T}^{Z'} [GeV]","bin":200,"xmin":0,"xmax":20000},
     "mzp":{"name":"zprime_ele_m","title":"m_{Z'} [TeV]","bin":250,"xmin":0,"xmax":50, "divide":1000},
-    "ptel_1":{"name":"lep1_pt","title":"p_{T}^{e, max} [TeV]","bin":100,"xmin":5,"xmax":20, "divide":1000},
-    "ptel_2":{"name":"lep2_pt","title":"p_{T}^{e, min} [TeV]","bin":100,"xmin":5,"xmax":20, "divide":1000},
+#    "ptel_1":{"name":"lep1_pt","title":"p_{T}^{e, max} [TeV]","bin":100,"xmin":5,"xmax":20, "divide":1000},
+#    "ptel_2":{"name":"lep2_pt","title":"p_{T}^{e, min} [TeV]","bin":100,"xmin":5,"xmax":20, "divide":1000},
 }
 
 variables2D = {}
@@ -58,7 +60,7 @@ uncertainties.append([0.02, 0.02])
 uncertainties.append([0.02, 0.10])
 
 # the first time needs to be set to True
-runFull = True
+runFull = False
 
 # base pre-selections
 selbase = 'lep1_pt > 1000. && lep2_pt > 1000. && abs(lep1_eta) < 4 && abs(lep2_eta) < 4 && zprime_ele_m>2500'
@@ -66,27 +68,27 @@ selbase = 'lep1_pt > 1000. && lep2_pt > 1000. && abs(lep1_eta) < 4 && abs(lep2_e
 # add mass-dependent list of event selections here if needed...
 
 selections = collections.OrderedDict()
-selections['m_{Z} = 4 TeV'] = []
-selections['m_{Z} = 4 TeV'].append(selbase)
-selections['m_{Z} = 6 TeV'] = []
-selections['m_{Z} = 6 TeV'].append(selbase)
-selections['m_{Z} = 8 TeV'] = []
-selections['m_{Z} = 8 TeV'].append(selbase)
-selections['m_{Z} = 10 TeV'] = []
-selections['m_{Z} = 10 TeV'].append(selbase)
-selections['m_{Z} = 15 TeV'] = []
-selections['m_{Z} = 15 TeV'].append(selbase)
-selections['m_{Z} = 20 TeV'] = []
-selections['m_{Z} = 20 TeV'].append(selbase)
-selections['m_{Z} = 25 TeV'] = []
-selections['m_{Z} = 25 TeV'].append(selbase)
+#selections['m_{Z} = 4 TeV'] = []
+#selections['m_{Z} = 4 TeV'].append(selbase)
+#selections['m_{Z} = 6 TeV'] = []
+#selections['m_{Z} = 6 TeV'].append(selbase)
+#selections['m_{Z} = 8 TeV'] = []
+#selections['m_{Z} = 8 TeV'].append(selbase)
+#selections['m_{Z} = 10 TeV'] = []
+#selections['m_{Z} = 10 TeV'].append(selbase)
+#selections['m_{Z} = 15 TeV'] = []
+#selections['m_{Z} = 15 TeV'].append(selbase)
+#selections['m_{Z} = 20 TeV'] = []
+#selections['m_{Z} = 20 TeV'].append(selbase)
+#selections['m_{Z} = 25 TeV'] = []
+#selections['m_{Z} = 25 TeV'].append(selbase)
 selections['m_{Z} = 30 TeV'] = []
 selections['m_{Z} = 30 TeV'].append(selbase)
-selections['m_{Z} = 35 TeV'] = []
-selections['m_{Z} = 35 TeV'].append(selbase)
-selections['m_{Z} = 40 TeV'] = []
-selections['m_{Z} = 40 TeV'].append(selbase)
-selections['m_{Z} = 45 TeV'] = []
-selections['m_{Z} = 45 TeV'].append(selbase)
-selections['m_{Z} = 50 TeV'] = []
-selections['m_{Z} = 50 TeV'].append(selbase)
+#selections['m_{Z} = 35 TeV'] = []
+#selections['m_{Z} = 35 TeV'].append(selbase)
+#selections['m_{Z} = 40 TeV'] = []
+#selections['m_{Z} = 40 TeV'].append(selbase)
+#selections['m_{Z} = 45 TeV'] = []
+#selections['m_{Z} = 45 TeV'].append(selbase)
+#selections['m_{Z} = 50 TeV'] = []
+#selections['m_{Z} = 50 TeV'].append(selbase)
