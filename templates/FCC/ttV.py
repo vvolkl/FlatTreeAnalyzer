@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "ttV"
+
 ### variable list
 variables = {
     "z_pt":{"name":"z_pt","title":"p_{T}^{Z} [GeV]","bin":200,"xmin":0,"xmax":1000},

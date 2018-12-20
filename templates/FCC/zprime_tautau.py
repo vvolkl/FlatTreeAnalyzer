@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "Z\'_{SSM} #rightarrow #tau^{+}#tau^{-}"
+
 ### variable list
 variables = {
     "met":{"name":"met_pt","title":"MET [GeV]","bin":50,"xmin":0,"xmax":1000},

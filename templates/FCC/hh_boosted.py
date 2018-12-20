@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "hh_boosted"
+
 ### variable list
 variables = {
     "h1_m":{"name":"softDropped_bJet1_m","title":"m_{j}^{(1)} [GeV]","bin":100,"xmin":0.0,"xmax":200.0},

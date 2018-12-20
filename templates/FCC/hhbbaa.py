@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "hhbbaa"
+
 variables = {
     "pta1":{"name":"a1_pt","title":"p_{T}^{max}(#gamma) [GeV]","bin":50,"xmin":20.0,"xmax":120.0},
     "pta2":{"name":"a2_pt","title":"p_{T}^{min}(#gamma) [GeV]","bin":50,"xmin":20.0,"xmax":60.0},

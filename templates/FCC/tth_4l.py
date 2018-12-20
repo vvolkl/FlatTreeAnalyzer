@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "tth_4l"
+
 ### variable list
 variables = {
     #"ptzp":{"name":"zprime_muon_pt","title":"p_{T}^{Zprime} [GeV]","bin":200,"xmin":0,"xmax":20000},

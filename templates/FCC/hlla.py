@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "hlla"
+
 ### variable list
 variables = {
     "pth":{"name":"higgs_pt","title":"p_{T}^{H} [GeV]","bin":100,"xmin":0,"xmax":300},

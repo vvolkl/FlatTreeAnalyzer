@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "tth_boosted"
+
 ### variable list
 variables = {
     "h_m":{"name":"softDropped_higgsjet_m","title":"m_{SD}(H) [GeV]","bin":15,"xmin":0.0,"xmax":300.0},

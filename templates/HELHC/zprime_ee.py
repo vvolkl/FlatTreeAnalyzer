@@ -1,6 +1,8 @@
 import ROOT
 import collections
 
+ana_tex = "Z\'_{SSM} #rightarrow e^{+}e^{-}"
+
 ### variable list
 variables = {
 #    "ptzp":{"name":"zprime_ele_pt","title":"p_{T}^{Z'} [GeV]","bin":50,"xmin":0,"xmax":5000},
