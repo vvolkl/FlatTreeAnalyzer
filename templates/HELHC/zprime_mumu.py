@@ -3,11 +3,11 @@ import collections
 
 ### variable list
 variables = {
-    "ptzp":{"name":"zprime_muon_pt","title":"p_{T}^{Z'} [GeV]","bin":50,"xmin":0,"xmax":5000},
+#    "ptzp":{"name":"zprime_muon_pt","title":"p_{T}^{Z'} [GeV]","bin":50,"xmin":0,"xmax":5000},
     "mzp":{"name":"zprime_muon_m","title":"m_{Z'} [TeV]","bin":100,"xmin":0,"xmax":20, "divide":1000},
-    "ptmu_1":{"name":"lep1_pt","title":"p_{T}^{#mu, max} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
-    "ptmu_2":{"name":"lep2_pt","title":"p_{T}^{#mu, min} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
-    #"yzp":{"name":"zprime_y","title":"y_{Z'}","bin":80,"xmin":-4,"xmax":4},
+#    "ptmu_1":{"name":"lep1_pt","title":"p_{T}^{#mu, max} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
+#    "ptmu_2":{"name":"lep2_pt","title":"p_{T}^{#mu, min} [TeV]","bin":50,"xmin":0,"xmax":10, "divide":1000},
+#    #"yzp":{"name":"zprime_y","title":"y_{Z'}","bin":80,"xmin":-4,"xmax":4},
 }
 
 variables2D = {}
@@ -64,7 +64,7 @@ uncertainties.append([0.02, 0.02])
 uncertainties.append([0.02, 0.10])
 
 # the first time needs to be set to True
-runFull = True
+runFull = False
 HELHC=True
 
 

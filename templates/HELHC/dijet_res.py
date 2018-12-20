@@ -4,25 +4,27 @@ import collections
 ### variable list
 variables = {
 
-        'Jet1_pf04_pt':{'name':'Jet1_pf04_pt','title':'Jet1 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
-        'Jet1_pf04_eta':{'name':'Jet1_pf04_eta','title':'Jet1 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
+#        'Jet1_pf04_pt':{'name':'Jet1_pf04_pt','title':'Jet1 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
+#        'Jet1_pf04_eta':{'name':'Jet1_pf04_eta','title':'Jet1 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
+#
+#        'Jet2_pf04_pt':{'name':'Jet2_pf04_pt','title':'Jet2 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
+#        'Jet2_pf04_eta':{'name':'Jet2_pf04_eta','title':'Jet2 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
+#
+#        'Jet1_calo04_pt':{'name':'Jet1_calo04_pt','title':'Jet1 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
+#        'Jet1_calo04_eta':{'name':'Jet1_calo04_eta','title':'Jet1 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
+#
+#        'Jet2_calo04_pt':{'name':'Jet2_calo04_pt','title':'Jet2 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
+#        'Jet2_calo04_eta':{'name':'Jet2_calo04_eta','title':'Jet2 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
+#
+#        'rapiditySeparation_pf04':{'name':'rapiditySeparation_pf04','title':'Rapidity Separation','bin':60,'xmin':0.0,'xmax':3.0},
+#        'pseudorapiditySeparation_pf04':{'name':'pseudorapiditySeparation_pf04','title':'pseudo Rapidity Separation','bin':60,'xmin':0.0,'xmax':6.0},
+#
+#        'transverseMomentumAsymmetry_pf_04':{'name':'transverseMomentumAsymmetry_pf04','title':'Transverse Momentum Asymmetry','bin':50,'xmin':0.0,'xmax':1.0},
+#
+#        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Q*} [TeV] (pf04)','bin':200,'xmin':0.0,'xmax':20.0, 'divide':1000},
+#        'Mj1j2_calo04' :{'name':'Mj1j2_calo04','title':'m_{Q*} [TeV] (calo04)','bin':200,'xmin':0.0,'xmax':20.0, 'divide':1000},
 
-        'Jet2_pf04_pt':{'name':'Jet2_pf04_pt','title':'Jet2 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
-        'Jet2_pf04_eta':{'name':'Jet2_pf04_eta','title':'Jet2 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
-
-        'Jet1_calo04_pt':{'name':'Jet1_calo04_pt','title':'Jet1 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
-        'Jet1_calo04_eta':{'name':'Jet1_calo04_eta','title':'Jet1 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
-
-        'Jet2_calo04_pt':{'name':'Jet2_calo04_pt','title':'Jet2 p_{T} [TeV]','bin':115,'xmin':0,'xmax':10, 'divide':1000},
-        'Jet2_calo04_eta':{'name':'Jet2_calo04_eta','title':'Jet2 #eta','bin':50,'xmin':-5.0,'xmax':5.0},
-
-        'rapiditySeparation_pf04':{'name':'rapiditySeparation_pf04','title':'Rapidity Separation','bin':60,'xmin':0.0,'xmax':3.0},
-        'pseudorapiditySeparation_pf04':{'name':'pseudorapiditySeparation_pf04','title':'pseudo Rapidity Separation','bin':60,'xmin':0.0,'xmax':6.0},
-
-        'transverseMomentumAsymmetry_pf_04':{'name':'transverseMomentumAsymmetry_pf04','title':'Transverse Momentum Asymmetry','bin':50,'xmin':0.0,'xmax':1.0},
-
-        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Z\'} [TeV] (pf04)','bin':200,'xmin':0.0,'xmax':20.0, 'divide':1000},
-        'Mj1j2_calo04' :{'name':'Mj1j2_calo04','title':'m_{Z\'} [TeV] (calo04)','bin':200,'xmin':0.0,'xmax':20.0, 'divide':1000},
+        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Q*} [TeV] (pf04)','bin':200,'xmin':0.0,'xmax':20.0, 'divide':1000},
 
 }
 
@@ -73,7 +75,7 @@ uncertainties.append([0.02, 0.02])
 uncertainties.append([0.02, 0.10])
 
 # the first time needs to be set to True
-runFull = True
+runFull = False
 
 HELHC=True
 

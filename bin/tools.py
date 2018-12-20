@@ -778,10 +778,17 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
         hStack.Add(histos[0])
 
     hStack.Draw("hist")
+    # davFix1
+#    hStack.GetXaxis().SetLimits(1.,10.)
 
     # fix names if needed
     xlabel = histos[1].GetXaxis().GetTitle()
-    if xlabel.find('m_{RSG}')>=0 : xlabel = histos[1].GetXaxis().GetTitle().replace('m_{RSG}','m_{G_{RS}}')
+    if xlabel.find('m_{RSG}')>=0 : xlabel = xlabel.replace('m_{RSG}','m_{G_{RS}}')
+    ## davFix2
+    #fix_str=" (pf04)"
+    #if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'')
+    #fix_str="Z'"
+    #if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'Q*')
 
     #hStack.GetXaxis().SetTitleFont(font)
     #hStack.GetXaxis().SetLabelFont(font)
@@ -807,8 +814,14 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     #hStack.SetMaximum(1.5*maxh) 
     
     if logY:
-        hStack.SetMaximum(100000*maxh)
-        hStack.SetMinimum(0.000001*maxh)
+        highY=100000*maxh
+        lowY=0.000001*maxh
+        # davFix3
+#        highY=1.e6
+#        lowY=1.e-1
+        #
+        hStack.SetMaximum(highY)
+        hStack.SetMinimum(lowY)
     else:
         hStack.SetMaximum(2.0*maxh)
         hStack.SetMinimum(0.)
