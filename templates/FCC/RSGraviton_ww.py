@@ -50,11 +50,21 @@ variables = {
 #        'Jet2_Flow55':{'name':'Jet2_Flow55','title':'Flow_{5,5} Jet_2','bin':200,'xmin':0.0,'xmax':1.0},
 #        'Jet1_Whad_vs_QCD_tagger' :{'name':'Jet1_Whad_vs_QCD_tagger','title':'Jet1 W had. vs QCD tagger','bin':100,'xmin':-1.,'xmax':1.},
 #        'Jet2_Whad_vs_QCD_tagger' :{'name':'Jet2_Whad_vs_QCD_tagger','title':'Jet2 W had. vs QCD tagger','bin':100,'xmin':-1.,'xmax':1.},
+        'Jet1_log10Flow15':{'name':'Jet1_log10Flow15','title':'log_{10}(Flow_{1,5} Jet_{1})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet2_log10Flow15':{'name':'Jet2_log10Flow15','title':'log_{10}(Flow_{1,5} Jet_{2})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet1_log10Flow25':{'name':'Jet1_log10Flow25','title':'log_{10}(Flow_{2,5} Jet_{1})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet2_log10Flow25':{'name':'Jet2_log10Flow25','title':'log_{10}(Flow_{2,5} Jet_{2})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet1_log10Flow35':{'name':'Jet1_log10Flow35','title':'log_{10}(Flow_{3,5} Jet_{1})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet2_log10Flow35':{'name':'Jet2_log10Flow35','title':'log_{10}(Flow_{3,5} Jet_{2})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet1_log10Flow45':{'name':'Jet1_log10Flow45','title':'log_{10}(Flow_{4,5} Jet_{1})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet2_log10Flow45':{'name':'Jet2_log10Flow45','title':'log_{10}(Flow_{4,5} Jet_{2})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet1_log10Flow55':{'name':'Jet1_log10Flow55','title':'log_{10}(Flow_{5,5} Jet_{1})','bin':50,'xmin':-5.0,'xmax':0.},
+        'Jet2_log10Flow55':{'name':'Jet2_log10Flow55','title':'log_{10}(Flow_{5,5} Jet_{2})','bin':50,'xmin':-5.0,'xmax':0.},
 ####################
 ## rebin for note ##
 ####################
 #        'Mj1j2_pf08' :{'name':'Mj1j2_pf08','title':'m_{RSG} [TeV] (pf08)','bin':50,'xmin':0.0,'xmax':50.0, 'divide':1000},
-        'Mj1j2_pf08_fit' :{'name':'Mj1j2_pf08_fit','title':'m_{RSG} [TeV] (pf08)','bin':50,'xmin':0.0,'xmax':50.0, 'divide':1000},
+#        'Mj1j2_pf08_fit' :{'name':'Mj1j2_pf08_fit','title':'m_{RSG} [TeV] (pf08)','bin':50,'xmin':0.0,'xmax':50.0, 'divide':1000},
 #        'Jet1_trk02_SD_Cor_m':{'name':'Jet1_trk02_SD_Corr_m','title':'Jet1 trk02 mass (SD cor) [GeV]','bin':25,'xmin':0.0,'xmax':500},
 #        'Jet2_trk02_SD_Cor_m':{'name':'Jet2_trk02_SD_Corr_m','title':'Jet2 trk02 mass (SD cor) [GeV]','bin':25,'xmin':0.0,'xmax':500},
 #       'Jet1_tau21':{'name':'Jet1_trk02_tau21','title':'Jet1 #tau_{2,1}','bin':25,'xmin':0.0,'xmax':1.0},
@@ -175,8 +185,8 @@ selections = collections.OrderedDict()
 ##selections['m_{RSG} = 5 TeV'].append(sel1t)
 ##selections['m_{RSG} = 5 TeV'].append(sel2t)
 ##
-#selections['m_{RSG} = 10 TeV'] = []
-#selections['m_{RSG} = 10 TeV'].append(selbase)
+selections['m_{RSG} = 10 TeV'] = []
+selections['m_{RSG} = 10 TeV'].append(selbase)
 #selections['m_{RSG} = 10 TeV'].append(sel1c)
 #selections['m_{RSG} = 10 TeV'].append(sel2c)
 #selections['m_{RSG} = 10 TeV'].append(sel1t)
@@ -189,12 +199,12 @@ selections = collections.OrderedDict()
 #selections['m_{RSG} = 15 TeV'].append(sel1t)
 #selections['m_{RSG} = 15 TeV'].append(sel2t)
 #
-selections['m_{RSG} = 20 TeV'] = []
-selections['m_{RSG} = 20 TeV'].append(selbase)
-selections['m_{RSG} = 20 TeV'].append(sel1c)
-selections['m_{RSG} = 20 TeV'].append(sel2c)
-selections['m_{RSG} = 20 TeV'].append(sel1t)
-selections['m_{RSG} = 20 TeV'].append(sel2t)
+#selections['m_{RSG} = 20 TeV'] = []
+#selections['m_{RSG} = 20 TeV'].append(selbase)
+#selections['m_{RSG} = 20 TeV'].append(sel1c)
+#selections['m_{RSG} = 20 TeV'].append(sel2c)
+#selections['m_{RSG} = 20 TeV'].append(sel1t)
+#selections['m_{RSG} = 20 TeV'].append(sel2t)
 #
 #selections['m_{RSG} = 25 TeV'] = []
 #selections['m_{RSG} = 25 TeV'].append(selbase)
