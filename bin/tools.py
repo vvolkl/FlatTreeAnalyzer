@@ -617,7 +617,7 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
 
              filename = '{}_{}_{}_{}'.format(v, selstr, stackstr, logstr)
 
-             leg = TLegend(0.60,0.86 - legsize,0.86,0.88)
+             leg = TLegend(0.55,0.86 - legsize,0.86,0.88)
              leg.SetFillColor(0)
              leg.SetFillStyle(0)
              leg.SetLineColor(0)
@@ -645,6 +645,9 @@ def produceStackedPlots(processes, selections, variables, colors, intLumi, pdir,
                  if p.find('vv')>=0 : leg_name = p.replace('vv','VV (V=Z/W)')
                  if p.find('vj')>=0 : leg_name = p.replace('vj','Vj (V=Z/W)')
                  if p.find('tt')>=0 : leg_name = p.replace('tt','t#bar{t}')
+                 if p.find('Drell-Yan')>=0 and ana_tex.find("e^")>=0:   leg_name = p.replace('Drell-Yan','pp #rightarrow Z/#gamma* #rightarrow e^{+}e^{-}')
+                 if p.find('Drell-Yan')>=0 and ana_tex.find("mu^")>=0:  leg_name = p.replace('Drell-Yan','pp #rightarrow Z/#gamma* #rightarrow #mu^{+}#mu^{-}')
+                 if p.find('Drell-Yan')>=0 and ana_tex.find("tau^")>=0: leg_name = p.replace('Drell-Yan','pp #rightarrow Z/#gamma* #rightarrow #tau^{+}#tau^{-}')
                  if i > 0: 
                      leg.AddEntry(hh,leg_name,"f")
                  else: 
@@ -780,13 +783,11 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
         hStack.Add(histos[0])
 
     hStack.Draw("hist")
-    # davFix1
-#    hStack.GetXaxis().SetLimits(1.,10.)
 
     # fix names if needed
     xlabel = histos[1].GetXaxis().GetTitle()
     if xlabel.find('m_{RSG}')>=0 : xlabel = xlabel.replace('m_{RSG}','m_{G_{RS}}')
-    ## davFix2
+    ## remove/adapt X title content (should be done in config)
     fix_str=" (pf04)"
     if xlabel.find(fix_str)>=0 : xlabel = xlabel.replace(fix_str,'')
     fix_str=" (pf08)"
@@ -819,19 +820,69 @@ def drawStack(name, ylabel, legend, leftText, rightText, format, directory, logY
     hStack.GetXaxis().SetTitleOffset(1.40)
     
     #hStack.SetMaximum(1.5*maxh) 
-    
+
+    lowY=0.
     if logY:
-        highY=100000*maxh
-        lowY=0.000001*maxh
-        # davFix3
-#        highY=1.e6
-#        lowY=1.e-1
+        # old
+        #highY=100000*maxh
+        #lowY=0.000001*maxh
+        # automatic
+        highY=200.*maxh/ROOT.gPad.GetUymax()
+        #
+        threshold=0.5
+        bin_width=hStack.GetXaxis().GetBinWidth(1)
+        lowY=threshold*bin_width
+        if ana_tex.find("Q*")>=0 : lowY=10.
+        if ana_tex.find("tau^")>=0 :
+          lowY=1.
+          highY=220.*maxh/ROOT.gPad.GetUymax()
+        if xlabel.find("Flow")>=0 : 
+          lowY=100.
+          highY=600.*maxh/ROOT.gPad.GetUymax()
+        if xlabel.find("#tau_{")>=0:
+          lowY=1000.
+          highY=500.*maxh/ROOT.gPad.GetUymax()
         #
         hStack.SetMaximum(highY)
         hStack.SetMinimum(lowY)
     else:
         hStack.SetMaximum(2.0*maxh)
         hStack.SetMinimum(0.)
+
+
+    escape_scale_Xaxis=False
+    if xlabel.find("#tau_{")>=0: escape_scale_Xaxis=True
+    #
+    hStacklast = hStack.GetStack().Last()
+    lowX_is0=True
+    lowX=hStacklast.GetBinCenter(1)-(hStacklast.GetBinWidth(1)/2.)
+    highX_ismax=False
+    highX=hStacklast.GetBinCenter(hStacklast.GetNbinsX())+(hStacklast.GetBinWidth(1)/2.)
+    #
+    if escape_scale_Xaxis==False:
+      for i_bin in xrange( 1, hStacklast.GetNbinsX()+1 ):
+         bkg_val=hStacklast.GetBinContent(i_bin)
+         sig_val=histos[0].GetBinContent(i_bin)
+         if bkg_val/maxh>0.1 and i_bin<15 and lowX_is0==True :
+           lowX_is0=False
+           lowX=hStacklast.GetBinCenter(i_bin)-(hStacklast.GetBinWidth(i_bin)/2.)
+           if ana_tex.find("e^")>=0 or ana_tex.find("mu^")>=0 : lowX+=1
+         #
+         val_to_compare=bkg_val
+         if sig_val>bkg_val : val_to_compare=sig_val
+         if val_to_compare<lowY and i_bin>15 and highX_ismax==False: 
+           highX_ismax=True
+           highX=hStacklast.GetBinCenter(i_bin)+(hStacklast.GetBinWidth(i_bin)/2.)
+           highX*=1.1
+    # protections
+    if lowX<hStacklast.GetBinCenter(1)-(hStacklast.GetBinWidth(1)/2.) :
+      lowX=hStacklast.GetBinCenter(1)-(hStacklast.GetBinWidth(1)/2.)
+    if highX>hStacklast.GetBinCenter(hStacklast.GetNbinsX())+(hStacklast.GetBinWidth(1)/2.) :
+      highX=hStacklast.GetBinCenter(hStacklast.GetNbinsX())+(hStacklast.GetBinWidth(1)/2.)
+    if lowX>=highX :
+      lowX=hStacklast.GetBinCenter(1)-(hStacklast.GetBinWidth(1)/2.)
+      highX=hStacklast.GetBinCenter(hStacklast.GetNbinsX())+(hStacklast.GetBinWidth(1)/2.)
+    hStack.GetXaxis().SetLimits(int(lowX),int(highX))
 
     if not stacksig:
         histos[0].Draw("same hist")

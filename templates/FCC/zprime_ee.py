@@ -6,7 +6,7 @@ ana_tex = "Z\'_{SSM} #rightarrow e^{+}e^{-}"
 ### variable list
 variables = {
 #    "ptzp":{"name":"zprime_ele_pt","title":"p_{T}^{Z'} [GeV]","bin":200,"xmin":0,"xmax":20000},
-    "mzp":{"name":"zprime_ele_m","title":"m_{Z'} [TeV]","bin":250,"xmin":0,"xmax":50, "divide":1000},
+    "mzp":{"name":"zprime_ele_m","title":"m_{Z'} [TeV]","bin":125,"xmin":0,"xmax":50, "divide":1000},
 #    "ptel_1":{"name":"lep1_pt","title":"p_{T}^{e, max} [TeV]","bin":100,"xmin":5,"xmax":20, "divide":1000},
 #    "ptel_2":{"name":"lep2_pt","title":"p_{T}^{e, min} [TeV]","bin":100,"xmin":5,"xmax":20, "divide":1000},
 }

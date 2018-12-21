@@ -61,12 +61,12 @@ variables = {
 ## rebin for note ##
 ####################
 #        'Mj1j2_pf08_MetCorr' :{'name':'Mj1j2_pf08_MetCorr','title':'m_{Z\'} [TeV] (pf08 metcor)','bin':50,'xmin':0.0,'xmax':50.0, 'divide':1000},
-        'Mj1j2_pf08_MetCorr_fit' :{'name':'Mj1j2_pf08_MetCorr_fit','title':'m_{Z\'} [TeV] (pf08 metcor)','bin':50,'xmin':0.0,'xmax':50.0, 'divide':1000},
-#       'Jet1_tau21':{'name':'Jet1_trk02_tau21','title':'Jet1 #tau_{2,1}','bin':25,'xmin':0.0,'xmax':1.0},
-#       'Jet1_tau32':{'name':'Jet1_trk02_tau32','title':'Jet1 #tau_{3,2}','bin':25,'xmin':0.0,'xmax':1.0},
+#        'Mj1j2_pf08_MetCorr_fit' :{'name':'Mj1j2_pf08_MetCorr_fit','title':'m_{Z\'} [TeV] (pf08 metcor)','bin':50,'xmin':0.0,'xmax':50.0, 'divide':1000},
+       'Jet1_tau21':{'name':'Jet1_trk02_tau21','title':'Jet1 #tau_{2,1}','bin':25,'xmin':0.0,'xmax':1.0},
+       'Jet1_tau32':{'name':'Jet1_trk02_tau32','title':'Jet1 #tau_{3,2}','bin':25,'xmin':0.0,'xmax':1.0},
 #       'Jet1_trk02_SD_Cor_m':{'name':'Jet1_trk02_SD_Corr_m','title':'Jet1 trk02 mass (SD cor) [GeV]','bin':25,'xmin':0.0,'xmax':500},
-#       'Jet2_tau21':{'name':'Jet2_trk02_tau21','title':'Jet2 #tau_{2,1}','bin':25,'xmin':0.0,'xmax':1.0},
-#       'Jet2_tau32':{'name':'Jet2_trk02_tau32','title':'Jet2 #tau_{3,2}','bin':25,'xmin':0.0,'xmax':1.0},
+       'Jet2_tau21':{'name':'Jet2_trk02_tau21','title':'Jet2 #tau_{2,1}','bin':25,'xmin':0.0,'xmax':1.0},
+       'Jet2_tau32':{'name':'Jet2_trk02_tau32','title':'Jet2 #tau_{3,2}','bin':25,'xmin':0.0,'xmax':1.0},
 #       'Jet2_trk02_SD_Cor_m':{'name':'Jet2_trk02_SD_Corr_m','title':'Jet2 trk02 mass (SD cor) [GeV]','bin':25,'xmin':0.0,'xmax':500},
 #       'Jet1_thad_vs_QCD_tagger' :{'name':'Jet1_thad_vs_QCD_tagger','title':'Jet1 top had. vs QCD tagger','bin':25,'xmin':-1.,'xmax':1.},
 #       'Jet2_thad_vs_QCD_tagger' :{'name':'Jet2_thad_vs_QCD_tagger','title':'Jet2 top had. vs QCD tagger','bin':25,'xmin':-1.,'xmax':1.},
@@ -114,13 +114,6 @@ background_groups['vj']  = [
 'mgp8_pp_vj_5f_HT_5000_10000',
 'mgp8_pp_vj_5f_HT_10000_27000',
 'mgp8_pp_vj_5f_HT_27000_100000']
-background_groups['QCD'] = [
-'mgp8_pp_jj_5f_HT_500_1000',
-'mgp8_pp_jj_5f_HT_1000_2000',
-'mgp8_pp_jj_5f_HT_2000_5000',
-'mgp8_pp_jj_5f_HT_5000_10000',
-'mgp8_pp_jj_5f_HT_10000_27000',
-'mgp8_pp_jj_5f_HT_27000_100000']
 background_groups['tt']  = [
 'mgp8_pp_tt_5f_HT_500_1000',
 'mgp8_pp_tt_5f_HT_1000_2000',
@@ -128,6 +121,13 @@ background_groups['tt']  = [
 'mgp8_pp_tt_5f_HT_5000_10000',
 'mgp8_pp_tt_5f_HT_10000_27000',
 'mgp8_pp_tt_5f_HT_27000_100000']
+background_groups['QCD'] = [
+'mgp8_pp_jj_5f_HT_500_1000',
+'mgp8_pp_jj_5f_HT_1000_2000',
+'mgp8_pp_jj_5f_HT_2000_5000',
+'mgp8_pp_jj_5f_HT_5000_10000',
+'mgp8_pp_jj_5f_HT_10000_27000',
+'mgp8_pp_jj_5f_HT_27000_100000']
 
 # global parameters
 intLumi = 3.0e+07
@@ -199,16 +199,16 @@ selections = collections.OrderedDict()
 ##selections['m_{Z} = 5 TeV'].append(sel4c)
 ##selections['m_{Z} = 5 TeV'].append(sel4t)
 ##
-#selections['m_{Z} = 10 TeV'] = []
-#selections['m_{Z} = 10 TeV'].append(selbase)
-#selections['m_{Z} = 10 TeV'].append(sel1c)
-#selections['m_{Z} = 10 TeV'].append(sel2c)
-#selections['m_{Z} = 10 TeV'].append(sel1t)
-#selections['m_{Z} = 10 TeV'].append(sel2t)
-#selections['m_{Z} = 10 TeV'].append(sel3c)
-#selections['m_{Z} = 10 TeV'].append(sel3t)
-#selections['m_{Z} = 10 TeV'].append(sel4c)
-#selections['m_{Z} = 10 TeV'].append(sel4t)
+selections['m_{Z} = 10 TeV'] = []
+selections['m_{Z} = 10 TeV'].append(selbase)
+selections['m_{Z} = 10 TeV'].append(sel1c)
+selections['m_{Z} = 10 TeV'].append(sel2c)
+selections['m_{Z} = 10 TeV'].append(sel1t)
+selections['m_{Z} = 10 TeV'].append(sel2t)
+selections['m_{Z} = 10 TeV'].append(sel3c)
+selections['m_{Z} = 10 TeV'].append(sel3t)
+selections['m_{Z} = 10 TeV'].append(sel4c)
+selections['m_{Z} = 10 TeV'].append(sel4t)
 #
 #selections['m_{Z} = 15 TeV'] = []
 #selections['m_{Z} = 15 TeV'].append(selbase)
@@ -221,16 +221,16 @@ selections = collections.OrderedDict()
 #selections['m_{Z} = 15 TeV'].append(sel4c)
 #selections['m_{Z} = 15 TeV'].append(sel4t)
 #
-selections['m_{Z} = 20 TeV'] = []
-selections['m_{Z} = 20 TeV'].append(selbase)
-selections['m_{Z} = 20 TeV'].append(sel1c)
-selections['m_{Z} = 20 TeV'].append(sel2c)
-selections['m_{Z} = 20 TeV'].append(sel1t)
-selections['m_{Z} = 20 TeV'].append(sel2t)
-selections['m_{Z} = 20 TeV'].append(sel3c)
-selections['m_{Z} = 20 TeV'].append(sel3t)
-selections['m_{Z} = 20 TeV'].append(sel4c)
-selections['m_{Z} = 20 TeV'].append(sel4t)
+#selections['m_{Z} = 20 TeV'] = []
+#selections['m_{Z} = 20 TeV'].append(selbase)
+#selections['m_{Z} = 20 TeV'].append(sel1c)
+#selections['m_{Z} = 20 TeV'].append(sel2c)
+#selections['m_{Z} = 20 TeV'].append(sel1t)
+#selections['m_{Z} = 20 TeV'].append(sel2t)
+#selections['m_{Z} = 20 TeV'].append(sel3c)
+#selections['m_{Z} = 20 TeV'].append(sel3t)
+#selections['m_{Z} = 20 TeV'].append(sel4c)
+#selections['m_{Z} = 20 TeV'].append(sel4t)
 #
 #selections['m_{Z} = 25 TeV'] = []
 #selections['m_{Z} = 25 TeV'].append(selbase)

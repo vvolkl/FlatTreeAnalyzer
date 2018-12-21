@@ -23,7 +23,7 @@ variables = {
 #
 #        'transverseMomentumAsymmetry_pf_04':{'name':'transverseMomentumAsymmetry_pf04','title':'Transverse Momentum Asymmetry','bin':50,'xmin':0.0,'xmax':1.0},
 #
-        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Q*} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
+        'Mj1j2_pf04' :{'name':'Mj1j2_pf04','title':'m_{Q*} [TeV] (pf04)','bin':40,'xmin':10.0,'xmax':50.0, 'divide':1000},
 #        'Mj1j2_pf04_5p'  :{'name':'Mj1j2_pf04_5p','title':'m_{Q*} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
 #        'Mj1j2_pf04_10p' :{'name':'Mj1j2_pf04_10p','title':'m_{Q*} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
 #        'Mj1j2_pf04_15p' :{'name':'Mj1j2_pf04_15p','title':'m_{Q*} [TeV] (pf04)','bin':200,'xmin':10.0,'xmax':50.0, 'divide':1000},
