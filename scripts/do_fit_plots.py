@@ -3,8 +3,8 @@ import re
 
 Ana=[
 #'RSGww',
-#'Zptt',
-'dijet',
+'Zptt',
+#'dijet',
 ]
 
 Sample=[
@@ -15,6 +15,17 @@ Sample=[
 ]
 
 ############
+ana_tex = {}
+ana_tex["RSGww"] = "G_{RS} #rightarrow W^{+}W^{-}"
+ana_tex["Zptt"]  = "Z\'_{TC2} #rightarrow t#bar{t}"
+ana_tex["dijet"] = "Q* #rightarrow jj"
+
+Sample_leg = {}
+Sample_leg["QCD"] = "QCD"
+Sample_leg["tt"]  = "t#bar{t}"
+Sample_leg["vv"]  = "VV (V=Z/W)"
+Sample_leg["vj"]  = "Vj (V=Z/W)"
+
 Sel = {}
 Sel['RSGww']=[
 #"sel0",
@@ -29,9 +40,9 @@ Sel['Zptt']=[
 #"sel2",
 #"sel3",
 #"sel4",
-"sel5",
-"sel6",
-"sel7",
+#"sel5",
+#"sel6",
+#"sel7",
 "sel8",
 ]
 Sel['dijet']=[
@@ -60,9 +71,14 @@ Path['dijet']='/eos/experiment/fcc/hh/analyses/Dijet_reso/FlatTreeAnalyzer_outpu
 
 ############
 Title = {}
-Title['RSGww']='m_{RSG} [TeV] (pf08)'
-Title['Zptt']='m_{Z\'} [TeV] (pf08 metcor)'
-Title['dijet']='m_{Z\'} [TeV] (pf04)'
+# old
+#Title['RSGww']='m_{RSG} [TeV] (pf08)'
+#Title['Zptt']='m_{Z\'} [TeV] (pf08 metcor)'
+#Title['dijet']='m_{Z\'} [TeV] (pf04)'
+# four our paper
+Title['RSGww']='m_{G_{RS}} [TeV]'
+Title['Zptt']='m_{Z\'} [TeV]'
+Title['dijet']='m_{Z\'} [TeV]'
 
 ############
 for ana in Ana :
@@ -91,11 +107,11 @@ for ana in Ana :
       h_fit.SetFillColor(color)
 
       ###########
-      lumi = 3.0e+07
+      lumi = 3.e+07
       delphesVersion = '3.4.2'
       intLumiab = lumi/1e+06
       leftText  = "FCC-hh Simulation (Delphes)"
-      rightText = "#sqrt{s} = 100 TeV,   L = "+str(intLumiab)+" ab^{-1}"
+      rightText = "#sqrt{s} = 100 TeV,L = "+str(int(intLumiab))+" ab^{-1}"
       ylabel = "events"
       logY=True
       
@@ -126,8 +142,8 @@ for ana in Ana :
       leg.SetShadowColor(10)
       leg.SetTextSize(0.035)
       leg.SetTextFont(42)
-      leg.AddEntry(h_ini,sample+" initial","lpe")
-      leg.AddEntry(h_fit,sample+" fit","f")
+      leg.AddEntry(h_ini,Sample_leg[sample]+" initial","lpe")
+      leg.AddEntry(h_fit,Sample_leg[sample]+" fit","f")
       
       h_ini.GetYaxis().SetTitleOffset(1.95)
       h_ini.GetXaxis().SetTitleOffset(1.40)
@@ -142,12 +158,15 @@ for ana in Ana :
       minh = h_ini.GetMinimum()
       
       if logY:
-          h_ini.SetMaximum(1000*maxh)
+          h_ini.SetMaximum(10000*maxh)
       #    h_ini.SetMinimum(0.000001*maxh)
       else:
           h_ini.SetMaximum(2.0*maxh)
           h_ini.SetMinimum(0.)
       
+      # remove th eempty bins if needed
+      if ana=="Zptt" : h_ini.GetXaxis().SetRangeUser(5., 50.)
+      # draw
       h_ini.Draw()
       h_fit.Draw("same")
       leg.Draw("same")
@@ -164,7 +183,7 @@ for ana in Ana :
       Text.DrawLatex(0.90, 0.92, text)
       
       rightText = re.split(",", rightText)
-      text = '#bf{#it{' + rightText[0] +'}}'
+      text = '#bf{#it{'+ rightText[0] +'}}'
       
       Text.SetTextAlign(12);
       Text.SetNDC(r.kTRUE)
@@ -174,6 +193,10 @@ for ana in Ana :
       text = '#bf{#it{' + rightText[1] +'}}'
       Text.SetTextSize(0.035)
       Text.DrawLatex(0.18, 0.78, text)
+
+      text = '#bf{#it{' + ana_tex[ana] +'}}'
+      Text.SetTextSize(0.04)
+      Text.DrawLatex(0.18, 0.73, text)
       
       canvas.RedrawAxis()
       canvas.GetFrame().SetBorderSize( 12 )

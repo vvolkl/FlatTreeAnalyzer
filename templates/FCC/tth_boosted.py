@@ -176,12 +176,15 @@ sel250_tHmjstight = sel_full + sel250 + seltHmjs_tight
 
 selections = collections.OrderedDict()
 
+###############################
+## nominal analysis
+###############################
 selections['ttH'] = []
 selections['ttH'].append(selbase)
 selections['ttH'].append(sel_top)
 selections['ttH'].append(sel_higgs)
 #selections['ttH'].append(sel_bs)
-selections['ttH'].append(sel_bsTRF)
+selections['ttH'].append(sel_bsTRF) # final ana cut
 #selections['ttH'].append(sel_bsless)
 selections['ttH'].append(sel_bslessTRF)
 selections['ttH'].append(sel_bslessTRF2)
@@ -190,13 +193,19 @@ selections['ttH'].append(sel_massTRF)
 selections['ttH'].append(sel_antibsTRF)
 selections['ttH'].append(sel_anti2bsTRF)
 selections['ttH'].append(sel_anti3bsTRF)
-## tests for tail Mjj removal
+###############################
+## tests for tail Mjj removal :
+#
+# http://djamin.web.cern.ch/djamin/FCC/20180403_tth_boosted/high_stat/alpha_studies.pdf
+################################
+# /eos/experiment/fcc/hh/analyses/Higgs/ttH/FlatTreeAnalyzer_outputs/fcc_v02/May2018_highstat_prod/good_sel_2D_optim_tail_removal/root_ttH/histos.root
 #selections['ttH'].append(sel200_no2D) -> the chosen one in the end
 #selections['ttH'].append(sel200_2Dloose)
 #selections['ttH'].append(sel200_2Dtight)
 #selections['ttH'].append(sel250_no2D)
 #selections['ttH'].append(sel250_2Dloose)
 #selections['ttH'].append(sel250_2Dtight)
+# /eos/experiment/fcc/hh/analyses/Higgs/ttH/FlatTreeAnalyzer_outputs/fcc_v02/May2018_highstat_prod/good_sel_ttz_optim_tail_removal/root_ttH/histos.root
 #selections['ttH'].append(sel200_tHmjjtight)
 #selections['ttH'].append(sel250_tHmjjtight)
 #selections['ttH'].append(sel200_tHmjstight)
