@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import subprocess, glob, optparse, json, ast, os, sys, collections, warnings, ROOT
 from tools import producePlots, Process, formatted
 from pprint import pprint
